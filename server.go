@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"os"
 
@@ -24,12 +23,12 @@ func newServer() *http.Server {
 		n.Use(negroni.NewLogger())
 	}
 
-	n.UseFunc(recovery())
+	//n.UseFunc(recovery())
 	n.Use(negroni.NewStatic(http.Dir("./public")))
 
 	// Setup routes
 	router := pat.New()
-	router.Get("/api/v1/jsonInfo", http.HandlerFunc(sampleHandler))
+	//router.Get("/api/v1/jsonInfo", http.HandlerFunc(sampleHandler))
 
 	// Add alive endpoint
 	// router.Get("/alive", http.HandlerFunc(alive))
