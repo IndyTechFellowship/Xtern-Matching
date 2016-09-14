@@ -9,6 +9,9 @@ handlers:
 - url: /public
   static_dir: public
 
+-url: /node_modules
+  static_dir: public
+
 - url: /index\.html
   script: _go_app
 
