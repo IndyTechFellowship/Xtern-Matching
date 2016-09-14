@@ -3,12 +3,16 @@ package main
 import (
 	"net/http"
 	"html/template"
+	//"appengine"
+	//"appengine/user"
+	"Xtern-Matching/routes"
 )
 
 func init() {
-	//main()
+	http.Handle("/",routes.NewRouter())
+
 	http.HandleFunc("/",func(w http.ResponseWriter, req *http.Request) {
-		t, _ := template.ParseFiles("public/index.html")  // Parse template file.
-		t.Execute(w, nil)  // merge.
+		t, _ := template.ParseFiles("public/index.html")
+		t.Execute(w, nil)
 	})
 }

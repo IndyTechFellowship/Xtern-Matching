@@ -3,10 +3,10 @@ package models
 import "gopkg.in/mgo.v2/bson"
 
 type Posting struct {
-	Id bson.ObjectId	`json:"id" bson:"_id,omitempty"`
-	Title string 		`json:"title" bson:"title"`
-	Description string	`json:"description" bson:"description"`
-	skills []string		`json:"skils" bson:"skills"`
+	Id bson.ObjectId	`json:"id"`
+	Title string 		`json:"title"`
+	Description string	`json:"description"`
+	skills []string		`json:"skills"`
 }
 
 type Postings []Posting
