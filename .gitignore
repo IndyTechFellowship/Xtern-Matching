@@ -41,7 +41,7 @@ node_modules
 *.zip
 
 #semantic-ui (which folders should I remove?) BOTH
-semantic/src
-semantic/tasks
-semantic/gulpfile.js
-semantic.json
+public/semantic/src
+public/semantic/tasks
+public/semantic/gulpfile.js
+public/semantic.json
