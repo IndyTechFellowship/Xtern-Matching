@@ -1,0 +1,80 @@
+<div class="ui grid"  ng-controller="MissionControl as ctrl">
+    <div class="computer only one wide column"></div>
+    <div class="three wide computer six wide tablet column">
+        <div class="ui message filter box">
+            <div class="ui statistic">
+                <div class="value">
+                    <i class="users icon"></i>
+                    {{personsCount}}
+                </div>
+                <div class="label">
+                    Applicants
+                </div>
+            </div>
+            <div class="ui fluid accordion">
+                <div class="title">
+                    <h3 class="ui header"><i class="dropdown icon"></i>Statistics and Graphs</h3>
+                </div>
+                <div class="content">
+                    <div class="chartsAndStats" ng-repeat="stat in chartsAndStats">
+                        <div class="chart" ng-if="stat.chart">
+                            <h4 class="ui header">{{stat.title}} Breakdown</h4>
+                            <canvas id="stage-doughnut" class="chart chart-doughnut"
+                                    chart-data="stat.data"
+                                    chart-labels="stat.labels" chart-legend="false">
+                            </canvas>
+                        </div>
+                        <div class="ui statistic" ng-if="!stat.chart">
+                            <div class="value">
+                                <i class="university icon"></i> {{stat.data}}
+                            </div>
+                            <div class="label">
+                                {{stat.title}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="title active">
+                    <h3 class="ui header">
+                        <i class="dropdown icon"></i>
+                        Filters:</h3>
+                </div>
+                <div class="content active">
+                    <div class="filter dropdowns" ng-repeat="filter in filterObjects">
+                        <simple-filter ng-if="!filter.isToggle"
+                                       filterobject="filter"
+                                       change="filterTable()"
+                        >
+                        </simple-filter>
+                        <toggle-filter ng-if="filter.isToggle"
+                                       filterobject="filter"
+                                       change="filterTable()"
+                        >
+                        </toggle-filter>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="ui vertical divider"></div>-->
+    <div class="eleven wide column" >
+        <h2 class="ui header">Students </h2>
+        <table class="ui striped selectable sortable table">
+            <thead>
+            <tr>
+                <th ng-repeat="header in tableHeaders" ng-click="sort(header)" class="sorted">
+                    {{header.title}}
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="row in summaryData" ng-click="rowClick(row._id)" class="clickable">
+                <td ng-repeat="header in tableHeaders" >
+                    <div ng-bind-html="row[header.displayPropertyName]"></div>
+                    <!--{{row[header.displayPropertyName]}}-->
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="computer only one wide column"></div>
+</div>

@@ -1,0 +1,123 @@
+[
+{
+	"_id": "57269aa3bf79bbf8cc55d9d",
+    "firstName": "Steven",
+    "lastName": "Doolan",
+	"university":"Rose-Hulman Institute of Technology",
+	"Year": "Junior",
+	"gradYear": 2017,
+	"major": "Software Engineering",
+	"email": "doolansr@rose-hulman.edu",
+	"workStatus": "US Citizen",
+	"homeState": "Illinois",
+	"gender": "Male",
+	"languages": [
+      {
+        "name": "Node.js",
+        "category": "Full-Stack"
+      },
+      {
+        "name": "Ruby on Rails",
+        "category": "Full-Stack"
+      },
+      {
+        "name": "Angular.js",
+        "category": "Front-End"
+      },
+      {
+        "name": "Hadoop",
+        "category": "Database"
+      },
+      {
+        "name": "iOS",
+        "category": "Mobile"
+      },
+      {
+        "name": "Ruby",
+        "category": "General"
+      },
+      {
+        "name": "Redis",
+        "category": "Database"
+      },
+      {
+        "name": "Firebase",
+        "category": "Database"
+      }
+    ],
+    "githubUrl": "http://www.github.com/",
+    "linkedinUrl": "http://www.linkedin.com/",
+    "personalWebsiteUrl": "http://www.google.com/",
+	"status": "Undecided",
+	"r1Grade": "B",
+	"comments": [
+	{
+		"author": "Sally",
+		"group": "Xtern",
+		"text": "This person sounds like a great candidate!\r\n"
+		},
+		{
+			"author": "Nicole",
+			"group": "Xtern",
+			"text": "His resume is pretty impressive.\r\n"
+		}
+	]
+	},
+	{
+		"_id": "57269aa3bf79bbf8cc55d9df",
+	    "firstName": "Davis",
+    	"lastName": "Nygren",
+		"School":"Rose-Hulman Institute of Technology",
+		"Year": "Junior",
+		"GradDate": "May 2017",
+		"Major": "Software Engineering",
+		"Email": "doolansr@rose-hulman.edu",
+		"WorkStatus": "US Citizen",
+		"HomeState": "Illinois",
+		"Phone": "(847) 204-2727",
+		"Gender": "Male",
+		"Image":"..\\..\\images\\sample_profile1.jpg",
+		"Skills": [
+		"Node.js",
+		"AngularJS",
+		"C#",
+		"T-SQL",
+		"Java",
+		"JavaScript",
+		"jQuery",
+		"HTML",
+		"CSS",
+		"PHP"
+		],
+		"Experience":[
+		{
+			"Company":"Interactive Intelligence",
+			"Start":"June 2015",
+			"End":"August 2015",
+			"Title":"Application Developer Intern, Professional Services Org",
+			"Skills":["KnockoutJS","C#","T-SQL","JavaScript","HTML","Bootstrap"]
+			},
+			{
+				"Company":"Archway Technology Partners",
+				"Start":"June 2014",
+				"End":"October 2014",
+				"Title":"Software Engineering Intern",
+				"Skills":["C#","T-SQL","ActionScripts"]
+			}
+			],
+			"RoundOneStatus": "Undecided",
+			"RoundOneGrade": "B",
+			"comments": [
+			{
+				"author": "Sally",
+				"group": "Xtern",
+				"text": "This person sounds like a great candidate!\r\n"
+				},
+				{
+					"author": "Nicole",
+					"group": "Xtern",
+					"text": "His resume is pretty impressive.\r\n"
+				}
+				]
+			}
+			]

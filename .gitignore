@@ -37,11 +37,10 @@ node_modules
 #jetbrains
 .idea
 
-
 *.zip
 
 #semantic-ui (which folders should I remove?) BOTH
-public/semantic/src
-public/semantic/tasks
-public/semantic/gulpfile.js
+semantic/src
+semantic/tasks
+semantic/gulpfile.js
 public/semantic.json

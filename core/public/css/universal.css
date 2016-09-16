@@ -1,0 +1,66 @@
+.vertical-spacer{
+    width: 100%;
+    display: block;
+    padding-top: 2em;
+}
+h4.ui.header {
+    padding-top: .5em;
+}
+
+.field .ui.checkbox {
+    display:block;
+    padding-top: .3em;
+}
+
+.doughnut-legend li {
+    display: block;
+    padding-top:2em;
+}
+
+.doughnut-legend li span {
+    width: 100%;
+}
+.wrapper {
+    clear:both;
+}
+
+.filter.box h4.ui.header, .filter.box .filter.toggle{
+    margin-top: .7em;
+}
+
+.filter.box {
+    min-height: 75vh;
+}
+
+.Xtern-color-codes.lightBlue {
+    color:#15B0C5;
+}
+.Xtern-color-codes.mediumBlue {
+    color: #00697E;
+}
+.Xtern-color-codes.darkBlue {
+     color: #00374C;
+ }
+.Xtern-color-codes.white {
+      color: #FFFFFF;
+}
+.ui.statistic {
+    width: 100%;
+    text-align: center;
+}
+.chartsAndStats .ui.statistic {
+    margin: 1em 0;
+}
+
+/** nav **/
+
+.ui.inverted.menu{
+    background: #00374C;
+}
+.ui.menu .empty.item{
+    width: 3em;
+}
+
+.clickable {
+    cursor: pointer;
+}

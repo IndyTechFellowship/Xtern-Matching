@@ -9,11 +9,8 @@ handlers:
 - url: /public
   static_dir: public
 
--url: /node_modules
-  static_dir: public
+- url: /node_modules
+  static_dir: node_modules
 
-- url: /index\.html
-  script: _go_app
-
-- url: /.*
+- url: .*
   script: _go_app

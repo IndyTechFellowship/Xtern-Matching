@@ -1,0 +1,21 @@
+<!--Takes in an object with the Following attributes:-->
+<!--filterList: The list selected attributes 2 way-->
+<!--optionsList: The list of possible filters 1 way-->
+<!-- label: The Filter Label -->
+<!--Takes in change: Change function-->
+<h4 class="ui header left floated ">{{filterobject.label}}</h4>
+<div class="ui toggle checkbox filter toggle" style="float: right">
+    <input type="checkbox" ng-model="filterobject.all"
+           ng-true-value="true" ng-false-value="false" ng-change="change()">
+    <label class="">Require all</label>
+</div>
+<!--</div>-->
+<div class="wrapper">
+    <select class="ui fluid search dropdown" multiple=""
+            ng-model="filterobject.filterList" ng-change="change()">
+        <option value="">Filter by {{filterobject.label}}</option>
+        <option ng-repeat="item in filterobject.optionsList" value="{{item}}" on-last-repeat-drop-down>
+            {{item}}
+        </option>
+    </select>
+</div>

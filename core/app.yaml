@@ -1,0 +1,25 @@
+application: xtern-matching
+version: 1
+runtime: go
+api_version: go1
+threadsafe: true
+
+handlers:
+- url: /
+  static_files: index.html
+  upload: index.html
+
+# Serving static files
+- url: /public
+  static_dir: public
+
+- url: /semantic
+  static_dir: semantic
+
+- url: /node_modules
+  static_dir: node_modules
+
+- url: .*
+  script: _go_app
+
+#skip_files:
