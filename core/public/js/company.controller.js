@@ -196,18 +196,9 @@ angular.module('Xtern')
             $state.go('company.dashboard');
         };
     }])
-    .controller('CompanyRecruiting', ['$scope', function ($scope) {
+    .controller('CompanyRecruiting', ['$scope', '$state', function ($scope, $state) {
         var self = this;
-        var i;
-        $scope.itemsList = {
-            items: []
-        };
 
-
-        for (i = 0; i <= 5; i += 1) {
-            $scope.itemsList.items.push({ 'id': i, 'label': 'Item A_' + i });
-        }
-        $scope.company = {recruitmentList:[]};
         $scope.recruitmentList = [
             {
                 _id: "57269aa3bf79bbf8cc55d9d",
@@ -259,27 +250,21 @@ angular.module('Xtern')
             }
 
         ];
-        $scope.itemsList.items = $scope.recruitmentList;
 
         $scope.sortableOptions = {
-
-            itemMoved: function (event) {
-                console.log(hit);
-                var moveSuccess, moveFailure;
-
-                moveSuccess = function () {
-                    console.log('success');
-                }
-                moveFailure = function () {
-                    console.log('failure');
-                }
-            },
             containment: '#table-container',
             containerPositioning: 'relative'
-
         };
 
-        $scope.printArray = function () {
-            console.log($scope.itemsList);
+        $scope.removeRecruit = function (_id) {
+            for (var i = $scope.recruitmentList.length - 1; i >= 0; i--) {
+                if ($scope.recruitmentList[i]._id == _id) {
+                    $scope.recruitmentList.splice(i, 1);
+                }
+            }
         };
+
+        $scope.viewRecruit = function (_id) {
+            $state.go('company.profile', { _id: _id });
+        }
     }]);
