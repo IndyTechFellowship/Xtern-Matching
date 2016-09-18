@@ -1,0 +1,34 @@
+<style>
+    /** override generic sortable ui **/
+    tr.as-sortable-item {
+        display: table-row;
+    }
+    tr.as-sortable-placeholder{
+        display: table-row;
+    }
+    /*tr.as-sortable-drag{
+        display: table-row;
+    }*/
+</style>
+<div class="ui container">
+    <table class="ui stripped selectable table">
+        <thead>
+            <tr>
+                <th></td>
+                <th>Name</th>
+                <th>School</th>
+                <th style="text-align:center;">Year</th>                
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody data-ng-model="recruitmentList" as-sortable>
+            <tr ng-repeat="row in recruitmentList" as-sortable-item>
+                <td><i as-sortable-item-handle class="content icon"></i></td>
+                <td>{{row.name}}</td>
+                <td>{{row.university}}</td>
+                <td style="text-align:center;">{{row.gradYear}}</td>                
+                <td>{{row.summary}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

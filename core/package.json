@@ -25,6 +25,7 @@
     "angular": "^1.5.1",
     "angular-centered": "^1.0.1",
     "angular-chart.js": "^0.10.0",
+    "angular-legacy-sortablejs": "^0.4.1",
     "angular-sanitize": "^1.5.8",
     "angular-ui-router": "^0.2.18",
     "core-js": "^2.3.0",
@@ -32,9 +33,7 @@
     "http": "0.0.0",
     "jquery": "^2.2.1"
   },
-  "devDependencies": {
-
-  },
+  "devDependencies": {},
   "engines": {
     "node": ">=5.0.0"
   }
