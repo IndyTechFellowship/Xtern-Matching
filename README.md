@@ -1,5 +1,5 @@
 #Xtern Matching
-#### _Senior Project - Crowly, Doolan, Niccum, Nygren_
+#### _Senior Project - Crowley, Doolan, Niccum, Nygren_
 
 <img src="./images/xtern-logo.png" width="100%">
 >Xtern – the ultimate tech summer internship experience with Indianapolis technology companies. Powered by the technology non-profit internship experience – packages an experience around summer internship, TechPoint, Xtern provides free downtown housing, networking opportunities and an all-access pass to the arts, culture and social scene in Indianapolis. Programming has been deliberately designed with the intention of attracting top college talent to our growing tech community and creating a sense of place around Indianapolis with the goal of increasing retention rates upon graduation.
