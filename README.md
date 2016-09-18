@@ -1,7 +1,7 @@
 #Xtern Matching
 #### _Senior Project - Crowly, Doolan, Niccum, Nygren_
 
-<img src="./images/xtern-logo.png" width="100%">
+<img src="./core/public/images/xtern-logo.png" width="100%">
 >Xtern – the ultimate tech summer internship experience with Indianapolis technology companies. Powered by the technology non-profit internship experience – packages an experience around summer internship, TechPoint, Xtern provides free downtown housing, networking opportunities and an all-access pass to the arts, culture and social scene in Indianapolis. Programming has been deliberately designed with the intention of attracting top college talent to our growing tech community and creating a sense of place around Indianapolis with the goal of increasing retention rates upon graduation.
 
 ##The Project
@@ -55,22 +55,40 @@ The Student Profile Page allows the user to learn more information about the stu
 
 ![Student Profile Page](./screen_shots/student_profile.png "Student Profile Page")
 
+##Launch Application
+```bash
+cd core
+npm start #launches the site on http://localhost:8080/
+```
+
 ##Set Up
-###Set Up
+###Set Up Directories
 ```bash
 # Obtain Project
+mkdir Combined\src
+cd Combined\src
 git clone https://github.com/Xtern-Matching/Combined.git
-cd Combined
+
+#rename Combined to Xtern-Matching
+#Path should be ../Combined/src/Xtern-Matching/
+cd Xtern-Matching/core
 
 # Install Frond-End components
 npm install #installs all of the packages
+```
 
+###Set Up Go
+1. [Install the Google App Engine GO SDK](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Go)
+2. Add go_appengine to your path variables
+3. Create a new Enviroment Variable GOPATH
+  * Set GOPATH to Combined 
+```bash
 # Install Backend Components
 goapp get
-
-#Launch Site
-npm start #launches the site on http://localhost:8080/
 ```
+
+
+
 ###_Required Tools_
 _Install these first_
 
@@ -80,7 +98,7 @@ _Install these first_
 ```bash
 npm install -g nodemon
 ```
-4. [Google App Engine GO SDK](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Go)
+
 
 
 ###npm install errors
