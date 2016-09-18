@@ -9,8 +9,8 @@
         </div>
         <!--<div >-->
             <div ng-if="loggedIn" class="item">Techpoint</div>
-            <a ng-if="loggedIn" ui-sref="techpoint.dashboard" class="item active">Dashboard</a>
-            <a ng-if="loggedIn" class="item">Statistics</a>
+            <a ng-if="loggedIn" ui-sref="techpoint.dashboard" ui-sref-active="active" class="item">Dashboard</a>
+            <a ng-if="loggedIn" ui-sref-active="active" class="item">Statistics</a>
             <div class="right menu">
                 <a ng-if="loggedIn" ui-sref="techpoint.login" ng-click="logout()" class="item">Sign Out</a>
                 <a ng-if="!loggedIn" class="item">Sign In</a>

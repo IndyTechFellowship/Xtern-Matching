@@ -10,9 +10,9 @@
         </div>
         <!--<div >-->
             <div ng-if="loggedIn" class="item">{{companyName}}</div>
-            <a ng-if="loggedIn" ui-sref="company.dashboard" class="item active">Dasboard</a>
-            <a ng-if="loggedIn" ui-sref="company.recruting" class="item">Recruiting</a>
-            <a ng-if="loggedIn" class="item">Statistics</a>
+            <a ng-if="loggedIn" ui-sref="company.dashboard" ui-sref-active="active" class="item">Dashboard</a>
+            <a ng-if="loggedIn" ui-sref="company.recruting" ui-sref-active="active" class="item">Recruiting</a>
+            <a ng-if="loggedIn" ui-sref-active="active" class="item">Statistics</a>
             <div class="right menu">
                 <a ng-if="loggedIn" ui-sref="company.login" ng-click="logout()" class="item">Sign Out</a>
                 <a ng-if="!loggedIn" class="item">Sign In</a>
