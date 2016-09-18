@@ -6,12 +6,16 @@ angular.module('Xtern')
 
         $rootScope.$on('$stateChangeStart',
             function (event, toState, toParams, fromState, fromParams, options) {
-                console.log('change');
-                $scope.loggedIn = isLoggedIn('company');
+               $scope.loggedIn = isLoggedIn('company');
                 $scope.companyName = getToken('companyName');
-                console.log($scope.loggedIn, $scope.companyName);
+               if(toState.name == "company.profile"){
+                    $('#profile').show();
+                }
+                else{
+                    $('#profile').hide();
+                }
             });
-
+        
         $scope.logout = function () {
             logoutStorage("company");
             $state.go('company.login');

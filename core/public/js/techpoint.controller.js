@@ -4,10 +4,14 @@ angular.module('Xtern')
         $scope.loggedIn = isLoggedIn('techPoint');
 
         $rootScope.$on('$stateChangeStart',
-            function(event, toState, toParams, fromState, fromParams, options)
-            {
-                console.log('change');
+            function (event, toState, toParams, fromState, fromParams, options) {
                 $scope.loggedIn = isLoggedIn('techPoint');
+                if (toState.name == "techpoint.profile") {
+                    $('#profile').show();
+                }
+                else {
+                    $('#profile').hide();
+                }
             });
 
         $scope.logout = function () {
