@@ -70,6 +70,9 @@ goapp get
 
 #Launch Site
 npm start #launches the site on http://localhost:8080/
+
+#Deploy Site
+goapp deploy
 ```
 ###_Required Tools_
 _Install these first_
@@ -81,7 +84,13 @@ _Install these first_
 npm install -g nodemon
 ```
 4. [Google App Engine GO SDK](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Go)
-
+    1. Download Go version of SDK
+    2. Place SDK folder in place of choosing
+    3. Set Add folder to one's PATH
+    4. Set environment GOPATH to folder called gopath inside sdk
+    5. Set environment GOROOT to folder called goroot inside sdk
+    6. Navigate into the gopath folder, and create 3 folders: bin, pkg, and src
+    7. Navigate into src folder and clone project
 
 ###npm install errors
 In the unlikely case Semantic UI has installation errors:
