@@ -30,4 +30,4 @@ deployment:
     staging:
         branch: master
         commands:
-            gcloud -q app deploy app.yaml
+            - gcloud -q app deploy app.yaml
