@@ -10,8 +10,8 @@ machine:
     GOROOT: ""
     PATH: "/usr/local/go/bin:/usr/local/go_workspace/bin:~/.go_workspace/bin:${PATH}"
     GOPATH: "~/.go_workspace:/usr/local/go_workspace:${HOME}/.go_project"
-	GCLOUD_PROJECT: "xtern-matching"
-	
+    GCLOUD_PROJECT: "xtern-matching"
+    
 dependencies:
   pre:
     - echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
@@ -21,13 +21,13 @@ dependencies:
   override:
     # './...' is a relative pattern which means all subdirectories
     - go get 
-	- npm install
-	#-t -d -v ./...
+    - npm install
+    #-t -d -v ./...
 test:
   override:
   #TODO: Add tests
 deployment:
-	staging:
-		branch: master
-		commands:
-		gcloud -q app deploy app.yaml
+    staging:
+        branch: master
+        commands:
+            gcloud -q app deploy app.yaml
