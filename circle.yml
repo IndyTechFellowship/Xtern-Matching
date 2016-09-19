@@ -1,0 +1,33 @@
+general:
+  build_dir: core
+  branches:
+    only:
+      - master
+      
+machine:
+  environment:
+    # GOROOT is not set by default
+    GOROOT: ""
+    PATH: "/usr/local/go/bin:/usr/local/go_workspace/bin:~/.go_workspace/bin:${PATH}"
+    GOPATH: "~/.go_workspace:/usr/local/go_workspace:${HOME}/.go_project"
+	GCLOUD_PROJECT: "xtern-matching"
+	
+dependencies:
+  pre:
+    - echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
+    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
+  override:
+    # './...' is a relative pattern which means all subdirectories
+    - go get 
+	- npm install
+	#-t -d -v ./...
+test:
+  override:
+  #TODO: Add tests
+deployment:
+	staging:
+		branch: master
+		commands:
+		gcloud -q app deploy app.yaml
