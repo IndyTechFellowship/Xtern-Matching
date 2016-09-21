@@ -12,8 +12,8 @@ import (
 func GetStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	if _, ok := mux.Vars(r)["Id"]; ok {
-		studentKey := datastore.NewKey(ctx, "Student", r.PostForm.Get("id"), 0, nil)
+	if id, ok := mux.Vars(r)["Id"]; ok {
+		studentKey := datastore.NewKey(ctx, "Student", id, 0, nil)
 		var student models.Student
 		if err := datastore.Get(ctx, studentKey, &student); err != nil {
 			http.Error(w, err.Error(), 500)
