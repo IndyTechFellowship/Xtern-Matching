@@ -1,7 +1,7 @@
 #Xtern Matching
 #### _Senior Project - Crowley, Doolan, Niccum, Nygren_
 
-<img src="./images/xtern-logo.png" width="100%">
+<img src="./core/public/images/xtern-logo.png" width="100%">
 >Xtern – the ultimate tech summer internship experience with Indianapolis technology companies. Powered by the technology non-profit internship experience – packages an experience around summer internship, TechPoint, Xtern provides free downtown housing, networking opportunities and an all-access pass to the arts, culture and social scene in Indianapolis. Programming has been deliberately designed with the intention of attracting top college talent to our growing tech community and creating a sense of place around Indianapolis with the goal of increasing retention rates upon graduation.
 
 ##The Project
@@ -43,9 +43,6 @@ Most of the logic for the application is contained in the dashboard. The current
 
  ![Charts Dashboard](./screen_shots/stats_and_charts_long.PNG "Charts Dashboard")
 
-####Future
- In the future, the dashboard will link to other pages like the student profile view
-
 ####Notes and Design
  The different components in the dashboard (ie: filters, graphs, table, ect.) are all reusable and fully customizable based off of JSON strings. They are set up to be reused in different modules of the application.
  In addition, the dashboard page itself takes a config variable and the company view dashboard has different filters, graphs, and column headers.  
@@ -55,25 +52,41 @@ The Student Profile Page allows the user to learn more information about the stu
 
 ![Student Profile Page](./screen_shots/student_profile.png "Student Profile Page")
 
+###The Company Recruitment Page
+The Company Recruitment page allows for companies to rank students and compile a short list prior to finalist day. After finalist day, this page can be used to declare interest in hiring to Techpoint.
+
+The list of students is ordered and can be reordered by selecting a student and dragging him/her into the new rank slot.
+
+![Company Recruitment Page](./screen_shots/company_recruitment.PNG "Company Recruitment Page")
+
+
+##Launch Application
+```bash
+cd core
+npm start #launches the site on http://localhost:8080/
+```
+
+##Launch Application
+```bash
+goapp deploy
+```
+
 ##Set Up
-###Set Up
+###Set Up Directories
 ```bash
 # Obtain Project
+mkdir Combined\src
+cd Combined\src
 git clone https://github.com/Xtern-Matching/Combined.git
-cd Combined
+
+#rename Combined to Xtern-Matching
+#Path should be ../Combined/src/Xtern-Matching/
+cd Xtern-Matching/core
 
 # Install Frond-End components
 npm install #installs all of the packages
-
-# Install Backend Components
-goapp get
-
-#Launch Site
-npm start #launches the site on http://localhost:8080/
-
-#Deploy Site
-goapp deploy
 ```
+
 ###_Required Tools_
 _Install these first_
 
@@ -83,14 +96,27 @@ _Install these first_
 ```bash
 npm install -g nodemon
 ```
-4. [Google App Engine GO SDK](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Go)
-    1. Download Go version of SDK
-    2. Place SDK folder in place of choosing
-    3. Set Add folder to one's PATH
-    4. Set environment GOPATH to folder called gopath inside sdk
-    5. Set environment GOROOT to folder called goroot inside sdk
-    6. Navigate into the gopath folder, and create 3 folders: bin, pkg, and src
-    7. Navigate into src folder and clone project
+
+
+####Set Up Go
+1. [Install the Google App Engine GO SDK](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Go)
+2. Add go_appengine to your path variables
+3. Create a new Enviroment Variable GOPATH
+  * Set GOPATH to Combined 
+
+#### Alternate Go Setup
+[Install Google App Engine GO SDK](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Go)
+
+1. Download Go version of SDK
+2. Place SDK folder in place of choosing
+3. Set Add folder to one's PATH
+4. Set environment GOPATH to folder called gopath inside sdk
+5. Set environment GOROOT to folder called goroot inside sdk
+6. Navigate into the gopath folder, and create 3 folders: bin, pkg, and src
+7. Navigate into src folder and clone project
+
+
+
 
 ###npm install errors
 In the unlikely case Semantic UI has installation errors:

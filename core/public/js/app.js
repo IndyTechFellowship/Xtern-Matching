@@ -1,6 +1,6 @@
 (function () {
 
-    var app = angular.module('Xtern', ["ui.router","angular-centered","chart.js","DataManager","ngSanitize"]);//ngSanitize
+    var app = angular.module('Xtern', ["ui.router","angular-centered","chart.js","as.sortable","DataManager","ngSanitize"]);//ngSanitize
 
     app.config(function($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.when('/techpoint', '/techpoint/login');
@@ -83,7 +83,20 @@
                         }
                     }]
                 }
-
+            }).state('company.recruting',{
+                url:"/recruting",
+                templateUrl: "public/partials/company/company.recruting.html",
+                //resolve: { authenticate: authenticate }
+                controller: 'CompanyRecruiting',
+                resolve: {
+                    security: ['$q', function($q){
+                        //  console.log($q, status);
+                        if(!isLoggedIn('company')){
+                            var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
+                            return $q.reject(errorObject);
+                        }
+                    }]
+                }
             })
             .state('company.profile',{
                 url:"/profile/:_id",
