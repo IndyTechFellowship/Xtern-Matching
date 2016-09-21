@@ -7,13 +7,15 @@ import (
 	"Xtern-Matching/models"
 	"encoding/json"
 	"github.com/gorilla/mux"
+	"strconv"
 )
 
 func GetStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	if id, ok := mux.Vars(r)["Id"]; ok {
-		studentKey := datastore.NewKey(ctx, "Student", id, 0, nil)
+	if id, ok := mux.Vars(r)["id"]; ok {
+		num_id, _ := strconv.ParseInt(id,10,64)
+		studentKey := datastore.NewKey(ctx, "Student", "", num_id, nil)
 		var student models.Student
 		if err := datastore.Get(ctx, studentKey, &student); err != nil {
 			http.Error(w, err.Error(), 500)
@@ -25,10 +27,16 @@ func GetStudent(w http.ResponseWriter,r *http.Request) {
 	} else {
 		q := datastore.NewQuery("Student")
 		var students []models.Student
-		if _, err := q.GetAll(ctx,&students); err != nil {
+		keys, err := q.GetAll(ctx,&students)
+		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
+
+		for i := 0; i < len(students); i++ {
+			students[i].Id = keys[i].IntID()
+		}
+
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(students)
