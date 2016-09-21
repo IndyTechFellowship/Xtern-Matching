@@ -16,7 +16,7 @@ dependencies:
   pre:
     - echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
     - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
-    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account xtern-matching@appspot.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
   override:
     # './...' is a relative pattern which means all subdirectories
