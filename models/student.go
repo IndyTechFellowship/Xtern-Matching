@@ -1,7 +1,6 @@
 package models
 
 type Student struct {
-	ID  int		    `json:"id"`
 	FirstName string    `json:"firstName"`
 	LastName string     `json:"lastName"`
 	Email string	    `json:"email"`
@@ -11,11 +10,11 @@ type Student struct {
 	WorkStatus string   `json:"workStatus"`
 	HomeState string    `json:"homeState"`
 	Gender string       `json:"gender"`
-	Skills Skills	    `json:"skills"`
+	Skills []string	    `json:"skills"`
 	Github string       `json:"githubUrl"`
 	Linkin string       `json:"linkedinUrl"`
 	PersonalSite string `json:"personalWebiteUrl"`
 	Interests []string  `json:"interestedIn"`
-	EmailIntrest bool   `json:"interestedInEmail"`
-	Status bool	    `json:"status"`
+	EmailIntrest string `json:"interestedInEmail"`
+	Status string	    `json:"status"`
 }
