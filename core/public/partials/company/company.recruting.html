@@ -1,0 +1,55 @@
+<style>
+    /** override generic sortable ui **/
+    
+    tr.as-sortable-item {
+        display: table-row;
+    }
+    
+    tr.as-sortable-placeholder {
+        display: table-row;
+    }
+    /*tr.as-sortable-drag{
+        display: table-row;
+    }*/
+</style>
+<div class="ui container">
+    <h1 class="ui header">Recruiting List</h1>
+    <table class="ui stripped  selectable table">
+        <thead>
+            <tr>
+                <th> </th>
+                <th>Name</th>
+                <th>School</th>
+                <th style="text-align:center;">Year</th>
+                <th>Notes</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-ng-model="recruitmentList" as-sortable>
+            <tr ng-repeat="row in recruitmentList" as-sortable-item>
+                <td><i as-sortable-item-handle class="content icon"></i></td>
+                <td>{{row.name}}</td>
+                <td>{{row.university}}</td>
+                <td style="text-align:center;">{{row.gradYear}}</td>
+                <td>{{row.summary}}</td>
+                <td>
+                    <button class="ui icon small button" ng-click="viewRecruit(row._id)">
+                        <i class="external icon"></i>
+                    </button>
+                    <button class="negative ui icon small button" ng-click="removeRecruit(row._id)">
+                        <i class="remove user icon"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <a class="ui right floated small primary labeled icon button" ui-sref="company.dashboard">
+        <i class="users icon"></i> Add More Students
+    </a>
+    <p>
+        *The Recruiting List is ordered by rank <br>
+        <br> **Techpoint make no promises about matching companies with students on recruitment lists. The Recruitment list
+        is only one factor considered when matching companies with potential Xterns. Neither the Techpoint, nor the Xtern
+        program makes any guarantees concerning acceptance of offers. That decision is left to the students.
+    </p>
+</div>
