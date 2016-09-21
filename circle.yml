@@ -28,8 +28,8 @@ dependencies:
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
   override:
     # './...' is a relative pattern which means all subdirectories
-    - goapp get 
     - npm install
+    - goapp get 
     #-t -d -v ./...
 test:
   override:
