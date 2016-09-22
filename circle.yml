@@ -29,7 +29,7 @@ dependencies:
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
   override:
     # './...' is a relative pattern which means all subdirectories
-    - cd go_appengine/gopath/src/Xtern-Matching/core
+    - cd ../go_appengine/gopath/src/Xtern-Matching/core
     - goapp get -t -d -v ./...
     - npm install
 test:
