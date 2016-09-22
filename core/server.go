@@ -8,3 +8,6 @@ import (
 func init() {
 	http.Handle("/", routes.NewRouter())
 }
+func main() {
+
+}
