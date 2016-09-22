@@ -1,5 +1,4 @@
 general:
-  build_dir: core
   branches:
     only:
       - master
@@ -21,7 +20,7 @@ dependencies:
     - unzip -q -d $HOME $HOME/go_appengine_sdk_linux_amd64-1.9.40.zip
     - export PATH=$PATH:$HOME/go_appengine/
     - ls
-    - mv Combined Xtern-Matching
+    - mv ../Combined Xtern-Matching
     - mkdir go_appengine/gopath/bin
     - mkdir go_appengine/gopath/pkg
     - mkdir go_appengine/gopath/src
@@ -32,7 +31,7 @@ dependencies:
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
   override:
     # './...' is a relative pattern which means all subdirectories
-    - cd go_appengine/gopath/src/Xtern-Matching
+    - cd go_appengine/gopath/src/Xtern-Matching/core
     - goapp get -t -d -v ./...
     - npm install
 test:
