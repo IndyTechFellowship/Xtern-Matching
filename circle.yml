@@ -15,14 +15,13 @@ dependencies:
   pre:
     # Download App Engine SDK
     # This is not necessary to deploy, its only necessary  to run local tests importing the App Engine SDK
-    - cd $HOME
     - curl -o $HOME/go_appengine_sdk_linux_amd64-1.9.40.zip https://storage.googleapis.com/appengine-sdks/featured/go_appengine_sdk_linux_amd64-1.9.40.zip
     - unzip -q -d $HOME $HOME/go_appengine_sdk_linux_amd64-1.9.40.zip
     - ls
     #- mv ../Combined ../Xtern-Matching
-    - mkdir go_appengine/gopath/bin
-    - mkdir go_appengine/gopath/pkg
-    - mkdir go_appengine/gopath/src
+    - mkdir ../go_appengine/gopath/bin
+    - mkdir ../go_appengine/gopath/pkg
+    - mkdir ../go_appengine/gopath/src
     - mv Xtern-Matching go_appengine/gopath/src
     - echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
     - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
