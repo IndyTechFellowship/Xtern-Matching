@@ -8,9 +8,9 @@ machine:
     PYTHONPATH: $(PYTHONPATH):$(HOME)/google_appengine
     PATH: "${HOME}/go_appengine/:${PATH}"
     GOPATH: "${HOME}/go_appengine/gopath"
-    GOPATH: "${HOME}/go_appengine/goroot"
+    GOROOT: "${HOME}/go_appengine/goroot"
     GCLOUD_PROJECT: "xtern-matching"
-    
+    X
 dependencies:
   pre:
     # Download App Engine SDK
