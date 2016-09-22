@@ -22,7 +22,7 @@ dependencies:
     - mkdir ../go_appengine/gopath/bin
     - mkdir ../go_appengine/gopath/pkg
     - mkdir ../go_appengine/gopath/src
-    - mv ../Xtern-Matching ../go_appengine/gopath/src
+    - cp -R ../Xtern-Matching ../go_appengine/gopath/src
     - echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
     - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
     - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account xtern-matching@appspot.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json
