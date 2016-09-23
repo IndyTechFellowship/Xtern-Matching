@@ -10,6 +10,7 @@ machine:
     GOPATH: "${HOME}/go_appengine/gopath"
     GOROOT: "${HOME}/go_appengine/goroot"
     GCLOUD_PROJECT: "xtern-matching"
+    CLOUDSDK_PYTHON_SITEPACKAGES: 1
 
 dependencies:
   pre:
