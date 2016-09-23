@@ -33,8 +33,8 @@ dependencies:
     - sudo rm -rf /opt/google-cloud-sdk/
     - export CLOUDSDK_CORE_DISABLE_PROMPTS=1
     - export CLOUDSDK_PYTHON_SITEPACKAGES=1
-    - curl https://sdk.cloud.google.com | bash
-    - source ~/.bashrc
+    #- curl https://sdk.cloud.google.com | bash
+    #- source ~/.bashrc
     - export CLOUDSDK_CORE_DISABLE_PROMPTS=0
     - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account ci-deploy@xtern-matching.iam.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
