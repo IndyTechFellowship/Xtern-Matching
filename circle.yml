@@ -28,7 +28,7 @@ dependencies:
     - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
     #- sudo apt-get install python-openssl
     - sudo apt-get remove python-virtualenv python-openssl python3-openssl
-    - apt-get update
+    - sudo apt-get update
     - sudo apt-get install python-openssl python3-openssl
     - sudo rm -rf /opt/google-cloud-sdk/
     - export CLOUDSDK_CORE_DISABLE_PROMPTS=1
