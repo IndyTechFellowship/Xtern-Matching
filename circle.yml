@@ -25,6 +25,7 @@ dependencies:
     - cp -R ../Xtern-Matching ../go_appengine/gopath/src
     - echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
     - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
+    - sudo apt-get install python-openssl
     - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account ci-deploy@xtern-matching.iam.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
   override:
