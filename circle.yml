@@ -30,7 +30,7 @@ dependencies:
   override:
     # './...' is a relative pattern which means all subdirectories
     #- cd ../go_appengine/gopath/src/Xtern-Matching/core
-    - ln -s $HOME/go_appengine/gopath/src/Xtern-Matching/core $HOME/
+    #- ln -s $HOME/go_appengine/gopath/src/Xtern-Matching/core $HOME/
     - goapp get ../go_appengine/gopath/src/Xtern-Matching/core
     - npm install ../go_appengine/gopath/src/Xtern-Matching/core
 test:
@@ -40,4 +40,4 @@ deployment:
     staging:
         branch: master
         commands:
-            - gcloud -q app deploy app.yaml
+            - gcloud -q app deploy ../go_appengine/gopath/src/Xtern-Matching/core/app.yaml
