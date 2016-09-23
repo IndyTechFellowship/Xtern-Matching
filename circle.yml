@@ -40,4 +40,5 @@ deployment:
     staging:
         branch: master
         commands:
-            - sudo ../go_appengine/gcloud -q app deploy ../go_appengine/gopath/src/Xtern-Matching/core/app.yaml
+            - sudo su
+            - gcloud -q app deploy ../go_appengine/gopath/src/Xtern-Matching/core/app.yaml
