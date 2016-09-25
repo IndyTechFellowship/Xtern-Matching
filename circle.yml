@@ -1,5 +1,4 @@
 general:
-  build-dir: ../go_appengine/gopath/src/Xtern-Matching
   branches:
     only:
       - master
