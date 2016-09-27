@@ -18,10 +18,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	responseStatus, token := services.Login(ctx,user)
+	token, err := services.Login(ctx,user)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(responseStatus)
-	w.Write(token)
+	json.NewEncoder(w).Encode(token)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +36,11 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	responseStatus := services.Register(ctx,user)
+	responseStatus, err := services.Register(ctx,user)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 	w.WriteHeader(responseStatus)
 }
 

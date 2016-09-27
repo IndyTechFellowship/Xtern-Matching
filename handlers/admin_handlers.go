@@ -17,7 +17,11 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	responseStatus := services.Register(ctx,user)
+	responseStatus, err := services.Register(ctx,user)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 	w.WriteHeader(responseStatus)
 }
 
