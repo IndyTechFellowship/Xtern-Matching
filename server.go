@@ -1,13 +1,10 @@
 package main
 
 import (
-	"Xtern-Matching/routes"
 	"net/http"
+	"routes"
 )
 
 func init() {
 	http.Handle("/", routes.NewRouter())
-}
-func main() {
-
 }

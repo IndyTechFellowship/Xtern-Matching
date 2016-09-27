@@ -21,3 +21,19 @@ type Student struct {
 	Status string	    `json:"status"`
 	Comments []Comment  `json:"comments"`
 }
+
+type Skill struct {
+	Name string 		`json:"name"`
+	Category string		`json:"category"`
+}
+
+type Grade struct {
+	text string 		`json:"text"`
+	value string		`json:"value"`
+}
+
+type Comment struct {
+	Author string 		`json:"author"`
+	Group string		`json:"group"`
+	Text string 		`json:"Text"`
+}

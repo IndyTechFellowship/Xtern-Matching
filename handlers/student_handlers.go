@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/datastore"
-	"Xtern-Matching/models"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"strconv"
+	"models"
 )
 
 func GetStudent(w http.ResponseWriter,r *http.Request) {

@@ -22,4 +22,5 @@ handlers:
 - url: .*
   script: _go_app
 
-#skip_files:
+env_variables:
+  NODE_ENV: 'prod'

@@ -11,7 +11,7 @@
         self.getStudentDataForId = function(id, callback){
             console.log(id);
             if(!self.profile || self.profile._id !== id) {
-                $http.get("http://xtern-matching.appspot.com/student/"+id).then(function(data) {
+                $http.get("localhoststudent/"+id).then(function(data) {
                     console.log('get student data:' + data.data.length);
                     self.profile = $.grep(data.data, function(e){return e._id == id;})[0];
                     callback(self.profile);

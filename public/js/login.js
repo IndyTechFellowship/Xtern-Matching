@@ -8,7 +8,6 @@ function isLoggedIn(type) {
 function setToken(token, type) {
     //localStorage.setItem('token', token);
     localStorage.setItem(type, token);
-
 };
 
 function getToken(tokenName) {
@@ -20,5 +19,5 @@ function loadLogin() {
 };
 
 function logoutStorage(type) {
-    localStorage.clear();
+    localStorage.removeItem(type);
 };
