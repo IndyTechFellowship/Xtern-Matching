@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 	"strconv"
 	"Xtern-Matching/models"
+	"Xtern-Matching/handlers/services"
 )
 
 func GetStudent(w http.ResponseWriter,r *http.Request) {
@@ -15,26 +16,20 @@ func GetStudent(w http.ResponseWriter,r *http.Request) {
 
 	if id, ok := mux.Vars(r)["id"]; ok {
 		num_id, _ := strconv.ParseInt(id,10,64)
-		studentKey := datastore.NewKey(ctx, "Student", "", num_id, nil)
-		var student models.Student
-		if err := datastore.Get(ctx, studentKey, &student); err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		w.Header().Add("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(student)
-	} else {
-		q := datastore.NewQuery("Student")
-		var students []models.Student
-		keys, err := q.GetAll(ctx,&students)
+		student, err := services.GetStudent(ctx,num_id)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
 
-		for i := 0; i < len(students); i++ {
-			students[i].Id = keys[i].IntID()
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(student)
+	} else {
+		students, err := services.GetStudents(ctx)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
 		}
 
 		w.Header().Add("Access-Control-Allow-Origin", "*")
@@ -54,8 +49,8 @@ func PostStudent(w http.ResponseWriter,r *http.Request) {
 	}
 
 	for _, student := range students {
-		key := datastore.NewIncompleteKey(ctx, "Student", nil)
-		if _, err := datastore.Put(ctx, key, &student); err != nil {
+		_, err := services.NewStudent(ctx, student)
+		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
