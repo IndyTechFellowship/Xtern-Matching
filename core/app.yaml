@@ -1,5 +1,6 @@
 version: 1
-application: xtern-matching-143216
+#application: xtern-matching-143216
+application: xtern-matching
 runtime: go
 api_version: go1
 threadsafe: true
