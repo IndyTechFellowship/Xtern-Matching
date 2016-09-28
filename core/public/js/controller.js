@@ -8,6 +8,7 @@ angular.module('Xtern')
         ProfileService.getStudentDataForId($stateParams._id, function(data)            
         {
             $scope.studentData = data;
+			PDFObject.embed(data.resume, "#example1");
         });
 
         $scope.statusOptions = [
