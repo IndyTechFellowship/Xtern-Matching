@@ -22,8 +22,10 @@ const MAX_MEMORY = 8 * 1024 * 1024
 func PostPDF(w http.ResponseWriter,r *http.Request) {
 
 
-	bucketName := "xtern-matching-143216.appspot.com"
-	projectID := "xtern-matching-143216"
+	bucketName := "xtern-matching.appspot.com"
+	projectID := "xtern-matching"
+	//bucketName := "xtern-matching-143216.appspot.com"//DEV Server
+	//projectID := "xtern-matching-143216"
 	id,_ := mux.Vars(r)["id"]
 
 	//Make sure pdf is less than 8 MB
