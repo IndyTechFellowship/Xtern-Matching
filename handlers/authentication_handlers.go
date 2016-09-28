@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"net/http"
-	"handlers/services"
 	"google.golang.org/appengine"
 	"encoding/json"
-	"models"
+	"Xtern-Matching/handlers/services"
+	"Xtern-Matching/models"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {

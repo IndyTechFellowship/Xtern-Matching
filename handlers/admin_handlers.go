@@ -3,9 +3,9 @@ package handlers
 import (
 	"net/http"
 	"google.golang.org/appengine"
-	"models"
 	"encoding/json"
-	"handlers/services"
+	"Xtern-Matching/handlers/services"
+	"Xtern-Matching/models"
 )
 
 func Register(w http.ResponseWriter, r *http.Request) {

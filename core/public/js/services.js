@@ -36,5 +36,15 @@
                 callback(self.userSummaryData);
             }
         };
+    }]).service('LoginService',['$http', function ($http) {
+        var self = this;
+        self.jwtToken = null;
+
+        self.login = function(email, password,callback){
+            $http.post("localhost:8080/auth/login",{"email":email, "password": password}).then(function(data) {
+                self.jwtToken = data;
+                callback(self.jwtToken);
+            });
+        }
     }]);
 })();

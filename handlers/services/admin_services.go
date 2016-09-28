@@ -1,11 +1,12 @@
 package services
 
 import (
-	"models"
+	"Xtern-Matching/models"
 	"net/http"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 	"golang.org/x/crypto/bcrypt"
+	"errors"
 )
 
 func Register(ctx context.Context,user models.User) (int,error) {
@@ -13,7 +14,7 @@ func Register(ctx context.Context,user models.User) (int,error) {
 	if err != nil {
 		return http.StatusInternalServerError, err
 	} else if count != 0 {
-		return http.StatusInternalServerError, nil
+		return http.StatusInternalServerError, errors.New("User already exist")
 	} else {
 		key := datastore.NewIncompleteKey(ctx, "User", nil)
 		pass, err := bcrypt.GenerateFromPassword([]byte(user.Password),14);

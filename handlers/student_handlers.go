@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"strconv"
-	"models"
+	"Xtern-Matching/models"
 )
 
 func GetStudent(w http.ResponseWriter,r *http.Request) {

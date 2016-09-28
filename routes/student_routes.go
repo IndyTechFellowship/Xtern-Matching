@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gorilla/mux"
-	"handlers"
+	"Xtern-Matching/handlers"
 )
 
 func SetStudentRoutes(router *mux.Router) *mux.Router {
