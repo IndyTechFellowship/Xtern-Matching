@@ -19,5 +19,6 @@ type Student struct {
 	EmailIntrest string `json:"interestedInEmail"`
 	R1Grade Grade	    `json:"r1Grade"`
 	Status string	    `json:"status"`
+	Resume string		`json:"resume"`
 	Comments []Comment  `json:"comments"`
 }

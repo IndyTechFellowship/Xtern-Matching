@@ -52,7 +52,8 @@ func PostStudent(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-
+	//Give default pdf mock for now
+	student.Resume = "public/data_mocks/sample.pdf"
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
 	if _, err := datastore.Put(ctx, key, &student); err != nil {
 		http.Error(w, err.Error(), 500)

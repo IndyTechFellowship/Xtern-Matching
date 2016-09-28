@@ -3,7 +3,8 @@
  */
  (function (){
     var app = angular.module('DataManager',[]);
-
+	var host = "http://xtern-matching-143216.appspot.com/student/"
+	//var host = "http://localhost:8080/student/"
     app.service('ProfileService', ['$http', function ($http){
         var self = this;
         self.profile = null;
@@ -11,7 +12,7 @@
         self.getStudentDataForId = function(id, callback){
             console.log(id);
             if(!self.profile || self.profile._id !== id) {
-                $http.get("http://xtern-matching.appspot.com/student/"+id).then(function(data) {
+                $http.get(host+id).then(function(data) {
                     console.log('get student data:' + data.data.length);
                     self.profile = $.grep(data.data, function(e){return e._id == id;})[0];
                     callback(self.profile);
@@ -27,7 +28,7 @@
 
         self.queryUserSummaryData = function(callback){
             if(!self.userSummaryData){
-                $http.get("http://xtern-matching.appspot.com/student").then(function (data) {
+                $http.get(host).then(function (data) {
                     self.userSummaryData = data.data;
                     callback(self.userSummaryData);
                 });
