@@ -46,17 +46,19 @@ func GetStudent(w http.ResponseWriter,r *http.Request) {
 func PostStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	var student models.Student
+	var students []models.Student
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&student); err != nil {
+	if err := decoder.Decode(&students); err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	key := datastore.NewIncompleteKey(ctx, "Student", nil)
-	if _, err := datastore.Put(ctx, key, &student); err != nil {
-		http.Error(w, err.Error(), 500)
-		return
+	for _, student := range students {
+		key := datastore.NewIncompleteKey(ctx, "Student", nil)
+		if _, err := datastore.Put(ctx, key, &student); err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
 	}
 	w.WriteHeader(http.StatusOK)
 }
