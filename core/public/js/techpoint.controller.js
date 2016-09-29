@@ -229,7 +229,8 @@ angular.module('Xtern')
                 if (err) {
                     console.log('bad login')
                 } else {
-                    setToken(token,"techPoint");
+                    console.log('Login Success')
+                    setToken(token,"auth");
                     $state.go('techpoint.dashboard');
                 }
             });

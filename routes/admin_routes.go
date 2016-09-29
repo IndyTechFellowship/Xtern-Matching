@@ -5,7 +5,8 @@ import (
 	"Xtern-Matching/handlers"
 )
 
-func SetAdminRoutes(router *mux.Router) *mux.Router {
-	router.HandleFunc("/admin/register", handlers.Register).Methods("POST").Name("Register")
+func GetAdminRoutes() *mux.Router {
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/admin/register/", handlers.Register).Methods("POST").Name("Register")
 	return router
 }

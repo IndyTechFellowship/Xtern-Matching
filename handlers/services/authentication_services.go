@@ -9,10 +9,10 @@ import (
 	//"time"
 	"errors"
 	"Xtern-Matching/models"
+	"time"
 )
 
 func Login(ctx context.Context,user models.User) ([]byte, error) {
-	//TODO IMPROVE EVENTUALLY
 	q := datastore.NewQuery("User").Filter("Email =", user.Email)
 
 	var account models.User
@@ -26,12 +26,13 @@ func Login(ctx context.Context,user models.User) ([]byte, error) {
 	if account.Email == user.Email && bcrypt.CompareHashAndPassword([]byte(account.Password),[]byte(user.Password)) == nil {
 		// Create a new token object, specifying signing method and the claims
 		// you would like it to contain.
-		token := jwt.New(jwt.GetSigningMethod("AppEngine"))
-		//claims := token.Claims.(jwt.MapClaims)
-		////token.Claims["iat"] = time.Now().Unix()
-		//token.Claims["exp"] = time.Now().Add(time.Hour * time.Duration(24)).Unix()
+		//token := jwt.New(jwt.GetSigningMethod("AppEngine"))
+		token := jwt.NewWithClaims(jwt.SigningMethodHS512,jwt.MapClaims{
+			"iat": time.Now().Unix(),
+			"exp": time.Now().Add(time.Hour * time.Duration(24)).Unix(),
+		})
 
-		tokenString, err := token.SignedString(ctx)
+		tokenString, err := token.SignedString([]byte("My Secret"))
 		if err != nil {
 			return []byte(""), err
 		}

@@ -23,8 +23,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
+
+	type Message struct {
+		Token string  `json:"token"`
+	}
+	var m Message
+	m.Token = string(token)
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(token)
+	json.NewEncoder(w).Encode(m)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
