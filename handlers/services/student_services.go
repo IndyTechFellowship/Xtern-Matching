@@ -15,11 +15,11 @@ func NewStudent(ctx context.Context,student models.Student) (int,error) {
 	return http.StatusAccepted, nil
 }
 
-func GetStudent(ctx context.Context,_id int) (models.Student,error) {
+func GetStudent(ctx context.Context,_id int64) (models.Student,error) {
 	studentKey := datastore.NewKey(ctx, "Student", "", _id, nil)
 	var student models.Student
 	if err := datastore.Get(ctx, studentKey, &student); err != nil {
-		return nil, err
+		return models.Student{}, err
 	}
 	return student, nil
 }

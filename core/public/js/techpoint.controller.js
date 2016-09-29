@@ -181,13 +181,12 @@ angular.module('Xtern')
             //     data[row].namelink = '<a href="/profile/' + data[row]._id + '">' + data[row].name + "</a>";
             // }
             $scope.DATA = data;
-            // console.log(data);
         });
 
 
         //END CONFIG DATA
     }])
-    .controller('TechpointLogin',['$scope','$state', function($scope, $state) {
+    .controller('TechpointLogin',['$scope','$state','AuthService', function($scope, $state, AuthService) {
         console.log('attached');
         //$('.ui.form')
         //    .form({
@@ -226,7 +225,13 @@ angular.module('Xtern')
             //    return false;
             //}
             // do more stuff
-            setToken("token_placeholder","techPoint");
-            $state.go('techpoint.dashboard');
+            AuthService.login('xniccum@gmail.com','admin1', function (token,err) {
+                if (err) {
+                    console.log('bad login')
+                } else {
+                    setToken(token,"techPoint");
+                    $state.go('techpoint.dashboard');
+                }
+            });
         };
     }]);

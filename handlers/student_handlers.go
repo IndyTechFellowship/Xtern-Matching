@@ -3,7 +3,6 @@ package handlers
 import (
 	"net/http"
 	"google.golang.org/appengine"
-	"google.golang.org/appengine/datastore"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"strconv"
@@ -14,9 +13,9 @@ import (
 func GetStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	if id, ok := mux.Vars(r)["id"]; ok {
-		num_id, _ := strconv.ParseInt(id,10,64)
-		student, err := services.GetStudent(ctx,num_id)
+	if id, ok := mux.Vars(r)["Id"]; ok {
+		num_id, _ := strconv.ParseInt(id, 10, 64)
+		student, err := services.GetStudent(ctx, num_id)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
@@ -24,18 +23,23 @@ func GetStudent(w http.ResponseWriter,r *http.Request) {
 
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(student)
-	} else {
-		students, err := services.GetStudents(ctx)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-
-		w.Header().Add("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(students)
 	}
+	w.WriteHeader(http.StatusInternalServerError)
+}
+
+func GetStudents(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
+	students, err := services.GetStudents(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(students)
 }
 
 func PostStudent(w http.ResponseWriter,r *http.Request) {
