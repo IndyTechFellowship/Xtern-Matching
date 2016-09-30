@@ -1,7 +1,7 @@
-function isLoggedIn(type) {
+function isLoggedIn() {
     //return true;
     //console.log(localStorage.getItem('token'), localStorage.getItem(type));
-    return localStorage.getItem(type);
+    return localStorage.getItem('auth');
     //problems with multiple types logged in
 };
 

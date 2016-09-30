@@ -15,7 +15,7 @@ angular.module('Xtern')
             });
 
         $scope.logout = function () {
-            logoutStorage("techPoint");
+            logoutStorage("auth");
             $state.go('techpoint.login');
             $scope.loggedIn = false;
         };
@@ -186,8 +186,7 @@ angular.module('Xtern')
 
         //END CONFIG DATA
     }])
-    .controller('TechpointLogin',['$scope','$state','AuthService', function($scope, $state, AuthService) {
-        console.log('attached');
+    .controller('TechpointLogin',['$scope','$state','AuthService','TechPointDashboardService', function($scope, $state, AuthService, TechPointDashboardService) {
         //$('.ui.form')
         //    .form({
         //        fields: {
@@ -224,14 +223,16 @@ angular.module('Xtern')
             //    $('.ui.form .message').show();
             //    return false;
             //}
-            // do more stuff
             AuthService.login('xniccum@gmail.com','admin1', function (token,err) {
                 if (err) {
                     console.log('bad login')
                 } else {
-                    console.log('Login Success')
+                    console.log('Login Success');
                     setToken(token,"auth");
+                    console.log('Moving');
+                    console.log(getToken("auth"));
                     $state.go('techpoint.dashboard');
+                    console.log('Didn\'t move');
                 }
             });
         };

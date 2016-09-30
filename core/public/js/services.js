@@ -77,7 +77,7 @@
         self.login = function(email,password,callback){
             $http.post("http://localhost:8080/auth/login",{"email":email, "password": password}).then(function(data) {
                 self.jwtToken = data.data['token'];
-                console.log('Here: '+self.jwtToken);
+                //console.log('Here: '+self.jwtToken);
                 callback(self.jwtToken);
             }, function errorCallback(response) {
                 console.log('error occured: '+response);
