@@ -155,7 +155,7 @@ angular.module('Xtern')
         });
         //END CONFIG DATA
     }])
-    .controller('CompanyLogin', ['$scope', '$state', function ($scope, $state) {
+    .controller('CompanyLogin', ['$scope', '$state','AuthService', function ($scope, $state,AuthService) {
         console.log('attached');
         $scope.company = "ININ";
         //$('.ui.form')
@@ -195,9 +195,16 @@ angular.module('Xtern')
             //    return false;
             //}
             // do more stuff
-            setToken("token_placeholder", "company");
-            setToken("ININ", "companyName");
-            $state.go('company.dashboard');
+            //setToken("token_placeholder", "company");
+            AuthService.login('xniccum@gmail.com','admin1', function (token,err) {
+                if (err) {
+                    console.log('bad login')
+                } else {
+                    setToken(token, "company");
+                    setToken("ININ", "companyName");
+                    $state.go('company.dashboard');
+                }
+            });
         };
     }])
     .controller('CompanyRecruiting', ['$scope', '$state', function ($scope, $state) {

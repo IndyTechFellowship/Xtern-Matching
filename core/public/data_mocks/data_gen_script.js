@@ -18,7 +18,10 @@ var script = //remove this top line before pasting into http://www.json-generato
             return major[tags.integer(0, major.length + 3) % major.length];
         },
 
-        gradYear: '{{integer(2017, 2020)}}',
+        gradYear:  function(tags){
+            var categories = ['2017','2018'];
+            return categories[tags.integer(0, categories.length - 1)];
+        },
         workStatus: function(tags){
             //weight it heavier in favor of US Citizen as it is much
             var workStatus = ['US Citizen','US Citizen','Permanent Resident','H1 Visa','TN Visa','J1 Visa','F1 Visa','EAD'];
@@ -157,43 +160,46 @@ var script = //remove this top line before pasting into http://www.json-generato
             return links[tags.integer(0, links.length - 1)];
         },
         interestedIn: function(tags){
+            var categories = ['true','false'];
+            return categories[tags.integer(0, categories.length - 1)];
+        },
+        interestedInEmail: function(tags){
             var categories = ['Designer','Software Engineer- Full Stack','Software Engineer- Back End Dev.','Software Engineer- Middle-tier Dev.','Software Engineer- Front-end Web Dev','Dev Ops','Dev Ops','Security','Product Management','Project Management'];
             return [categories[tags.integer(0, categories.length - 1)],
                 categories[tags.integer(0, categories.length - 1)],
                 categories[tags.integer(0, categories.length - 1)]];
 
         },
-        interestedInEmail: '{{bool()}}',
         //Internal Non-Suvery Attributes
         r1Grade: function (tags) {
             var grade = [
                 {
                     "text":"A",
-                    "value":4
+                    "value":'4'
                 },{
                     "text":"B+",
-                    "value":3.5
+                    "value":'3.5'
                 },{
                     "text":"B",
-                    "value":3
+                    "value":'3'
                 },{
                     "text":"A",
-                    "value":4
+                    "value":'4'
                 },{
                     "text":"B+",
-                    "value":3.5
+                    "value":'3.5'
                 },{
                     "text":"B",
-                    "value":3
+                    "value":'3'
                 },{
                     "text":"B-",
-                    "value":2.8
+                    "value":'2.8'
                 },{
                     "text":"C",
-                    "value":2
+                    "value":'2'
                 },{
                     "text":"D",
-                    "value":1
+                    "value":'1'
                 }];
             return grade[tags.integer(0, grade.length - 1)];
         },
@@ -205,4 +211,4 @@ var script = //remove this top line before pasting into http://www.json-generato
                     group: 'Xtern',
                     text: '{{lorem(1, "paragraphs")}}'}]
     }
-]
+];

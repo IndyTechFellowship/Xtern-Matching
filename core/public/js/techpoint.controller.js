@@ -15,7 +15,7 @@ angular.module('Xtern')
             });
 
         $scope.logout = function () {
-            logoutStorage("techPoint");
+            logoutStorage("auth");
             $state.go('techpoint.login');
             $scope.loggedIn = false;
         };
@@ -181,14 +181,12 @@ angular.module('Xtern')
             //     data[row].namelink = '<a href="/profile/' + data[row]._id + '">' + data[row].name + "</a>";
             // }
             $scope.DATA = data;
-            // console.log(data);
         });
 
 
         //END CONFIG DATA
     }])
-    .controller('TechpointLogin',['$scope','$state', function($scope, $state) {
-        console.log('attached');
+    .controller('TechpointLogin',['$scope','$state','AuthService','TechPointDashboardService', function($scope, $state, AuthService, TechPointDashboardService) {
         //$('.ui.form')
         //    .form({
         //        fields: {
@@ -225,8 +223,17 @@ angular.module('Xtern')
             //    $('.ui.form .message').show();
             //    return false;
             //}
-            // do more stuff
-            setToken("token_placeholder","techPoint");
-            $state.go('techpoint.dashboard');
+            AuthService.login('xniccum@gmail.com','admin1', function (token,err) {
+                if (err) {
+                    console.log('bad login')
+                } else {
+                    console.log('Login Success');
+                    setToken(token,"auth");
+                    console.log('Moving');
+                    console.log(getToken("auth"));
+                    $state.go('techpoint.dashboard');
+                    console.log('Didn\'t move');
+                }
+            });
         };
     }]);
