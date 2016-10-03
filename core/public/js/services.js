@@ -3,9 +3,9 @@
  */
  (function (){
     var app = angular.module('DataManager',[]);
-	var host = "http://xtern-matching.appspot.com/student/"
+	//var host = "http://xtern-matching.appspot.com/student/"
 	//var host = "http://xtern-matching-143216.appspot.com/student/" //DEV Server
-	//var host = "http://localhost:8080/student/"
+	var host = "http://localhost:8080/student/"
     app.service('ProfileService', ['$http', function ($http){
         var self = this;
         self.profile = null;

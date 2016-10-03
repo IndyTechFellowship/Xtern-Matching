@@ -62,7 +62,7 @@
                         </div>
                         <div class="ui raised segment">
                             <a class="ui teal ribbon label">Resume</a>
-                            <div id="example1"></div>
+                            <div id="example1" style="border:1px  solid black; overflow-x: hidden; overflow-y: auto; height: 880px; width: 675px;"></div>
                         </div>
 
                         <div class="ui raised segment">
@@ -138,9 +138,11 @@
     </div>
 </div>
 
+<script src="node_modules/pdfjs-dist/build/pdf.js">
+
 <script src="public/js/pdfobject.js"></script>
 <style>
-    .pdfobject-container { height: 700px; }
+    #the-canvas { height: 700px; }
     .pdfobject { border: 1px solid #666; }
 </style>
 <link rel="stylesheet" type="text/css" href="public/css/studentProfile.css">
