@@ -104,6 +104,11 @@ angular.module('Xtern')
             on: 'hover'
         });
     })
+	.controller("UploadCtrl", function($scope,ResumeService){
+		this.uploadResume = function(id) {
+			ResumeService.uploadResume(id);
+		}
+	})
     .controller('TechLabelsCtrl', function($scope) {
         $scope.colorForLanguage = function(category) {
             if(category === "Full-Stack") {

@@ -89,16 +89,22 @@
     }]).service('ResumeService',['$http', function ($http) {
         var self = this;
         self.jwtToken = null;
-
-        self.login = function(email,password,callback){
-            $http.post(host + "auth/login",{"email":email, "password": password}).then(function(data) {
-                self.jwtToken = data.data['token'];
-                //console.log('Here: '+self.jwtToken);
-                callback(self.jwtToken);
-            }, function errorCallback(response) {
+		self.uploadResume = function(id){
+			var fd = new FormData();
+			fd.append('file', document.getElementById("file").files[0]);
+			$http.post(host + "student/resume/" + id, fd,{
+                headers: {
+					'Content-Type': undefined,
+					'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                },
+            })
+            .success(function () {
+				console.log("Upload successful")
+            }).error(function(response) {
                 console.log('error occured: '+response);
-                callback('','err')
+                console.log('Here: '+getToken('auth'));
             });
-        }
+        };
     }]);
 })();

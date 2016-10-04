@@ -9,6 +9,7 @@ import (
 	"google.golang.org/appengine/datastore"
 	"golang.org/x/oauth2/google"
 	storage "google.golang.org/api/storage/v1"
+	"strconv"
 )
 
 func NewStudent(ctx context.Context,student models.Student) (int,error) {
@@ -21,9 +22,9 @@ func NewStudent(ctx context.Context,student models.Student) (int,error) {
 	return http.StatusAccepted, nil
 }
 
-func UpdateStudent(ctx context.Context, student *models.Student) error {
+func UpdateStudent(ctx context.Context, student models.Student) error {
 	studentKey := datastore.NewKey(ctx, "Student", "", student.Id, nil)
-	_,err := datastore.Put(ctx, studentKey, student)
+	_,err := datastore.Put(ctx, studentKey, &student)
 	return err
 }
 
@@ -51,6 +52,7 @@ func GetStudents(ctx context.Context) ([]models.Student,error) {
 }
 
 func UpdateResume(ctx context.Context, id int64, file io.Reader) error {
+	sid := strconv.Itoa(int(id))
 	bucketName := "xtern-matching.appspot.com"
 	projectID := "xtern-matching"
 	//bucketName := "xtern-matching-143216.appspot.com"//DEV Server
@@ -78,15 +80,15 @@ func UpdateResume(ctx context.Context, id int64, file io.Reader) error {
 	}
 
 	//Delete old resume copy if it exists
-	if err := service.Objects.Delete(bucketName, string(id) + ".pdf").Do(); err != nil {
+	if err := service.Objects.Delete(bucketName, sid + ".pdf").Do(); err != nil {
 			// If the object exists but wasn't deleted, the bucket deletion will also fail.
 			log.Printf("Could not delete object during cleanup: %v\n\n", err)
 	} else {
-			log.Printf("Successfully deleted %s/%s during cleanup.\n\n", bucketName, string(id))
+			log.Printf("Successfully deleted %s/%s during cleanup.\n\n", bucketName, sid)
 	}
 
 	//Insert new resume copy
-	object := &storage.Object{Name: string(id) + ".pdf"}
+	object := &storage.Object{Name: sid + ".pdf"}
 	res, err := service.Objects.Insert(bucketName, object).Media(file).Do()
 	if err == nil {
 			log.Printf("Created object %v at location %v\n\n", res.Name, res.SelfLink)
@@ -101,7 +103,7 @@ func UpdateResume(ctx context.Context, id int64, file io.Reader) error {
 		return err
 	}
 	student.Resume = res.MediaLink
-	err = UpdateStudent(ctx, &student)
+	err = UpdateStudent(ctx, student)
 	if err != nil {
 		return err
 	}
