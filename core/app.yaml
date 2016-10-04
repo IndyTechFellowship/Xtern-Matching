@@ -1,6 +1,7 @@
-version: 1
-#application: xtern-matching-143216
 application: xtern-matching
+#application: xtern-matching-143216
+version: 2
+
 runtime: go
 api_version: go1
 threadsafe: true
@@ -23,4 +24,5 @@ handlers:
 - url: .*
   script: _go_app
 
-#skip_files:
+env_variables:
+  NODE_ENV: 'prod'

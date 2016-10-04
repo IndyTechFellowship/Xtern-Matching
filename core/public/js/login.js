@@ -1,14 +1,13 @@
-function isLoggedIn(type) {
+function isLoggedIn() {
     //return true;
     //console.log(localStorage.getItem('token'), localStorage.getItem(type));
-    return localStorage.getItem(type);
+    return localStorage.getItem('auth');
     //problems with multiple types logged in
 };
 
 function setToken(token, type) {
     //localStorage.setItem('token', token);
     localStorage.setItem(type, token);
-
 };
 
 function getToken(tokenName) {
@@ -20,5 +19,5 @@ function loadLogin() {
 };
 
 function logoutStorage(type) {
-    localStorage.clear();
+    localStorage.removeItem(type);
 };

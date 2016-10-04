@@ -1,5 +1,4 @@
 (function () {
-
     var app = angular.module('Xtern', ["ui.router","angular-centered","chart.js","as.sortable","DataManager","ngSanitize"]);//ngSanitize
 
     app.config(function($stateProvider, $urlRouterProvider) {
@@ -24,7 +23,7 @@
                 resolve: {
                     security: ['$q', function($q){
                       //  console.log($q, status);
-                        if(!isLoggedIn('techPoint')){
+                        if(!isLoggedIn()){
                             var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
                             return $q.reject(errorObject);
                         }
@@ -39,7 +38,7 @@
                 resolve: {
                     security: ['$q', function($q){
                         //  console.log($q, status);
-                        if(!isLoggedIn('techPoint')){
+                        if(!isLoggedIn()){
                             var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
                             return $q.reject(errorObject);
                         }
@@ -53,8 +52,8 @@
                 resolve: {
                     security: ['$q', function ($q) {
                         //  console.log($q, status);
-                        if (isLoggedIn('techPoint')) {
-                            console.log(isLoggedIn('techPoint'));
+                        if (isLoggedIn()) {
+                            console.log(isLoggedIn());
                        // if(false){
                             var errorObject = {code: 'ALREADY_AUTHENTICATED_TECHPOINT'};
                             return $q.reject(errorObject);
@@ -77,7 +76,7 @@
                 resolve: {
                     security: ['$q', function($q){
                         //  console.log($q, status);
-                        if(!isLoggedIn('company')){
+                        if(!isLoggedIn()){
                             var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
                             return $q.reject(errorObject);
                         }
@@ -91,7 +90,7 @@
                 resolve: {
                     security: ['$q', function($q){
                         //  console.log($q, status);
-                        if(!isLoggedIn('company')){
+                        if(!isLoggedIn()){
                             var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
                             return $q.reject(errorObject);
                         }
@@ -106,7 +105,7 @@
                 resolve: {
                     security: ['$q', function($q){
                         //  console.log($q, status);
-                        if(!isLoggedIn('company')){
+                        if(!isLoggedIn()){
                             var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
                             return $q.reject(errorObject);
                         }
@@ -121,7 +120,7 @@
                     security: ['$q', function ($q) {
                         //  console.log($q, status);
                         if (isLoggedIn('company')) {
-                            console.log(isLoggedIn('company'));
+                            console.log(isLoggedIn());
                             // if(false){
                             var errorObject = {code: 'ALREADY_AUTHENTICATED_COMPANY'};
                             return $q.reject(errorObject);
