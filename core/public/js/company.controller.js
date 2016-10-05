@@ -1,8 +1,16 @@
 angular.module('Xtern')
-    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'TechPointDashboardService', function ($scope, $rootScope, $state, TechPointDashboardService) {
+    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'TechPointDashboardService', 'CompanyService', function ($scope, $rootScope, $location, $state, CompanyService, TechPointDashboardService, $stateParams) {
         var self = this;
         $scope.loggedIn = isLoggedIn('company');
         $scope.companyName = getToken('companyName');
+
+        CompanyService.getCompanyDataForId(5733953138851840, function(data)            
+        // CompanyService.getCompanyDataForId($stateParams._id, function(data)            
+        {
+            $scope.companyData = data;
+            console.log("companyData: "+data);
+        });
+
 
         $rootScope.$on('$stateChangeStart',
             function (event, toState, toParams, fromState, fromParams, options) {
@@ -207,60 +215,77 @@ angular.module('Xtern')
             });
         };
     }])
-    .controller('CompanyRecruiting', ['$scope', '$state', function ($scope, $state) {
+    .controller('CompanyRecruiting', ['$scope', '$state', 'ProfileService', 'CompanyService', function ($scope, $state, ProfileService, CompanyService) {
         var self = this;
+        $scope.recruitmentList = [];
 
-        $scope.recruitmentList = [
-            {
-                _id: "57269aa3bf79bbf8cc55d9d",
-                name: "Verna Gomez",
-                gradYear: 2019,
-                university: "Rose-Hulman Institute of Technology",
-                summary: "Front End",
-                notes: "Verna would be a great addition to Aarons Front end team. They use similar tools"
-            },
-            {
-                _id: "573a010c27b02303a5819515",
-                name: "Henderson Whitley",
-                gradYear: 2018,
-                university: "Indiana State University",
-                summary: "Security",
-                notes: "Phasellus ex nisl, pulvinar tempus dolor non, aliquam maximus ante.  Sed et nunc lectus. Phasellus eget lectus sit amet felis interdum tristique."
-            },
-            {
-                _id: "573a010cdaf1dc6ea094593e",
-                name: "Cross Berg",
-                gradYear: 2018,
-                university: "Indiana State University",
-                summary: "Security",
-                notes: "Fusce a est pulvinar, dictum tellus ut, cursus risus. Morbi bibendum elementum risus, in cursus dolor dictum luctus."
-            },
-            {
-                _id: "573a010cc2cac4dfe9497bb2",
-                name: "Loraine Pace",
-                gradYear: 2017,
-                university: "Rose-Hulman Institute of Technology",
-                summary: "SE - Full Stack (Eric's Team)",
-                notes: "Ut sollicitudin nunc ac mauris hendrerit consectetur. Pellentesque imperdiet ullamcorper augue et fermentum."
-            },
-            {
-                _id: "573a010c7afd6700cb9c8598",
-                name: "Maureen Mclean",
-                gradYear: 2018,
-                university: "Indiana State University",
-                summary: "CPE - Hardware",
-                notes: "Integer laoreet ornare interdum. Nunc dapibus elit et purus scelerisque rhoncus. Nullam sagittis nulla eget diam scelerisque euismod."
-            },
-            {
-                _id: "573a010cfcbfb6015c7a6669",
-                name: "Bell Simon",
-                gradYear: 2017,
-                university: "Rose-Hulman Institute of Technology",
-                summary: "Backend API - Main Product",
-                notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ac suscipit velit. Fusce sollicitudin non massa ac blandit."
+        CompanyService.getCompanyDataForId(5733953138851840, function(data)            
+        // CompanyService.getCompanyDataForId($stateParams._id, function(data)            
+        {
+            $scope.companyData = data;
+            // console.log("companyData: "+data);
+            console.log("company data in recruiting controller:"+$scope.companyData);
+            console.log($scope.companyData.studentIds);
+            for (i=0;i<$scope.companyData.studentIds.length;i++) {
+                ProfileService.getStudentDataForId($scope.companyData.studentIds[i], function(data) {
+                    data.name = data.firstName+" "+data.lastName;
+                    $scope.studentData = data;
+                    console.log($scope.studentData);
+                    $scope.recruitmentList.push($scope.studentData);
+                });
             }
+        });
 
-        ];
+        // $scope.recruitmentList = [
+        //     {
+        //         _id: "57269aa3bf79bbf8cc55d9d",
+        //         name: "Verna Gomez",
+        //         gradYear: 2019,
+        //         university: "Rose-Hulman Institute of Technology",
+        //         summary: "Front End",
+        //         notes: "Verna would be a great addition to Aarons Front end team. They use similar tools"
+        //     },
+        //     {
+        //         _id: "573a010c27b02303a5819515",
+        //         name: "Henderson Whitley",
+        //         gradYear: 2018,
+        //         university: "Indiana State University",
+        //         summary: "Security",
+        //         notes: "Phasellus ex nisl, pulvinar tempus dolor non, aliquam maximus ante.  Sed et nunc lectus. Phasellus eget lectus sit amet felis interdum tristique."
+        //     },
+        //     {
+        //         _id: "573a010cdaf1dc6ea094593e",
+        //         name: "Cross Berg",
+        //         gradYear: 2018,
+        //         university: "Indiana State University",
+        //         summary: "Security",
+        //         notes: "Fusce a est pulvinar, dictum tellus ut, cursus risus. Morbi bibendum elementum risus, in cursus dolor dictum luctus."
+        //     },
+        //     {
+        //         _id: "573a010cc2cac4dfe9497bb2",
+        //         name: "Loraine Pace",
+        //         gradYear: 2017,
+        //         university: "Rose-Hulman Institute of Technology",
+        //         summary: "SE - Full Stack (Eric's Team)",
+        //         notes: "Ut sollicitudin nunc ac mauris hendrerit consectetur. Pellentesque imperdiet ullamcorper augue et fermentum."
+        //     },
+        //     {
+        //         _id: "573a010c7afd6700cb9c8598",
+        //         name: "Maureen Mclean",
+        //         gradYear: 2018,
+        //         university: "Indiana State University",
+        //         summary: "CPE - Hardware",
+        //         notes: "Integer laoreet ornare interdum. Nunc dapibus elit et purus scelerisque rhoncus. Nullam sagittis nulla eget diam scelerisque euismod."
+        //     },
+        //     {
+        //         _id: "573a010cfcbfb6015c7a6669",
+        //         name: "Bell Simon",
+        //         gradYear: 2017,
+        //         university: "Rose-Hulman Institute of Technology",
+        //         summary: "Backend API - Main Product",
+        //         notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ac suscipit velit. Fusce sollicitudin non massa ac blandit."
+        //     }
+        // ];
 
         $scope.sortableOptions = {
             containment: '#table-container',
@@ -277,5 +302,5 @@ angular.module('Xtern')
 
         $scope.viewRecruit = function (_id) {
             $state.go('company.profile', { _id: _id });
-        }
+        };
     }]);

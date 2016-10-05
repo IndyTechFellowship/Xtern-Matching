@@ -25,13 +25,43 @@
                     callback(self.profile);
                 }, function errorCallback(response) {
                     console.log('error occured: ' + response);
-                    callback('', 'err')
+                    callback('', 'err');
                 });
             } else {
                  callback(self.profile);
             }
         };
 
+    }]).service('CompanyService', ['$http', function ($http){
+        var self = this;
+        self.company = null;
+
+        self.getCompanyDataForId = function(id, callback){
+            // console.log(id);
+            if(!self.company || self.company._id !== id) {
+                $http({
+                    method: 'GET',
+                    // TODO: replace this id when company login is done
+                    url: "http://localhost:8080/company/" + 5047308127305728,
+                    // url: "http://localhost:8080/company/" + id,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    console.log('get company data:');
+                    console.log(data.data);
+                    self.company = data.data;
+                    callback(self.company);
+                }, function errorCallback(response) {
+                    console.log('error occured: ' + response);
+                    callback('', 'err');
+                });
+            } else {
+                 callback(self.company);
+            }
+        };
     }]).service('TechPointDashboardService',['$http', function ($http){
         var self = this;
         self.userSummaryData = null;
@@ -51,7 +81,7 @@
             }, function errorCallback(response) {
                 console.log('error occured: '+response);
                 console.log('Here: '+getToken('auth'));
-                callback('','err')
+                callback('','err');
             });
             // if(self.userSummaryData){
             //     $http({
@@ -81,8 +111,8 @@
                 callback(self.jwtToken);
             }, function errorCallback(response) {
                 console.log('error occured: '+response);
-                callback('','err')
+                callback('','err');
             });
-        }
+        };
     }]);
 })();
