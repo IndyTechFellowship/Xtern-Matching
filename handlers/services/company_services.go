@@ -38,5 +38,6 @@ func GetCompany(ctx context.Context,_id int64) (models.Company,error) {
 	if err := datastore.Get(ctx, companyKey, &company); err != nil {
 		return models.Company{}, err
 	}
+	company.Id = companyKey.IntID()
 	return company, nil
 }

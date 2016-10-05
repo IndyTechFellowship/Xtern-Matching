@@ -20,7 +20,8 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    console.log('get student data:' + data.data.length);
+                    console.log('get student data:');
+                    console.log(data.data);
                     self.profile = data.data;
                     callback(self.profile);
                 }, function errorCallback(response) {

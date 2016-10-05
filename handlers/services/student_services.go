@@ -21,6 +21,7 @@ func GetStudent(ctx context.Context,_id int64) (models.Student,error) {
 	if err := datastore.Get(ctx, studentKey, &student); err != nil {
 		return models.Student{}, err
 	}
+	student.Id = studentKey.IntID()
 	return student, nil
 }
 
