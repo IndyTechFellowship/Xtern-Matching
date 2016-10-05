@@ -1,5 +1,5 @@
 angular.module('Xtern')
-    .controller('TechPointMain', ['$scope', '$rootScope', '$state', 'TechPointDashboardService', function($scope, $rootScope, $state, TechPointDashboardService){
+    .controller('TechPointMain', ['$scope', '$rootScope', '$state', function ($scope, $rootScope, $state) {
         var self = this;
         $scope.loggedIn = isLoggedIn('techPoint');
 
@@ -20,49 +20,96 @@ angular.module('Xtern')
             $scope.loggedIn = false;
         };
     }])
-    .controller('TechPointDashboardCtrl', ['$scope', 'TechPointDashboardService', function($scope, TechPointDashboardService){
+    .controller('TechPointAccountCtrl', ['$scope', '$rootScope', '$state', function ($scope, $rootScope, $state) {
+        var self = this;
+
+        $scope.selectedGroup = {
+            active: 'Techpoint',
+            changeGroup: function(group){
+                $scope.selectedGroup.active = group;
+            }
+        };
+
+        $scope.techPointUsers = [
+            {
+                name: 'Nicole',
+                email: 'nichole@techpoint.org',
+            },
+            {
+                name: 'Merillat Flowers',
+                email: 'merillat@techpoint.org'
+            }
+        ];
+        // var users = 
+        // {
+        //     techPoint:,
+        //     instructors:[],
+        //     companies:
+        //     [
+
+        //     ]
+        // }
+
+        $scope.tableHeaders = [
+            { title: 'Name', sortPropertyName: 'name', displayPropertyName: 'name', asc: true },
+            { title: 'Email', sortPropertyName: 'email', displayPropertyName: 'email', asc: true }//,
+            //{title: '', sortPropertyName: 'Rated', asc: true }
+        ];
+
+        $scope.sort = function (header, event) {
+            var prop = header.sortPropertyName;
+            var asc = header.asc;
+            header.asc = !header.asc;
+            var ascSort = function (a, b) { return a[prop] < b[prop] ? -1 : a[prop] > b[prop] ? 1 : 0; };
+            var descSort = function (a, b) { return ascSort(b, a); };
+            var sortFunc = asc ? ascSort : descSort;
+            $scope.techPointUsers.sort(sortFunc);
+        };
+
+    }])
+    .controller('TechPointDashboardCtrl', ['$scope', 'TechPointDashboardService', function ($scope, TechPointDashboardService) {
         //BEGIN CONFIG DATA
         $scope.STARTCHARTSANDSTATS = {
             University: {
-                isChart:false,
+                isChart: false,
                 title: "Universities",
-                icon:'university',
+                icon: 'university',
                 dataLabel: 'university',
                 nestedData: false
             },
-            status:{
-                isChart:true,
-                title:"Stage",
+            status: {
+                isChart: true,
+                title: "Stage",
                 labels: ["Stage 1 Approved", "Remaining", "Denied"],
-                dataLabel:'status',
+                dataLabel: 'status',
                 nestedData: false
             },
-            gender:{
-                isChart:true,
-                title:"Gender",
-                labels:['Male','Female'],
-                dataLabel:'gender',
+            gender: {
+                isChart: true,
+                title: "Gender",
+                labels: ['Male', 'Female'],
+                dataLabel: 'gender',
                 nestedData: false
             },
             Interests: {
-                isChart:true,
+                isChart: true,
                 title: "Interests",
                 dataLabel: 'interestedIn',
                 labels: [],
                 nestedData: true
             },
             Major: {
-                isChart:true,
+                isChart: true,
                 title: "Major",
                 labels: [],
                 dataLabel: 'major',
                 nestedData: false
             },
-            technology:{
-                isChart:true,
-                title:"Technology",
-                dataLabel:'knownTech',
-                labels:[],
+            technology: {
+                isChart: true,
+                title: "Technology",
+                dataLabel: 'knownTech',
+                labels: [],
                 nestedData: true
             }
         };
@@ -71,63 +118,63 @@ angular.module('Xtern')
                 isToggle: false,
                 label: "Status",
                 dataLabel: 'status',
-                simpleFilter:true,
-                nestedHeaders:true,
+                simpleFilter: true,
+                nestedHeaders: true,
             },
             Grade: {
                 isToggle: false,
                 label: "Grade",
                 dataLabel: 'gradeLabel',
-                simpleFilter:true,
-                nestedHeaders:true,
+                simpleFilter: true,
+                nestedHeaders: true,
             },
             GradYear: {
                 isToggle: false,
                 label: "Graduation Year",
                 dataLabel: 'gradYear',
-                simpleFilter:true,
-                nestedHeaders:true,
+                simpleFilter: true,
+                nestedHeaders: true,
             },
             University: {
                 isToggle: false,
                 label: "University",
                 dataLabel: 'university',
-                simpleFilter:true,
-                nestedHeaders:true,
+                simpleFilter: true,
+                nestedHeaders: true,
             },
             Technologies: {
                 isToggle: true,
                 label: "Technologies",
                 dataLabel: 'knownTech',
-                simpleFilter:false,
-                nestedHeaders:false,
+                simpleFilter: false,
+                nestedHeaders: false,
             },
             Interests: {
                 isToggle: true,
                 label: "Interests",
                 dataLabel: 'interestedIn',
-                simpleFilter:false,
-                nestedHeaders:false,
+                simpleFilter: false,
+                nestedHeaders: false,
             },
             Major: {
                 isToggle: false,
                 label: "Major",
                 dataLabel: 'major',
-                simpleFilter:true,
-                nestedHeaders:true,
+                simpleFilter: true,
+                nestedHeaders: true,
             },
             WorkStatus: {
                 isToggle: false,
                 label: "Work Status",
                 dataLabel: 'workStatus',
-                simpleFilter:true,
-                nestedHeaders:true,
+                simpleFilter: true,
+                nestedHeaders: true,
             },
             Name: {
                 isToggle: false,
                 label: "Name",
                 dataLabel: 'name',
-                nestedHeaders:true,
+                nestedHeaders: true,
             }
         };
         $scope.TABLEHEADERS = [
@@ -174,7 +221,7 @@ angular.module('Xtern')
                 selected: false
             }];
         $scope.DATA = null;
-        $scope.PATH ='techpoint';
+        $scope.PATH = 'techpoint';
 
         TechPointDashboardService.queryUserSummaryData(function (data) {
             // for(row in data){
@@ -186,7 +233,7 @@ angular.module('Xtern')
 
         //END CONFIG DATA
     }])
-    .controller('TechpointLogin',['$scope','$state','AuthService','TechPointDashboardService', function($scope, $state, AuthService, TechPointDashboardService) {
+    .controller('TechpointLogin', ['$scope', '$state', 'AuthService', 'TechPointDashboardService', function ($scope, $state, AuthService, TechPointDashboardService) {
         //$('.ui.form')
         //    .form({
         //        fields: {
@@ -218,17 +265,17 @@ angular.module('Xtern')
         //            }
         //        }
         //    });
-        $scope.login = function(){
+        $scope.login = function () {
             //if($('.ui.form').form('validate form')){
             //    $('.ui.form .message').show();
             //    return false;
             //}
-            AuthService.login('xniccum@gmail.com','admin1', function (token,err) {
+            AuthService.login('xniccum@gmail.com', 'admin1', function (token, err) {
                 if (err) {
                     console.log('bad login')
                 } else {
                     console.log('Login Success');
-                    setToken(token,"auth");
+                    setToken(token, "auth");
                     console.log('Moving');
                     console.log(getToken("auth"));
                     $state.go('techpoint.dashboard');

@@ -1,0 +1,39 @@
+<div class="ui container">
+    <div class="ui secondary pointing menu">
+        <a class="item" ng-class="{active: selectedGroup.active == 'Techpoint'}" 
+            ng-click="selectedGroup.changeGroup('Techpoint')">Techpoint</a>
+        <a class="item" ng-class="{active: selectedGroup.active == 'Instructor'}" 
+            ng-click="selectedGroup.changeGroup('Instructor')">Instructor</a>
+        <a class="item" ng-class="{active: selectedGroup.active == 'Company'}" 
+            ng-click="selectedGroup.changeGroup('Company')">Company</a>
+    </div>
+
+<table class="ui table sortable">
+    <thead>
+        <tr>
+            <th ng-repeat="header in tableHeaders" ng-click="sort(header)" class="sorted">
+                {{header.title}}
+            </th>
+            <th>
+                Edit/Delete
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="row in techPointUsers" ng-click="rowClick(row)" class="clickable">
+            <td ng-repeat="header in tableHeaders">
+                <div ng-bind-html="row[header.displayPropertyName]"></div>
+                <!--{{row[header.displayPropertyName]}}-->
+            </td>
+            <td class="centered">
+                <button class="centered ui icon yellow basic button">
+                   <i class="edit icon"></i>     
+                </button>
+                <button class="centered ui icon red basic button">
+                   <i class="trash icon"></i>     
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>

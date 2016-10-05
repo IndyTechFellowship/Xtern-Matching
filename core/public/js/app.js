@@ -30,6 +30,21 @@
                     }]
                 }
             })
+            .state('techpoint.accounts',{
+                url:"/accounts",
+                templateUrl: "public/partials/techpoint/techpoint.accounts.html",
+                //resolve: { authenticate: authenticate }
+                controller: 'TechPointAccountCtrl',
+                resolve: {
+                    security: ['$q', function($q){
+                      //  console.log($q, status);
+                        if(!isLoggedIn()){
+                            var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
+                            return $q.reject(errorObject);
+                        }
+                    }]
+                }
+            })
             .state('techpoint.profile',{
                 url:"/profile/:_id",
                 templateUrl: "public/partials/studentProfile.html",
