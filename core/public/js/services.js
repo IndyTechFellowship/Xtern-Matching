@@ -13,7 +13,7 @@
             if(!self.profile || self.profile._id !== id) {
                 $http({
                     method: 'GET',
-                    url: "http://localhost:8080/student/" + id,
+                    url: "http://xtern-matching.appspot.com/student/" + id,
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
@@ -39,7 +39,7 @@
         self.queryUserSummaryData = function(callback){
             $http({
                 method: 'GET',
-                url: "http://localhost:8080/student",
+                url: "http://xtern-matching.appspot.com/student",
                 headers: {
                     'Content-Type': "application/json",
                     'Accept': "application/json",
@@ -75,7 +75,7 @@
         self.jwtToken = null;
 
         self.login = function(email,password,callback){
-            $http.post("http://localhost:8080/auth/login",{"email":email, "password": password}).then(function(data) {
+            $http.post("http://xtern-matching.appspot.com/auth/login",{"email":email, "password": password}).then(function(data) {
                 self.jwtToken = data.data['token'];
                 //console.log('Here: '+self.jwtToken);
                 callback(self.jwtToken);
