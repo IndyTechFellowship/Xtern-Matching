@@ -13,7 +13,6 @@ import (
 func AddStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-
 	var dat map[string]interface{}
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&dat); err != nil {
@@ -22,28 +21,13 @@ func AddStudent(w http.ResponseWriter,r *http.Request) {
 	}
 
 	studentId :=  int64(dat["studentId"].(float64));
+	num_id :=  int64(dat["id"].(float64));
 
-
-	// var studentIds []int64
-
-	// studentIds = append(studentIds, studentId);
-
-	if id, ok := mux.Vars(r)["Id"]; ok {
-		num_id, _ := strconv.ParseInt(id, 10, 64)
-
-		// for _, studentId := range studentIds {
-
-		// }
-		_, err := services.AddStudentIdToCompanyList(ctx, num_id, studentId)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
+	_, err := services.AddStudentIdToCompanyList(ctx, num_id, studentId)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
 	}
-
-
-
-
 	w.WriteHeader(http.StatusOK)
 }
 
