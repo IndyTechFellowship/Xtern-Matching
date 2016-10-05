@@ -31,3 +31,12 @@ func NewCompany(ctx context.Context,company models.Company) (int,error) {
 	}
 	return http.StatusAccepted, nil
 }
+
+func GetCompany(ctx context.Context,_id int64) (models.Company,error) {
+	companyKey := datastore.NewKey(ctx, "Company", "", _id, nil)
+	var company models.Company
+	if err := datastore.Get(ctx, companyKey, &company); err != nil {
+		return models.Company{}, err
+	}
+	return company, nil
+}
