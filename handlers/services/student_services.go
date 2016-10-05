@@ -12,19 +12,22 @@ import (
 	"strconv"
 )
 
-func NewStudent(ctx context.Context,student models.Student) (int,error) {
+func NewStudent(ctx context.Context,student *models.Student) (int,error) {
 	//Give default pdf mock for now
 	student.Resume = "public/data_mocks/sample.pdf"
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
-	if _, err := datastore.Put(ctx, key, &student); err != nil {
+	key, err := datastore.Put(ctx, key, student); 
+	if err != nil {
 		return http.StatusInternalServerError, err
 	}
+	student.Id = key.IntID()
+	UpdateStudent(ctx, student)
 	return http.StatusAccepted, nil
 }
 
-func UpdateStudent(ctx context.Context, student models.Student) error {
+func UpdateStudent(ctx context.Context, student *models.Student) error {
 	studentKey := datastore.NewKey(ctx, "Student", "", student.Id, nil)
-	_,err := datastore.Put(ctx, studentKey, &student)
+	_,err := datastore.Put(ctx, studentKey, student)
 	return err
 }
 
@@ -103,7 +106,7 @@ func UpdateResume(ctx context.Context, id int64, file io.Reader) error {
 		return err
 	}
 	student.Resume = res.MediaLink
-	err = UpdateStudent(ctx, student)
+	err = UpdateStudent(ctx, &student)
 	if err != nil {
 		return err
 	}
