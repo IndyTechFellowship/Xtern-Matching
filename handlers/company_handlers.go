@@ -10,39 +10,42 @@ import (
 	"Xtern-Matching/handlers/services"
 )
 
-// func AddStudent(w http.ResponseWriter,r *http.Request) {
-// 	ctx := appengine.NewContext(r)
+func AddStudent(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
 
-// 	var studentIds []int64
-// 	decoder := json.NewDecoder(r.Body)
 
-// 	if err := decoder.Decode(&students); err != nil {
-// 		http.Error(w, err.Error(), 500)
-// 		return
-// 	}
+	var dat map[string]interface{}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 
-// 	for _, int64 := range studentIds {
-// 		_, err := services.AddStudentIdToCompanyList(ctx, student)
-// 		if err != nil {
-// 			http.Error(w, err.Error(), 500)
-// 			return
-// 		}
-// 	}
-// 	w.WriteHeader(http.StatusOK)
-// }
+	studentId :=  int64(dat["studentId"].(float64));
 
-// func GetStudents(w http.ResponseWriter,r *http.Request) {
-// 	ctx := appengine.NewContext(r)
-// 	students, err := services.GetStudents(ctx)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), 500)
-// 		return
-// 	}
 
-// 	w.Header().Add("Access-Control-Allow-Origin", "*")
-// 	w.Header().Set("Content-Type", "application/json")
-// 	json.NewEncoder(w).Encode(students)
-// }
+	// var studentIds []int64
+
+	// studentIds = append(studentIds, studentId);
+
+	if id, ok := mux.Vars(r)["Id"]; ok {
+		num_id, _ := strconv.ParseInt(id, 10, 64)
+
+		// for _, studentId := range studentIds {
+
+		// }
+		_, err := services.AddStudentIdToCompanyList(ctx, num_id, studentId)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+	}
+
+
+
+
+	w.WriteHeader(http.StatusOK)
+}
 
 func PostCompany(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)

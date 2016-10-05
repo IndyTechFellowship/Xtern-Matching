@@ -7,22 +7,21 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
-// func AddStudentIdToCompanyList(ctx context.Context,student models.Student) (int,error) {
-// 	// key := datastore.NewIncompleteKey(ctx, "Student", nil)
-// 	if _, err := datastore.Put(ctx, &student); err != nil {
-// 		return http.StatusInternalServerError, err
-// 	}
-// 	return http.StatusAccepted, nil
-// }
+func AddStudentIdToCompanyList(ctx context.Context,_id int64, studentId int64) (int64,error)  {
+	companyKey := datastore.NewKey(ctx, "Company", "", _id, nil)
+	var company models.Company
+	if err := datastore.Get(ctx, companyKey, &company); err != nil {
+		return http.StatusInternalServerError, err
+	}
 
-// func GetStudent(ctx context.Context,_id int64) (models.Student,error) {
-// 	studentKey := datastore.NewKey(ctx, "Student", "", _id, nil)
-// 	var student models.Student
-// 	if err := datastore.Get(ctx, studentKey, &student); err != nil {
-// 		return models.Student{}, err
-// 	}
-// 	return student, nil
-// }
+	company.Id = companyKey.IntID()
+	company.StudentIds = append(company.StudentIds, studentId);
+
+	if _, err := datastore.Put(ctx, companyKey, &company); err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return company.Id, nil
+}
 
 func NewCompany(ctx context.Context,company models.Company) (int,error) {
 	key := datastore.NewIncompleteKey(ctx, "Company", nil)
