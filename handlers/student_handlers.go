@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"Xtern-Matching/models"
 	"Xtern-Matching/handlers/services"
+	"log"
 )
 
 func GetStudent(w http.ResponseWriter,r *http.Request) {
@@ -17,6 +18,7 @@ func GetStudent(w http.ResponseWriter,r *http.Request) {
 		num_id, _ := strconv.ParseInt(id, 10, 64)
 		student, err := services.GetStudent(ctx, num_id)
 		if err != nil {
+			log.Println(err.Error())
 			http.Error(w, err.Error(), 500)
 			return
 		}
@@ -35,6 +37,7 @@ func GetStudents(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 	students, err := services.GetStudents(ctx)
 	if err != nil {
+		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -50,6 +53,7 @@ func PostStudent(w http.ResponseWriter,r *http.Request) {
 	var students []models.Student
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&students); err != nil {
+		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -57,6 +61,7 @@ func PostStudent(w http.ResponseWriter,r *http.Request) {
 	for _, student := range students {
 		_, err := services.NewStudent(ctx, &student)
 		if err != nil {
+			log.Println(err.Error())
 			http.Error(w, err.Error(), 500)
 			return
 		}

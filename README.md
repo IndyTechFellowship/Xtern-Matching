@@ -71,6 +71,23 @@ npm start #launches the site on http://localhost:8080/
 goapp deploy
 ```
 
+##Load Data
+#### Disable Authentication
+* Rename router.go => router.go.primary.bak
+* Rename router.go.noauth.bak => router.go
+
+#### Load and Execute Scripts in the Postman Collection
+* Open Postman
+* Click the import button
+* Select scripts/Import_Scripts.postman_collection.json
+* Expand Import Scripts
+    - Run Each Import Script
+
+#### _PUT EVERYTHING BACK_
+ After you have completed the data load
+* Rename router.go => router.go.noauth.bak
+* Rename router.go.primary.bak => router.go
+
 ##Set Up
 ###Set Up Directories
 ```bash
