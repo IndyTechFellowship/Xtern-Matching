@@ -88,6 +88,11 @@ goapp deploy
 * Rename router.go => router.go.noauth.bak
 * Rename router.go.primary.bak => router.go
 
+## Google Application Credentials
+Allows you to locally test pdfs.
+ * Grab cloudstore.json from slack/dev_stuff
+ * Set a new enviorment Variable GOOGLE_APPLICATION_CREDENTIALS to cloudstore.json path _(include the file)_
+
 ##Set Up
 ###Set Up Directories
 ```bash

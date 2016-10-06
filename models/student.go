@@ -1,7 +1,7 @@
 package models
 
 type Student struct {
-	Id int64            `json:"_id" datastore:"id"`
+	Id int64            `json:"_id" datastore:"-"`
 	FirstName string    `json:"firstName"`
 	LastName string     `json:"lastName"`
 	Email string	    `json:"email"`

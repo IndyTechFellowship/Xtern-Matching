@@ -22,9 +22,9 @@ func GetStudent(w http.ResponseWriter,r *http.Request) {
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		if student.Resume == "" {
-			student.Resume = "public/data_mocks/sample.pdf"
-		}
+		// if student.Resume == "" {
+		// 	student.Resume = "public/data_mocks/sample.pdf"
+		// }
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)

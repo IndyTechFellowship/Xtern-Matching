@@ -12,27 +12,34 @@ import (
 	"strconv"
 )
 
-func NewStudent(ctx context.Context,student *models.Student) (int,error) {
+func GenerateStudentKey(ctx context.Context, email string) (*datastore.Key){
+	return datastore.NewKey(ctx, "Student", email, 0, nil)
+}
+
+func NewStudent(ctx context.Context, student *models.Student) (int,error) {
 	//Give default pdf mock for now
-	student.Resume = "public/data_mocks/sample.pdf"
+	
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
 	key, err := datastore.Put(ctx, key, student); 
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
-	student.Id = key.IntID()
+	//student.Id = key.IntID()
+	student.Resume = "public/data_mocks/sample.pdf"
 	UpdateStudent(ctx, student)
 	return http.StatusAccepted, nil
 }
 
 func UpdateStudent(ctx context.Context, student *models.Student) error {
 	studentKey := datastore.NewKey(ctx, "Student", "", student.Id, nil)
+	log.Println(student.Id)
 	_,err := datastore.Put(ctx, studentKey, student)
 	return err
 }
 
 func GetStudent(ctx context.Context,_id int64) (models.Student, error) {
 	studentKey := datastore.NewKey(ctx, "Student", "", _id, nil)
+	//student := datastore.NewQuery("Student").Filter("Id=", )
 	var student models.Student
 	if err := datastore.Get(ctx, studentKey, &student); err != nil {
 		return models.Student{}, err
@@ -106,6 +113,7 @@ func UpdateResume(ctx context.Context, id int64, file io.Reader) error {
 		return err
 	}
 	student.Resume = res.MediaLink
+	
 	err = UpdateStudent(ctx, &student)
 	if err != nil {
 		return err
