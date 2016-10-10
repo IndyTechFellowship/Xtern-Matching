@@ -12,21 +12,16 @@ import (
 	"strconv"
 )
 
-func GenerateStudentKey(ctx context.Context, email string) (*datastore.Key){
-	return datastore.NewKey(ctx, "Student", email, 0, nil)
-}
-
 func NewStudent(ctx context.Context, student *models.Student) (int,error) {
 	//Give default pdf mock for now
-	
+	student.Resume = "public/data_mocks/sample.pdf"
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
 	key, err := datastore.Put(ctx, key, student); 
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
 	//student.Id = key.IntID()
-	student.Resume = "public/data_mocks/sample.pdf"
-	UpdateStudent(ctx, student)
+	//UpdateStudent(ctx, student)
 	return http.StatusAccepted, nil
 }
 
@@ -39,11 +34,12 @@ func UpdateStudent(ctx context.Context, student *models.Student) error {
 
 func GetStudent(ctx context.Context,_id int64) (models.Student, error) {
 	studentKey := datastore.NewKey(ctx, "Student", "", _id, nil)
-	//student := datastore.NewQuery("Student").Filter("Id=", )
 	var student models.Student
-	if err := datastore.Get(ctx, studentKey, &student); err != nil {
+	err := datastore.Get(ctx, studentKey, &student)
+	if err != nil {
 		return models.Student{}, err
 	}
+	student.Id = studentKey.IntID()
 	return student, nil
 }
 
