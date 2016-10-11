@@ -27,7 +27,9 @@
             <div class="row">
 
                 <div class="eleven wide column">
-                    <h1>{{studentData.firstName}} {{studentData.lastName}}</h1>
+                    <div class="ui fluid">
+                        <div class="ui left floated"><h1>{{studentData.firstName}} {{studentData.lastName}}</h1></div>
+                    </div>
                     <div class="ui fluid card blue">
                         <div class="content">
 
@@ -80,6 +82,7 @@
 
                 </div>
                 <div class="five wide column">
+                    <div class="ui button right floated fluid blue"><i class="add user icon">Recruit</i></div>
                     <div id="statusAndGrade">
                         <div class="ui header">Status and Grade</div>
                         <div class="ui fluid selection dropdown">

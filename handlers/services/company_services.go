@@ -7,14 +7,14 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
-func AddStudentIdToCompanyList(ctx context.Context,_id int64, studentId int64) (int64,error)  {
-	companyKey := datastore.NewKey(ctx, "Company", "", _id, nil)
+func AddStudentIdToCompanyList(ctx context.Context,companyId int64, studentId int64) (int64,error)  {
+	companyKey := datastore.NewKey(ctx, "Company", "", companyId, nil)
 	var company models.Company
 	if err := datastore.Get(ctx, companyKey, &company); err != nil {
 		return http.StatusInternalServerError, err
 	}
 
-	company.Id = companyKey.IntID()
+	company.Id = companyId
 	company.StudentIds = append(company.StudentIds, studentId);
 
 	if _, err := datastore.Put(ctx, companyKey, &company); err != nil {

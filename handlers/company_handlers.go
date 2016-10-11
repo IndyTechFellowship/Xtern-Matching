@@ -21,9 +21,9 @@ func AddStudent(w http.ResponseWriter,r *http.Request) {
 	}
 
 	studentId :=  int64(dat["studentId"].(float64));
-	num_id :=  int64(dat["id"].(float64));
+	companyId :=  int64(dat["id"].(float64));
 
-	_, err := services.AddStudentIdToCompanyList(ctx, num_id, studentId)
+	_, err := services.AddStudentIdToCompanyList(ctx, companyId, studentId)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return

@@ -63,6 +63,29 @@
                  callback(self.company);
             }
         };
+
+        self.addStudentToWishList = function (studentId) {
+            $http({
+                method: 'POST',
+                // TODO: replace this id when company login is done
+                url: "http://localhost:8080/company/" + 5047308127305728,
+                // url: "http://localhost:8080/company/" + id,
+                data: {
+                    "id": 5047308127305728,
+                    "studentId": studentId
+                },
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                }
+            }).then(function (data) {
+                callback(data);
+            }, function errorCallback(response) {
+                console.log('error occured: ' + response);
+                callback('', 'err');
+            });
+        };
     }]).service('TechPointDashboardService',['$http', function ($http){
         var self = this;
         self.userSummaryData = null;

@@ -164,7 +164,6 @@ angular.module('Xtern')
         //END CONFIG DATA
     }])
     .controller('CompanyLogin', ['$scope', '$state','AuthService', function ($scope, $state,AuthService) {
-        console.log('attached');
         $scope.company = "ININ";
         //$('.ui.form')
         //    .form({
@@ -208,8 +207,9 @@ angular.module('Xtern')
                 if (err) {
                     console.log('bad login')
                 } else {
-                    setToken(token, "company");
-                    setToken("ININ", "companyName");
+                    setToken(token,"auth");
+                    //setToken(token, "company");
+                    //setToken("ININ", "companyName");
                     $state.go('company.dashboard');
                 }
             });
