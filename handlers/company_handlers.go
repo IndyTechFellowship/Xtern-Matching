@@ -26,6 +26,8 @@ func AddStudent(w http.ResponseWriter,r *http.Request) {
 	studentId :=  int64(dat["studentId"].(float64));
 	companyId :=  int64(dat["id"].(float64));
 
+
+
 	if(claims["org"] == companyId) {
 		_, err := services.AddStudentIdToCompanyList(ctx, companyId, studentId)
 		if err != nil {
@@ -105,8 +107,6 @@ func PostCompany(w http.ResponseWriter,r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 }
-
-// 5733953138851840 
 
 func GetCompany(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
