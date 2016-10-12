@@ -2,7 +2,6 @@ general:
   branches:
     only:
       - master
-      - enviroments-integration
       
 machine:
   environment:
@@ -25,9 +24,6 @@ dependencies:
     - mkdir $HOME/go_appengine/gopath/src
     - ln -s $HOME/Xtern-Matching $HOME/go_appengine/gopath/src
   override:
-    # './...' is a relative pattern which means all subdirectories
-    #- cd ../go_appengine/gopath/src/Xtern-Matching/core
-    #- ln -s $HOME/go_appengine/gopath/src/Xtern-Matching/core $HOME/
     - goapp get Xtern-Matching/core
     - npm install core
 test:
@@ -39,8 +35,8 @@ deployment:
   production:
     branch: production
     commands:
-      - goapp deploy
+      - goapp deploy -application xtern-matching
   staging:
     branch: master
     commands:
-      - goapp deploy
+      - goapp deploy -application xtern-matching-dev
