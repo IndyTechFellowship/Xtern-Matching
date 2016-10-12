@@ -31,6 +31,27 @@ func AddStudent(w http.ResponseWriter,r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func RemoveStudent(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	var dat map[string]interface{}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	studentId :=  int64(dat["studentId"].(float64));
+	companyId :=  int64(dat["id"].(float64));
+
+	_, err := services.RemoveStudentIdFromCompanyList(ctx, companyId, studentId)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
 func PostCompany(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
