@@ -29,7 +29,7 @@ dependencies:
     #- cd ../go_appengine/gopath/src/Xtern-Matching/core
     #- ln -s $HOME/go_appengine/gopath/src/Xtern-Matching/core $HOME/
     - goapp get Xtern-Matching/core
-    - npm install Xtern-Matching/core
+    - npm install core
 test:
   override:
     - goapp test Xtern-Matching/tests
