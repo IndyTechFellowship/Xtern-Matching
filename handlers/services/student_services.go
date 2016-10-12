@@ -9,6 +9,8 @@ import (
 
 func NewStudent(ctx context.Context,student models.Student) (int,error) {
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
+	student.Resume = "public/data_mocks/sample.pdf"
+	student.Active = true
 	if _, err := datastore.Put(ctx, key, &student); err != nil {
 		return http.StatusInternalServerError, err
 	}
@@ -21,6 +23,7 @@ func GetStudent(ctx context.Context,_id int64) (models.Student,error) {
 	if err := datastore.Get(ctx, studentKey, &student); err != nil {
 		return models.Student{}, err
 	}
+	student.Id = studentKey.IntID()
 	return student, nil
 }
 

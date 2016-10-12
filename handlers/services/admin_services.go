@@ -14,7 +14,9 @@ func Register(ctx context.Context,user models.User) (int,error) {
 	if err != nil {
 		return http.StatusInternalServerError, err
 	} else if count != 0 {
-		return http.StatusInternalServerError, errors.New("User already exist")
+		//Successful Response, but user already exists
+		// Should Update the user????
+		return http.StatusAccepted, errors.New("User already exist")
 	} else {
 		key := datastore.NewIncompleteKey(ctx, "User", nil)
 		pass, err := bcrypt.GenerateFromPassword([]byte(user.Password),14);
@@ -25,6 +27,22 @@ func Register(ctx context.Context,user models.User) (int,error) {
 		if _, err := datastore.Put(ctx, key, &user); err != nil {
 			return http.StatusInternalServerError, err
 		}
-		return http.StatusAccepted, nil
+		return http.StatusCreated, nil
 	}
+}
+
+func GetUsers(ctx context.Context, org string, role string) ([]models.User, error){
+	query := datastore.NewQuery("User").Filter("Role =", role).Filter("Organization =", org)
+	var users []models.User
+	
+	keys, err := query.GetAll(ctx, &users)
+	if err != nil {
+		return nil, err
+	}
+	
+	for i := 0; i < len(users); i++ {
+		users[i].Id = keys[i].IntID()
+		users[i].Password = "********"
+	}
+	return users, err
 }
