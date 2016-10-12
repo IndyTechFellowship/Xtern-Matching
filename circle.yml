@@ -11,7 +11,7 @@ machine:
     # Add app engine sdk to path
     PATH: ${HOME}/go_appengine/:${PATH}
     # Add GOROOT
-    GOROOT: "${HOME}/go_appengine/goroot"
+    GOROOT: ${HOME}/go_appengine/goroot
     # Project-ID
     GCLOUD_PROJECT: "xtern-matching"
 
