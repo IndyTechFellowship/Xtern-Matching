@@ -28,4 +28,4 @@ dependencies:
     - npm install Xtern-Matching/core
 test:
   override:
-    goapp test Xtern-Matching/tests
+    - goapp test Xtern-Matching/tests
