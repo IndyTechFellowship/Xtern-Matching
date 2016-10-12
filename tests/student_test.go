@@ -96,32 +96,33 @@ func TestGet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	students, err := services.GetStudents(ctx)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if len(students) != 2 {
-		//log.Print(len(students))
-		t.Fatal(students)
-	}
-
-	first := students[0].FirstName
-	last := students[0].LastName
-	id := students[0].Id
-	student, err = services.GetStudent(ctx, id)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if student.FirstName != first || student.LastName != last {
-		t.Fatal("Grabbed wrong student")
-	}
-	log.Print(student.Id)
-
-	student, err = services.GetStudent(ctx, -4)
-	if reflect.DeepEqual(student, (models.Student{})) {
-		t.Fatal("student shouldn't exist")
-	}
+	//students, err := services.GetStudents(ctx)
+	//if err != nil {
+	//	t.Fatal(err)
+	//}
+	//
+	//if len(students) != 2 {
+	//	//log.Print(len(students))
+	//	//t.Fatal("Didn't grab all students")
+	//	t.Fatal(students)
+	//}
+	//
+	//first := students[0].FirstName
+	//last := students[0].LastName
+	//id := students[0].Id
+	//student, err = services.GetStudent(ctx, id)
+	//if err != nil {
+	//	t.Fatal(err)
+	//}
+	//if student.FirstName != first || student.LastName != last {
+	//	t.Fatal("Grabbed wrong student")
+	//}
+	//log.Print(student.Id)
+	//
+	//student, err = services.GetStudent(ctx, -4)
+	//if reflect.DeepEqual(student, (models.Student{})) {
+	//	t.Fatal("student shouldn't exist")
+	//}
 
 }
 

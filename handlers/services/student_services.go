@@ -5,12 +5,12 @@ import (
 	"Xtern-Matching/models"
 	"net/http"
 	"google.golang.org/appengine/datastore"
+	"google.golang.org/appengine/log"
 	"reflect"
 	"errors"
 )
 
 func NewStudent(ctx context.Context,student models.Student) (int,error) {
-
 	if reflect.DeepEqual(student, (models.Student{})) {
 		return http.StatusBadRequest, errors.New("Not a proper student")
 	}
@@ -33,11 +33,13 @@ func GetStudent(ctx context.Context,_id int64) (models.Student,error) {
 
 func GetStudents(ctx context.Context) ([]models.Student,error) {
 	q := datastore.NewQuery("Student")
+	log.Debugf(ctx,"%v",q)
 	var students []models.Student
 	keys, err := q.GetAll(ctx,&students)
 	if err != nil {
 		return nil, err
 	}
+	log.Debugf(ctx,"%v",keys)
 
 	for i := 0; i < len(students); i++ {
 		students[i].Id = keys[i].IntID()

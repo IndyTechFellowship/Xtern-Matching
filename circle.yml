@@ -33,3 +33,14 @@ dependencies:
 test:
   override:
     - goapp test Xtern-Matching/tests
+
+deployment:
+  # One in the same for now
+  production:
+    branch: production
+    commands:
+      - goapp deploy
+  staging:
+    branch: master
+    commands:
+      - goapp deploy
