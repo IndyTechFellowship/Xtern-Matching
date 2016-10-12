@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"Xtern-Matching/models"
 	"google.golang.org/appengine/datastore"
-	"log"
-	"reflect"
 )
 
 func TestPost(t *testing.T) {
