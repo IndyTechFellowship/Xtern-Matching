@@ -3,6 +3,7 @@ angular.module('Xtern')
         var self = this;
         $scope.loggedIn = isLoggedIn('company');
         $scope.companyName = getToken('companyName');
+        $scope.isCompany = true;
 
         CompanyService.getCompanyDataForId(5733953138851840, function(data)            
         // CompanyService.getCompanyDataForId($stateParams._id, function(data)            
@@ -11,21 +12,21 @@ angular.module('Xtern')
             console.log("companyData: "+data);
         });
 
-
-        $rootScope.$on('$stateChangeStart',
-            function (event, toState, toParams, fromState, fromParams, options) {
-               $scope.loggedIn = isLoggedIn('company');
-                $scope.companyName = getToken('companyName');
-               if(toState.name == "company.profile"){
-                    $('#profile').show();
-                }
-                else{
-                    $('#profile').hide();
-                }
-            });
+        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
+           $scope.loggedIn = isLoggedIn('company');
+            $scope.companyName = getToken('companyName');
+           if(toState.name == "company.profile"){
+                $('#profile').show();
+            }
+            else{
+                $('#profile').hide();
+            }
+        });
         
         $scope.logout = function () {
-            logoutStorage("company");
+            localStorage.removeItem("auth");
+            localStorage.removeItem("role");
+            logoutStorage("auth");
             $state.go('company.login');
             $scope.loggedIn = false;
         };
@@ -207,9 +208,8 @@ angular.module('Xtern')
                 if (err) {
                     console.log('bad login')
                 } else {
-                    setToken(token,"auth");
-                    //setToken(token, "company");
-                    //setToken("ININ", "companyName");
+                    localStorage.setItem("auth", token);
+                    $scope.isCompany = true;
                     $state.go('company.dashboard');
                 }
             });

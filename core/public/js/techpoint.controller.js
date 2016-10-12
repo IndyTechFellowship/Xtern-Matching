@@ -2,6 +2,7 @@ angular.module('Xtern')
     .controller('TechPointMain', ['$scope', '$rootScope', '$state', 'TechPointDashboardService', function($scope, $rootScope, $state, TechPointDashboardService){
         var self = this;
         $scope.loggedIn = isLoggedIn('techPoint');
+        $scope.isCompany = false;
 
         $rootScope.$on('$stateChangeStart',
             function (event, toState, toParams, fromState, fromParams, options) {
@@ -229,10 +230,9 @@ angular.module('Xtern')
                 } else {
                     console.log('Login Success');
                     setToken(token,"auth");
-                    console.log('Moving');
+                    $scope.isCompany = false;
                     console.log(getToken("auth"));
                     $state.go('techpoint.dashboard');
-                    console.log('Didn\'t move');
                 }
             });
         };
