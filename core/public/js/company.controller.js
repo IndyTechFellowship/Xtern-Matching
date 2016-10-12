@@ -22,7 +22,13 @@ angular.module('Xtern')
                 $('#profile').hide();
             }
         });
-        
+
+        $scope.addStudentToCompany = function (studentID) {
+            CompanyService.addStudentToWishList(studentID, function (data) {
+                console.log(data);
+            });
+        };
+
         $scope.logout = function () {
             localStorage.removeItem("auth");
             localStorage.removeItem("role");
