@@ -9,7 +9,7 @@
         self.profile = null;
 
         self.getStudentDataForId = function(id, callback){
-            console.log(id);
+            // console.log(id);
             if(!self.profile || self.profile._id !== id) {
                 $http({
                     method: 'GET',
@@ -43,7 +43,7 @@
                 $http({
                     method: 'GET',
                     // TODO: replace this id when company login is done
-                    url: "http://localhost:8080/company/" + 5047308127305728,
+                    url: "http://localhost:8080/company/" + 5066549580791808,
                     // url: "http://localhost:8080/company/" + id,
                     headers: {
                         'Content-Type': "application/json",
@@ -64,14 +64,14 @@
             }
         };
 
-        self.addStudentToWishList = function (studentId) {
+        self.addStudentToWishList = function (studentId, callback) {
             $http({
                 method: 'POST',
                 // TODO: replace this id when company login is done
-                url: "http://localhost:8080/company/" + 5047308127305728,
+                url: "http://localhost:8080/company/addStudent",
                 // url: "http://localhost:8080/company/" + id,
                 data: {
-                    "id": 5047308127305728,
+                    "id": 5066549580791808,
                     "studentId": studentId
                 },
                 headers: {
@@ -82,10 +82,36 @@
             }).then(function (data) {
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ' + response);
+                console.log('error occured: ' );
+                console.log(response);
                 callback('', 'err');
             });
         };
+
+        self.removeStudentFromWishList = function (studentId, callback) {
+            $http({
+                method: 'POST',
+                // TODO: replace this id when company login is done
+                url: "http://localhost:8080/company/removeStudent",
+                // url: "http://localhost:8080/company/" + id,
+                data: {
+                    "id": 5066549580791808,
+                    "studentId": studentId
+                },
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                }
+            }).then(function (data) {
+                callback(data);
+            }, function errorCallback(response) {
+                console.log('error occured: ');
+                console.log(response);
+                callback('', 'err');
+            });
+        };
+
     }]).service('TechPointDashboardService',['$http', function ($http){
         var self = this;
         self.userSummaryData = null;

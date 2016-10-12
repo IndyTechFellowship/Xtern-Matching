@@ -218,22 +218,26 @@ angular.module('Xtern')
     .controller('CompanyRecruiting', ['$scope', '$state', 'ProfileService', 'CompanyService', function ($scope, $state, ProfileService, CompanyService) {
         var self = this;
         $scope.recruitmentList = [];
+        companyId = 5733953138851840;
 
-        CompanyService.getCompanyDataForId(5733953138851840, function(data)            
+        CompanyService.getCompanyDataForId(companyId, function(data)            
         // CompanyService.getCompanyDataForId($stateParams._id, function(data)            
         {
             $scope.companyData = data;
             // console.log("companyData: "+data);
-            console.log("company data in recruiting controller:"+$scope.companyData);
+            console.log("company data in recruiting controller:");
+            console.log($scope.companyData);
             console.log($scope.companyData.studentIds);
-            for (i=0;i<$scope.companyData.studentIds.length;i++) {
+            // $scope.recruitmentList = [];
+            for (i=0;i<$scope.companyData.studentIds.length; i++) {
                 ProfileService.getStudentDataForId($scope.companyData.studentIds[i], function(data) {
                     data.name = data.firstName+" "+data.lastName;
                     $scope.studentData = data;
-                    console.log($scope.studentData);
+                    // console.log($scope.studentData);
                     $scope.recruitmentList.push($scope.studentData);
                 });
             }
+
         });
 
         // $scope.recruitmentList = [
@@ -293,14 +297,24 @@ angular.module('Xtern')
         };
 
         $scope.removeRecruit = function (_id) {
-            for (var i = $scope.recruitmentList.length - 1; i >= 0; i--) {
-                if ($scope.recruitmentList[i]._id == _id) {
-                    $scope.recruitmentList.splice(i, 1);
+            console.log("remove recruit:");
+            console.log(_id);
+            CompanyService.removeStudentFromWishList(_id, function(data) {
+                for (var i = $scope.recruitmentList.length - 1; i >= 0; i--) {
+                    if ($scope.recruitmentList[i]._id == _id) {
+                        $scope.recruitmentList.splice(i, 1);
+                    }
                 }
-            }
+            });
+
         };
 
         $scope.viewRecruit = function (_id) {
             $state.go('company.profile', { _id: _id });
+        };
+
+        $scope.addStudent = function (_id) {
+            console.log("add student:");
+            console.log(_id);
         };
     }]);

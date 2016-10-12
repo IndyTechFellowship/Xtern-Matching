@@ -1,5 +1,5 @@
 angular.module('Xtern')
-    .controller('StudentProfileCtrl', function($scope, $location, ProfileService, $stateParams) {
+    .controller('StudentProfileCtrl', function($scope, $location, ProfileService, CompanyService, $stateParams) {
         $('.ui.dropdown').dropdown();//activites semantic dropdowns
 
         $scope.comment = {};
@@ -70,6 +70,16 @@ angular.module('Xtern')
                     $scope.studentData.comments.splice(i,1);
                 }
             }
+        };
+
+        $scope.addStudent = function (_id) {
+            console.log("add student:");
+            console.log(_id);
+            CompanyService.addStudentToWishList(_id, function(data) {
+                // $scope.recruitmentList.push($scope.studentData);
+                console.log("Student added");
+            });
+
         };
     })
     .controller('CommentCtrl', function() {
