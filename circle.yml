@@ -12,6 +12,8 @@ machine:
     PATH: ${HOME}/go_appengine/:${PATH}
     # Add GOROOT
     GOROOT: ${HOME}/go_appengine/goroot
+    # Add GOPATH
+    GOPATH: ${HOME}/go_appengine/gopath
     # Project-ID
     GCLOUD_PROJECT: "xtern-matching"
 
