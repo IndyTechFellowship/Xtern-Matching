@@ -19,6 +19,7 @@ type Student struct {
 	EmailIntrest string `json:"interestedInEmail"`
 	R1Grade Grade	    `json:"r1Grade"`
 	Status string	    `json:"status"`
+	Active bool			`json:"active"`
 	Resume string		`json:"resume"`
 	Comments []Comment  `json:"comments"`
 }

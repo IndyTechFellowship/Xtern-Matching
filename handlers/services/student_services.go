@@ -14,10 +14,10 @@ import (
 
 func NewStudent(ctx context.Context, student *models.Student) (int,error) {
 	//Give default pdf mock for now
-	student.Resume = "public/data_mocks/sample.pdf"
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
-	key, err := datastore.Put(ctx, key, student); 
-	if err != nil {
+	student.Resume = "public/data_mocks/sample.pdf"
+	student.Active = true
+	if _, err := datastore.Put(ctx, key, &student); err != nil {
 		return http.StatusInternalServerError, err
 	}
 	//student.Id = key.IntID()
