@@ -8,10 +8,14 @@ import (
 	"strconv"
 	"Xtern-Matching/models"
 	"Xtern-Matching/handlers/services"
+	"github.com/gorilla/context"
+	"github.com/dgrijalva/jwt-go"
 )
 
 func AddStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
+	claims := context.Get(r, "user").(*jwt.Token).Claims.(jwt.MapClaims)
+
 
 	var dat map[string]interface{}
 	decoder := json.NewDecoder(r.Body)
@@ -23,12 +27,16 @@ func AddStudent(w http.ResponseWriter,r *http.Request) {
 	studentId :=  int64(dat["studentId"].(float64));
 	companyId :=  int64(dat["id"].(float64));
 
-	_, err := services.AddStudentIdToCompanyList(ctx, companyId, studentId)
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
+	if(claims["org"] == companyId) {
+		_, err := services.AddStudentIdToCompanyList(ctx, companyId, studentId)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	} else {
+		w.WriteHeader(http.StatusUnauthorized)
 	}
-	w.WriteHeader(http.StatusOK)
 }
 
 func PostCompany(w http.ResponseWriter,r *http.Request) {

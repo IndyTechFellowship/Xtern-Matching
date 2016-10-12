@@ -30,6 +30,8 @@ func Login(ctx context.Context,user models.User) ([]byte, error) {
 		token := jwt.NewWithClaims(jwt.SigningMethodHS512,jwt.MapClaims{
 			"iat": time.Now().Unix(),
 			"exp": time.Now().Add(time.Hour * time.Duration(24)).Unix(),
+			"org": account.Organization,
+			"role": account.Role,
 		})
 
 		tokenString, err := token.SignedString([]byte("My Secret"))
