@@ -5,9 +5,16 @@ import (
 	"Xtern-Matching/models"
 	"net/http"
 	"google.golang.org/appengine/datastore"
+	"reflect"
+	"errors"
 )
 
 func NewStudent(ctx context.Context,student models.Student) (int,error) {
+
+	if reflect.DeepEqual(student, (models.Student{})) {
+		return http.StatusBadRequest, errors.New("Not a proper student")
+	}
+
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
 	if _, err := datastore.Put(ctx, key, &student); err != nil {
 		return http.StatusInternalServerError, err
