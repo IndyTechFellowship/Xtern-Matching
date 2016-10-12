@@ -22,7 +22,7 @@ func NewRouter() *mux.Router {
 		negroni.Wrap(GetAuthenticationRoutes()),
 	))
 	router.PathPrefix("/admin").Handler(negroni.New(
-		// negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(GetAdminRoutes()),
 	))
 	router.PathPrefix("/student").Handler(negroni.New(
@@ -30,7 +30,7 @@ func NewRouter() *mux.Router {
 		negroni.Wrap(GetStudentRoutes()),
 	))
 	router.PathPrefix("/company").Handler(negroni.New(
-		// negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(GetCompanyRoutes()),
 	))
 

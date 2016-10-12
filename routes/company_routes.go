@@ -10,6 +10,7 @@ func GetCompanyRoutes() *mux.Router {
 	router.HandleFunc("/company/{Id}", handlers.GetCompany).Methods("GET").Name("GetCompany")
 	router.HandleFunc("/company/addStudent", handlers.AddStudent).Methods("POST").Name("AddStudent")
 	router.HandleFunc("/company/removeStudent", handlers.RemoveStudent).Methods("POST").Name("RemoveStudent")
+	router.HandleFunc("/company/switchStudents", handlers.SwitchStudents).Methods("POST").Name("SwitchStudents")
 	router.HandleFunc("/company", handlers.PostCompany).Methods("POST").Name("PostCompany")
 	return router
 }

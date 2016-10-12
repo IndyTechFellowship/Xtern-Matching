@@ -16,7 +16,6 @@ func AddStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 	claims := context.Get(r, "user").(*jwt.Token).Claims.(jwt.MapClaims)
 
-
 	var dat map[string]interface{}
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&dat); err != nil {
@@ -37,6 +36,33 @@ func AddStudent(w http.ResponseWriter,r *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
 	}
+}
+
+func SwitchStudents(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
+	// claims := context.Get(r, "user").(*jwt.Token).Claims.(jwt.MapClaims)
+
+	var dat map[string]interface{}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	student1Id :=  int64(dat["student1Id"].(float64));
+	student2Id :=  int64(dat["student2Id"].(float64));
+	companyId :=  int64(dat["id"].(float64));
+
+	// if(claims["org"] == companyId) {
+		_, err := services.SwitchStudentIdsInCompanyList(ctx, companyId, student1Id, student2Id)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	// } else {
+	// 	w.WriteHeader(http.StatusUnauthorized)
+	// }	
 }
 
 func RemoveStudent(w http.ResponseWriter,r *http.Request) {
