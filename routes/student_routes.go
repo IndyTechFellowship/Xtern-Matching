@@ -8,6 +8,7 @@ import (
 func GetStudentRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/student/{Id}", handlers.GetStudent).Methods("GET").Name("GetStudent")
 	router.HandleFunc("/student", handlers.GetStudents).Methods("GET").Name("GetStudents")
+	router.HandleFunc("/student/resume/{Id}", handlers.PostPDF).Methods("POST").Name("CreatePDF")
 	router.HandleFunc("/student", handlers.PostStudent).Methods("POST").Name("CreateStudent")
 	return router
 }

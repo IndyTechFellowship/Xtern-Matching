@@ -19,11 +19,14 @@ func Register(ctx context.Context,user models.User) (int,error) {
 		return http.StatusAccepted, errors.New("User already exist")
 	} else {
 		key := datastore.NewIncompleteKey(ctx, "User", nil)
+		
+		//Hash Password
 		pass, err := bcrypt.GenerateFromPassword([]byte(user.Password),14);
 		if err != nil {
 			return http.StatusInternalServerError, err
 		}
 		user.Password = string(pass)
+		
 		if _, err := datastore.Put(ctx, key, &user); err != nil {
 			return http.StatusInternalServerError, err
 		}
@@ -35,13 +38,13 @@ func GetUsers(ctx context.Context, org string, role string) ([]models.User, erro
 	query := datastore.NewQuery("User").Filter("Role =", role).Filter("Organization =", org)
 	var users []models.User
 	
-	keys, err := query.GetAll(ctx, &users)
+	_, err := query.GetAll(ctx, &users)
 	if err != nil {
 		return nil, err
 	}
 	
 	for i := 0; i < len(users); i++ {
-		users[i].Id = keys[i].IntID()
+		//users[i].Id = keys[i].IntID()
 		users[i].Password = "********"
 	}
 	return users, err

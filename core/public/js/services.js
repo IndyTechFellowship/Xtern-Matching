@@ -3,7 +3,9 @@
  */
  (function (){
     var app = angular.module('DataManager',[]);
-
+	//var host = "http://xtern-matching.appspot.com/"
+	//var host = "http://xtern-matching-143216.appspot.com/" //DEV Server
+	var host = "http://localhost:8080/"
     app.service('ProfileService', ['$http', function ($http){
         var self = this;
         self.profile = null;
@@ -13,15 +15,15 @@
             if(!self.profile || self.profile._id !== id) {
                 $http({
                     method: 'GET',
-                    url: "http://localhost:8080/student/" + id,
+                    url: host + "student/" +id,
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    console.log('get student data:' + data.data.length);
-                    self.profile = data.data;
+                    console.log('SUCCESS: get student data', data.data);
+                    self.profile = cleanStudents(data.data);
                     callback(self.profile);
                 }, function errorCallback(response) {
                     console.log('error occured: ' + response);
@@ -39,7 +41,7 @@
         self.queryUserSummaryData = function(callback){
             $http({
                 method: 'GET',
-                url: "http://localhost:8080/student",
+                url: host + "student",
                 headers: {
                     'Content-Type': "application/json",
                     'Accept': "application/json",
@@ -75,7 +77,7 @@
         self.jwtToken = null;
 
         self.login = function(email,password,callback){
-            $http.post("http://localhost:8080/auth/login",{"email":email, "password": password}).then(function(data) {
+            $http.post(host + "auth/login",{"email":email, "password": password}).then(function(data) {
                 self.jwtToken = data.data['token'];
                 //console.log('Here: '+self.jwtToken);
                 callback(self.jwtToken);
@@ -84,5 +86,25 @@
                 callback('','err')
             });
         }
+    }]).service('ResumeService',['$http', function ($http) {
+        var self = this;
+        self.jwtToken = null;
+		self.uploadResume = function(id){
+			var fd = new FormData();
+			fd.append('file', document.getElementById("file").files[0]);
+			$http.post(host + "student/resume/" + id, fd,{
+                headers: {
+					'Content-Type': undefined,
+					'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                },
+            })
+            .success(function () {
+				console.log("Upload successful")
+            }).error(function(response) {
+                console.log('error occured: '+response);
+                console.log('Here: '+getToken('auth'));
+            });
+        };
     }]);
 })();
