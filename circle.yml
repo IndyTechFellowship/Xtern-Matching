@@ -24,7 +24,7 @@ dependencies:
     # './...' is a relative pattern which means all subdirectories
     #- cd ../go_appengine/gopath/src/Xtern-Matching/core
     #- ln -s $HOME/go_appengine/gopath/src/Xtern-Matching/core $HOME/
-    - goapp get Xtern-Matching/core
+    - goapp get Xtern-Matching/main
     - npm install Xtern-Matching/core
 test:
   override:
