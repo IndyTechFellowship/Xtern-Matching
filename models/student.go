@@ -28,8 +28,8 @@ type Skill struct {
 }
 
 type Grade struct {
-	text string 		`json:"text"`
-	value string		`json:"value"`
+	Text string 		`json:"text"`
+	Value string		`json:"value"`
 }
 
 type Comment struct {
