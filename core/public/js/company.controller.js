@@ -317,4 +317,28 @@ angular.module('Xtern')
             console.log("add student:");
             console.log(_id);
         };
+
+        // $scope.dragControlListeners.itemMoved = function(obj) {
+        //     console.log("item moved: ");
+        //     console.log(obj);
+        // };
+
+        $scope.dragControlListeners = {
+            // accept: function (sourceItemHandleScope, destSortableScope) {return boolean}//override to determine drag is allowed or not. default is true.
+            // itemMoved: function(obj) {
+            //     console.log("item moved: ");
+            //     console.log(obj);
+            // },
+            orderChanged: function(obj) {
+
+                CompanyService.switchStudentsInWishList($scope.recruitmentList[obj.source.index]._id, $scope.recruitmentList[obj.dest.index]._id, function(data) {
+                    console.log("order changed: ");
+                    console.log(data);
+                });
+            }
+            // containment: '#board'//optional param.
+            // clone: true //optional param for clone feature.
+            // allowDuplicates: false //optional param allows duplicates to be dropped.
+        };
+
     }]);

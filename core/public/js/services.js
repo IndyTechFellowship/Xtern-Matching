@@ -93,10 +93,33 @@
                 method: 'POST',
                 // TODO: replace this id when company login is done
                 url: "http://localhost:8080/company/removeStudent",
-                // url: "http://localhost:8080/company/" + id,
                 data: {
                     "id": 5066549580791808,
                     "studentId": studentId
+                },
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                }
+            }).then(function (data) {
+                callback(data);
+            }, function errorCallback(response) {
+                console.log('error occured: ');
+                console.log(response);
+                callback('', 'err');
+            });
+        };
+
+        self.switchStudentsInWishList = function (student1Id, student2Id, callback) {
+            $http({
+                method: 'POST',
+                // TODO: replace this id when company login is done
+                url: "http://localhost:8080/company/switchStudents",
+                data: {
+                    "id": 5066549580791808,
+                    "student1Id": student1Id,
+                    "student2Id": student2Id
                 },
                 headers: {
                     'Content-Type': "application/json",
