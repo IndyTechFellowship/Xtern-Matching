@@ -212,7 +212,7 @@ angular.module('Xtern')
             //setToken("token_placeholder", "company");
             AuthService.login('xniccum@gmail.com','admin1', function (token,err) {
                 if (err) {
-                    console.log('bad login')
+                    console.log('bad login');
                 } else {
                     localStorage.setItem("auth", token);
                     $scope.isCompany = true;
@@ -226,76 +226,20 @@ angular.module('Xtern')
         $scope.recruitmentList = [];
         companyId = 5733953138851840;
 
+        //TODO: pull company from JWT
         CompanyService.getCompanyDataForId(companyId, function(data)            
         // CompanyService.getCompanyDataForId($stateParams._id, function(data)            
         {
             $scope.companyData = data;
-            // console.log("companyData: "+data);
             console.log("company data in recruiting controller:");
             console.log($scope.companyData);
             console.log($scope.companyData.studentIds);
-            // $scope.recruitmentList = [];
-            for (i=0;i<$scope.companyData.studentIds.length; i++) {
-                ProfileService.getStudentDataForId($scope.companyData.studentIds[i], function(data) {
-                    data.name = data.firstName+" "+data.lastName;
-                    $scope.studentData = data;
-                    // console.log($scope.studentData);
-                    $scope.recruitmentList.push($scope.studentData);
-                });
-            }
+
+            ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
+                $scope.recruitmentList = data;
+            });
 
         });
-
-        // $scope.recruitmentList = [
-        //     {
-        //         _id: "57269aa3bf79bbf8cc55d9d",
-        //         name: "Verna Gomez",
-        //         gradYear: 2019,
-        //         university: "Rose-Hulman Institute of Technology",
-        //         summary: "Front End",
-        //         notes: "Verna would be a great addition to Aarons Front end team. They use similar tools"
-        //     },
-        //     {
-        //         _id: "573a010c27b02303a5819515",
-        //         name: "Henderson Whitley",
-        //         gradYear: 2018,
-        //         university: "Indiana State University",
-        //         summary: "Security",
-        //         notes: "Phasellus ex nisl, pulvinar tempus dolor non, aliquam maximus ante.  Sed et nunc lectus. Phasellus eget lectus sit amet felis interdum tristique."
-        //     },
-        //     {
-        //         _id: "573a010cdaf1dc6ea094593e",
-        //         name: "Cross Berg",
-        //         gradYear: 2018,
-        //         university: "Indiana State University",
-        //         summary: "Security",
-        //         notes: "Fusce a est pulvinar, dictum tellus ut, cursus risus. Morbi bibendum elementum risus, in cursus dolor dictum luctus."
-        //     },
-        //     {
-        //         _id: "573a010cc2cac4dfe9497bb2",
-        //         name: "Loraine Pace",
-        //         gradYear: 2017,
-        //         university: "Rose-Hulman Institute of Technology",
-        //         summary: "SE - Full Stack (Eric's Team)",
-        //         notes: "Ut sollicitudin nunc ac mauris hendrerit consectetur. Pellentesque imperdiet ullamcorper augue et fermentum."
-        //     },
-        //     {
-        //         _id: "573a010c7afd6700cb9c8598",
-        //         name: "Maureen Mclean",
-        //         gradYear: 2018,
-        //         university: "Indiana State University",
-        //         summary: "CPE - Hardware",
-        //         notes: "Integer laoreet ornare interdum. Nunc dapibus elit et purus scelerisque rhoncus. Nullam sagittis nulla eget diam scelerisque euismod."
-        //     },
-        //     {
-        //         _id: "573a010cfcbfb6015c7a6669",
-        //         name: "Bell Simon",
-        //         gradYear: 2017,
-        //         university: "Rose-Hulman Institute of Technology",
-        //         summary: "Backend API - Main Product",
-        //         notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ac suscipit velit. Fusce sollicitudin non massa ac blandit."
-        //     }
-        // ];
 
         $scope.sortableOptions = {
             containment: '#table-container',
@@ -324,17 +268,7 @@ angular.module('Xtern')
             console.log(_id);
         };
 
-        // $scope.dragControlListeners.itemMoved = function(obj) {
-        //     console.log("item moved: ");
-        //     console.log(obj);
-        // };
-
         $scope.dragControlListeners = {
-            // accept: function (sourceItemHandleScope, destSortableScope) {return boolean}//override to determine drag is allowed or not. default is true.
-            // itemMoved: function(obj) {
-            //     console.log("item moved: ");
-            //     console.log(obj);
-            // },
             orderChanged: function(obj) {
 
                 CompanyService.switchStudentsInWishList($scope.recruitmentList[obj.source.index]._id, $scope.recruitmentList[obj.dest.index]._id, function(data) {
@@ -342,9 +276,6 @@ angular.module('Xtern')
                     console.log(data);
                 });
             }
-            // containment: '#board'//optional param.
-            // clone: true //optional param for clone feature.
-            // allowDuplicates: false //optional param allows duplicates to be dropped.
         };
 
     }]);

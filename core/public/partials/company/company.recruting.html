@@ -28,7 +28,7 @@
         <tbody data-as-sortable="dragControlListeners" data-ng-model="recruitmentList">
             <tr ng-repeat="row in recruitmentList" as-sortable-item>
                 <td><i as-sortable-item-handle class="content icon"></i></td>
-                <td>{{row.name}}</td>
+                <td>{{row.firstName+" "+row.lastName}}</td>
                 <td>{{row.university}}</td>
                 <td style="text-align:center;">{{row.gradYear}}</td>
                 <td>{{row.summary}}</td>

@@ -34,12 +34,14 @@
         };
 
         self.getStudentDataForIds = function(ids, callback){
+            console.log("get student data for ids:");
+            console.log(ids);
             // console.log(id);
                 $http({
                     method: 'POST',
-                    url: "http://localhost:8080/getstudents/",
+                    url: "http://localhost:8080/student/getstudents",
                     data: {
-                        "studentIds": ids
+                        "_ids": ids
                     },
                     headers: {
                         'Content-Type': "application/json",
@@ -51,7 +53,8 @@
                     console.log(data.data);
                     callback(data.data);
                 }, function errorCallback(response) {
-                    console.log('error occured: ' + response);
+                    console.log('error occured: ');
+                    console.log(response);
                     callback('', 'err');
                 });
         };
