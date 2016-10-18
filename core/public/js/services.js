@@ -33,6 +33,29 @@
             }
         };
 
+        self.getStudentDataForIds = function(ids, callback){
+            // console.log(id);
+                $http({
+                    method: 'POST',
+                    url: "http://localhost:8080/getstudents/",
+                    data: {
+                        "studentIds": ids
+                    },
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    console.log('get multiple students data:');
+                    console.log(data.data);
+                    callback(data.data);
+                }, function errorCallback(response) {
+                    console.log('error occured: ' + response);
+                    callback('', 'err');
+                });
+        };
+
     }]).service('CompanyService', ['$http', function ($http){
         var self = this;
         self.company = null;

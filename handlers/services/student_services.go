@@ -38,3 +38,22 @@ func GetStudents(ctx context.Context) ([]models.Student,error) {
 	}
 	return students, nil
 }
+
+func GetStudentsFromIds(ctx context.Context, _ids []int64) ([]models.Student,error) {
+	studentKeys := make([]*datastore.Key, len(_ids))
+	for i := 0; i < len(_ids); i++ {
+		studentKeys[i] = datastore.NewKey(ctx, "Student", "", _ids[i], nil)
+	}
+	students := make([]models.Student, len(_ids))
+
+	for i := 0; i < len(_ids); i++ {
+		if err := datastore.Get(ctx, studentKeys[i], &students[i]); err != nil {
+			return nil, err
+		}
+	}
+
+	for i := 0; i < len(students); i++ {
+		students[i].Id = studentKeys[i].IntID()
+	}
+	return students, nil
+}
