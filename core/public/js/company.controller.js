@@ -226,6 +226,12 @@ angular.module('Xtern')
         $scope.recruitmentList = [];
         companyId = 5733953138851840;
 
+        // console.log(getToken('auth'));
+        CompanyService.getCurrentCompany(getToken('auth'), function(data) {
+            console.log("get current company from token in controller:   ");
+            console.log(data);
+            console.log("^^^^ the token! ^^^^^");
+        });
         //TODO: pull company from JWT
         CompanyService.getCompanyDataForId(companyId, function(data)            
         // CompanyService.getCompanyDataForId($stateParams._id, function(data)            

@@ -63,6 +63,36 @@
         var self = this;
         self.company = null;
 
+        self.getCurrentCompany = function(id, callback){
+            // console.log(id);
+            if(!self.company || self.company._id !== id) {
+                $http({
+                    method: 'POST',
+                    // TODO: replace this id when company login is done
+                    url: "http://localhost:8080/company/getCurrentCompany",
+                    // url: "http://localhost:8080/company/" + id,
+                    data: {
+                        "token": getToken('auth')
+                    },
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    console.log('get current company data:');
+                    console.log(data.data);
+                    // self.company = data.data;
+                    callback(self.company);
+                }, function errorCallback(response) {
+                    console.log('error occured: ' + response);
+                    callback('', 'err');
+                });
+            } else {
+                 callback(self.company);
+            }
+        };
+
         self.getCompanyDataForId = function(id, callback){
             // console.log(id);
             if(!self.company || self.company._id !== id) {

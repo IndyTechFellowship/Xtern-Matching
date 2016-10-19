@@ -11,6 +11,7 @@ func GetCompanyRoutes() *mux.Router {
 	router.HandleFunc("/company/addStudent", handlers.AddStudent).Methods("POST").Name("AddStudent")
 	router.HandleFunc("/company/removeStudent", handlers.RemoveStudent).Methods("POST").Name("RemoveStudent")
 	router.HandleFunc("/company/switchStudents", handlers.SwitchStudents).Methods("POST").Name("SwitchStudents")
+	router.HandleFunc("/company/getCurrentCompany", handlers.GetCurrentCompany).Methods("POST").Name("GetCurrentCompany")
 	router.HandleFunc("/company", handlers.PostCompany).Methods("POST").Name("PostCompany")
 	return router
 }
