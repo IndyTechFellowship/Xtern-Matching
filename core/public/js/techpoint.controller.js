@@ -26,8 +26,9 @@ angular.module('Xtern')
         $scope.techPointUsers = [];
         $scope.instructorUsers = [];
         $scope.companyUsers = [];
+        $scope.UserFormData = {};
 
-        $scope.companyList = ["ININ", "Salesforce"];
+        $scope.companyList = ["ININ", "Salesforce","Instructor","Company"];
 
         $scope.selectedGroup = {
             active: 'TechPoint',
@@ -58,25 +59,40 @@ angular.module('Xtern')
             $scope.techPointUsers.sort(sortFunc);
         };
 
-        $scope.launchAddUserModal = function () {
+        $scope.launchAddEditUserModal = function (user) {
+            resetUserForm(user);
             $('#accountsModal').modal('show');
            // $('#accountModalform').form('reset');
             $('#accountModalform .error.message').empty();
         }
 
-        $scope.UserFormData = {
-            firstName: "",
-            lastName: "",
-            email: "",
-            password: "",
-            role: "TechPoint",
-            organization: "ININ",
-            newUser: true
-        };
 
-        $scope.submitUser = function(){
-            //calls success or fail funcitons defined in the form config object
-            $('#accountModalform').form('validate form');
+
+        var resetUserForm = function(user){
+            if(user){
+                var nameArr = user.name.split(' ', 2);
+                console.log(user);
+                $scope.UserFormData = {
+                    firstName: nameArr[0],
+                    lastName: nameArr[1],
+                    email: user.email,
+                    password: user.password,
+                    role: user.role,
+                    organization: user.organization,
+                    newUser: false
+                };
+            }
+            else{
+                $scope.UserFormData = {
+                    firstName: "",
+                    lastName: "",
+                    email: "",
+                    password: "",
+                    role: "TechPoint",
+                    organization: "ININ",
+                    newUser: true
+                };
+            }
         };
 
         var refreshCompany = function (company) {
@@ -115,7 +131,8 @@ angular.module('Xtern')
         };
 
         var submitUser = function(){
-            console.log('pased and submitting', $scope.UserFormData);
+             console.log('pased and submitting', $scope.UserFormData);
+            $('#accountsModal').modal('hide');
         }
 
         var formConfig = function () {
@@ -172,21 +189,33 @@ angular.module('Xtern')
                             ]
                         },
                     },
-                    onSuccess:function(){
+                    onSuccess:function(event, fields){
                         submitUser();
                     },
-                    onFailure: function(){
-                        console.log('failed');
-                    }
-                })
-                ;
+                    onFailure: function(formErrors, fields){
+                        return;
+                    },
+                    keyboardShortcuts: false
+                });
         }
 
-
+        var modalConfig = function(){
+            $('#accountsModal').modal({
+                closable: false,
+                onDeny: function () {
+                    return true;
+                },
+                onApprove: function () {
+                   $('#accountModalform').form('validate form');
+                   return $('#accountModalform').form('is valid');
+                }
+            });
+        }
         var setup = function () {
             refreshAccounts('TechPoint', 'TechPoint', $scope.techPointUsers);
             refreshAccounts('Instructor', 'Instructor', $scope.techPointUsers);
             formConfig();
+            modalConfig();
         }
         setup();
 

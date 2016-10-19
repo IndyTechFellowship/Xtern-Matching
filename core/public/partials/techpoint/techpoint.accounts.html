@@ -29,7 +29,7 @@
 					<!--{{row[header.displayPropertyName]}}-->
 				</td>
 				<td class="centered">
-					<button class="centered ui icon yellow basic button">
+					<button class="centered ui icon yellow basic button" ng-click="launchAddEditUserModal(row)">
                    <i class="edit icon"></i>     
                 </button>
 					<button class="centered ui icon red basic button">
@@ -40,23 +40,26 @@
 		</tbody>
 	</table>
 
-	<button class="ui positive right floated button" ng-click="launchAddUserModal()">Add User</button>
+	<button class="ui positive right floated button" ng-click="launchAddEditUserModal()">Add User</button>
 </div>
+
+<!--Add Edit Form-->
 <div class="ui modal" id="accountsModal">
-	<div class="header">Add a User</div>
+	<div class="header" ng-show="UserFormData.newUser">Add a User</div>
+	<div class="header" ng-show="!UserFormData.newUser">Edit {{UserFormData. firstName}} {{UserFormData.lastName}}</div>
 	<div class="content">
 		<form class="ui form" id="accountModalform">
-            <div class="two fields">
-			<div class="required field">
-				<label>First Name</label>
-				<input type="text" name="first-name" placeholder="First Name" ng-model="UserFormData.firstName">
+			<div class="two fields">
+				<div class="required field">
+					<label>First Name</label>
+					<input type="text" name="first-name" placeholder="First Name" ng-model="UserFormData.firstName">
+				</div>
+				<div class="required field">
+					<label>Last Name</label>
+					<input type="text" name="last-name" placeholder="Last Name" ng-model="UserFormData.lastName">
+				</div>
 			</div>
 			<div class="required field">
-				<label>Last Name</label>
-				<input type="text" name="last-name" placeholder="Last Name" ng-model="UserFormData.lastName">
-			</div>
-            </div>
-            <div class="required field">
 				<label>Email</label>
 				<input type="text" name="email" placeholder="Email" ng-model="UserFormData.email">
 			</div>
@@ -64,35 +67,30 @@
 				<label>Password</label>
 				<input type="text" name="password" placeholder="Password" ng-model="UserFormData.password">
 			</div>
-            <div class="two fields">
-                 <!--ng-class="{two: selectedGroup.active == 'Company', fields: selectedGroup.active == 'Company'}">-->
-			<div class="required field">
-                <label>Group</label>
-				<select class="ui fluid search dropdown" name="group" ng-model="UserFormData.role" ng-change="" aria-placeholder="Select a Role">
+			<div class="two fields">
+				<div class="required field">
+					<label>Group</label>
+					<select class="ui fluid search dropdown" name="group" ng-model="UserFormData.role" ng-change="" aria-placeholder="Select a Role">
                     <option value="TechPoint">TechPoint</option>
                     <option value="Instructor">Instructor</option>
                     <option value="Company">Company</option>
                 </select>
-			</div>
-            <!--<div class="vertical-spacer"></div>-->
-			<div class="field"  ng-class="{required: UserFormData.role == 'Company'}" >
-                <label>Company</label>
-				<select class="ui fluid search dropdown" ng-model="UserFormData.organization"
-                         ng-change="" ng-disabled="UserFormData.role== 'Company'">
+				</div>
+				<div class="field" ng-class="{required: UserFormData.role == 'Company'}">
+					<label>Company</label>
+					<select class="ui fluid search dropdown" ng-model="UserFormData.organization" ng-change="" ng-disabled="UserFormData.role== 'Company'">
                     <option ng-repeat="item in companyList" value="{{item}}" on-last-repeat-drop-down>
                         {{item}}
                     </option>
                 </select>
+				</div>
 			</div>
-            </div>
-            <div class="ui error message"></div>
-            <!--<div class="ui green basic submit right floated button">Submit</div>-->
+			<div class="ui error message"></div>
 		</form>
-        <!--<div class="vertical-spacer"></div>-->
 	</div>
 	<div class="actions">
 		<div class="ui cancel grey basic button">Cancel</div>
-		<div class="ui green basic button" ng-click="submitUser()">Approve</div>
+		<div class="ui approve green basic button">Save</div>
 	</div>
-    
+
 </div>
