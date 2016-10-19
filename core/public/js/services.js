@@ -55,22 +55,28 @@
                 console.log('Here: '+getToken('auth'));
                 callback('','err')
             });
-            // if(self.userSummaryData){
-            //     $http({
-            //         method: 'GET',
-            //         url: "localhost:8080/student",
-            //         headers: {
-            //             'Content-Type': "application/json",
-            //             'Accept': "application/json"
-            //         }
-            //     }).then(function (data) {
-            //         self.userSummaryData = data.data;
-            //         callback(self.userSummaryData);
-            //     });
-            // }
-            // else{
-            //     callback(self.userSummaryData);
-            // }
+        };
+    }]).service('AccountControlService',['$http', function ($http){
+        var self = this;
+        self.userData = null;
+
+        self.getUsers = function(role, company, callback){
+            var route = "/admin/getusers/"+role+"/"+company;
+            $http({
+                method: 'GET',
+                url: host + route,
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer '+getToken('auth')
+                }
+            }).then(function (data) {
+                callback(data.data);
+            }, function errorCallback(response) {
+                console.log('error occured: '+response);
+                console.log('Here: '+getToken('auth'));
+                callback('','err')
+            });
         };
     }]).service('AuthService',['$http', function ($http) {
         var self = this;

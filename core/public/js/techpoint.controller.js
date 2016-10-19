@@ -20,36 +20,28 @@ angular.module('Xtern')
             $scope.loggedIn = false;
         };
     }])
-    .controller('TechPointAccountCtrl', ['$scope', '$rootScope', '$state', function ($scope, $rootScope, $state) {
+    .controller('TechPointAccountCtrl', ['$scope', '$rootScope', '$state','AccountControlService', function ($scope, $rootScope, $state, AccountControlService) {
         var self = this;
 
+        $scope.techPointUsers = [];
+        $scope.instructorUsers = [];
+        $scope.companyUsers = [];
+
+        $scope.companyList = ["ININ", "Salesforce"];
+
         $scope.selectedGroup = {
-            active: 'Techpoint',
+            active: 'TechPoint',
+            activeCompany: 'ININ',
             changeGroup: function(group){
                 $scope.selectedGroup.active = group;
-            }
-        };
-
-        $scope.techPointUsers = [
-            {
-                name: 'Nicole',
-                email: 'nichole@techpoint.org',
+                swapActiveArray(group);
             },
-            {
-                name: 'Merillat Flowers',
-                email: 'merillat@techpoint.org'
-            }
-        ];
-        // var users = 
-        // {
-        //     techPoint:,
-        //     instructors:[],
-        //     companies:
-        //     [
-
-        //     ]
-        // }
-
+            changeCompany: function(){
+                refreshCompany($scope.selectedGroup.activeCompany);
+            },
+            selectedUsers: $scope.techPointUsers
+        };
+     
         $scope.tableHeaders = [
             { title: 'Name', sortPropertyName: 'name', displayPropertyName: 'name', asc: true },
             { title: 'Email', sortPropertyName: 'email', displayPropertyName: 'email', asc: true }//,
@@ -65,6 +57,48 @@ angular.module('Xtern')
             var sortFunc = asc ? ascSort : descSort;
             $scope.techPointUsers.sort(sortFunc);
         };
+
+        var refreshCompany = function(company){
+            AccountControlService.getUsers('Company', company, function(data){
+                $scope.companyUsers.length = 0; //We want to keep array refrences but replace all of the elements 
+                    data.forEach(function(user){
+                    $scope.companyUsers.push(user);
+                }); 
+            });
+        };
+
+        var refreshAccounts = function(group, company, array){
+            AccountControlService.getUsers(group, company, function(data){
+                array.length = 0; //We want to keep array refrences but replace all of the elements 
+                    data.forEach(function(user){
+                    array.push(user);
+                }); 
+            });
+        }
+
+        var swapActiveArray = function(group){
+            if(group == 'TechPoint'){
+                $scope.selectedGroup.selectedUsers = $scope.techPointUsers;
+                refreshAccounts(group, group, $scope.techPointUsers);
+            }else if(group == 'Instructor'){
+                $scope.selectedGroup.selectedUsers = $scope.techPointUsers;
+                refreshAccounts(group, group, $scope.techPointUsers);
+            }
+            else if(group == 'Company'){
+                $scope.selectedGroup.selectedUsers = $scope.companyUsers;
+                refreshAccounts(group, $scope.selectedGroup.activeCompany, $scope.companyUsers);
+            }else{
+                //ran out of cases
+                $scope.selectedUsers.length =0;
+            }
+        };
+
+
+        var setup = function(){
+             refreshAccounts('TechPoint', 'TechPoint', $scope.techPointUsers);
+             refreshAccounts('Instructor', 'Instructor', $scope.techPointUsers);
+        }
+        setup();
 
     }])
     .controller('TechPointDashboardCtrl', ['$scope', 'TechPointDashboardService', function ($scope, TechPointDashboardService) {
