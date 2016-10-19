@@ -16,8 +16,7 @@ import (
 //	context.Clear(r)
 //}
 
-func GetAuthenticationRoutes() *mux.Router {
-	router := mux.NewRouter().StrictSlash(true)
+func GetAuthenticationRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/auth/login", handlers.Login).Methods("POST").Name("Login")
 	router.HandleFunc("/auth/logout", handlers.Logout).Methods("POST").Name("Logout")
 	return router

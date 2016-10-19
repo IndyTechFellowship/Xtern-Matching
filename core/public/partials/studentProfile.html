@@ -64,7 +64,7 @@
                         </div>
                         <div class="ui raised segment">
                             <a class="ui teal ribbon label">Resume</a>
-                            <div id="example1"></div>
+                            <div id="example1" style="border:1px  solid black; overflow-x: hidden; overflow-y: auto; height: 880px; width: 675px;"></div>
                         </div>
 
                         <div class="ui raised segment">
@@ -148,10 +148,24 @@
     </div>
 </div>
 
+<!--Can Uncomment for testing-->
+<div class="ui container">
+    <form class="ui form" ng-controller="UploadCtrl as ctrl" enctype="multipart/form-data">
+
+        <label for="file">File:</label>
+        <input id="file" name="file" type="file"></input>
+
+        <input type="submit" ng-click="ctrl.uploadResume(4505248894812160);"></input>
+
+    </form>
+</div>
+<div class="vertical-spacer"></div>
+
+<script src="node_modules/pdfjs-dist/build/pdf.js">
+
 <script src="public/js/pdfobject.js"></script>
-<script>PDFObject.embed("public/data_mocks/sample.pdf", "#example1");</script>
 <style>
-    .pdfobject-container { height: 700px; }
+    #the-canvas { height: 700px; }
     .pdfobject { border: 1px solid #666; }
 </style>
 <link rel="stylesheet" type="text/css" href="public/css/studentProfile.css">

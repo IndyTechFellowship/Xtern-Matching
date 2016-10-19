@@ -38,3 +38,4 @@ core/node_modules
 .idea
 
 *.zip
+.DS_Store
