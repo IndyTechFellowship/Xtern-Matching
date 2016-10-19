@@ -5,6 +5,7 @@ import (
 	"Xtern-Matching/models"
 	"net/http"
 	"google.golang.org/appengine/datastore"
+	"log"
 )
 
 func removeId(ids []int64, idToRemove int64) []int64 {
@@ -106,4 +107,20 @@ func GetCompany(ctx context.Context,_id int64) (models.Company,error) {
 	}
 	company.Id = companyKey.IntID()
 	return company, nil
+}
+
+func GetCompanies(ctx context.Context) ([]models.Company,error) {
+	q := datastore.NewQuery("Company")
+	log.Printf("%v",q)
+	var companies []models.Company
+	keys, err := q.GetAll(ctx,&companies)
+	if err != nil {
+		return nil, err
+	}
+	log.Printf("%v",keys)
+
+	for i := 0; i < len(keys); i++ {
+		companies[i].Id = keys[i].IntID()
+	}
+	return companies, nil
 }
