@@ -189,3 +189,16 @@ var rowClass = function(data){
     //console.log(data);
     return data;
 };
+
+var removedDuplicates = function (arr) {
+    return arr.filter(function (elem, index, self) {
+        return index == self.indexOf(elem);
+    });
+};
+
+var cleanStudents = function(student){
+    student.interestedIn = removedDuplicates(student.interestedIn);
+    //student.languages = removedDuplicates(student.interestedIn);
+    return student;
+};
+

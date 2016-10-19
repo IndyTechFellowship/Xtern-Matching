@@ -19,15 +19,15 @@ func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.PathPrefix("/auth").Handler(negroni.New(
-		negroni.Wrap(GetAuthenticationRoutes()),
+		negroni.Wrap(GetAuthenticationRoutes(mux.NewRouter().StrictSlash(true))),
 	))
 	router.PathPrefix("/admin").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
-		negroni.Wrap(GetAdminRoutes()),
+		negroni.Wrap(GetAdminRoutes(mux.NewRouter().StrictSlash(true))),
 	))
 	router.PathPrefix("/student").Handler(negroni.New(
-		//negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
-		negroni.Wrap(GetStudentRoutes()),
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(GetStudentRoutes(mux.NewRouter().StrictSlash(true))),
 	))
 
 	return router
