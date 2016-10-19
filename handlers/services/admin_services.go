@@ -43,15 +43,30 @@ func GetUsers(ctx context.Context, org string, role string) ([]models.User, erro
 		return nil, err
 	}
 	
-	for i := 0; i < len(users); i++ {
-		//users[i].Id = keys[i].IntID()
-		users[i].Password = "********"
-	}
 	return users, err
 }
 
-func UpdateUser(ctx context.Context, user models.User) error {
+func GetUser(ctx context.Context, _id int64) (models.User, error){
+	userKey := datastore.NewKey(ctx, "User", "", _id, nil)
+	var user models.User
+	err := datastore.Get(ctx, userKey, &user)
+	if err != nil {
+		return models.User{}, err
+	}
+	user.Id = userKey.IntID()
+	return user, err
+}
+
+func UpdateUser(ctx context.Context, user *models.User) error {
 	userKey := datastore.NewKey(ctx, "User", "", user.Id, nil)
+	//In this case, the password wasn't updated, so fetch passsword from database and set it so it's not overwritten to ***
+	if user.Password == "********" {
+		oldUser, err := GetUser(ctx, user.Id)
+		if err != nil {
+			return err
+		}
+		user.Password = oldUser.Password
+	}
 	_,err := datastore.Put(ctx, userKey, &user)
 	return err
 }
