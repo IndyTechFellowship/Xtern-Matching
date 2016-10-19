@@ -49,3 +49,15 @@ func GetUsers(ctx context.Context, org string, role string) ([]models.User, erro
 	}
 	return users, err
 }
+
+func UpdateUser(ctx context.Context, user models.User) error {
+	userKey := datastore.NewKey(ctx, "User", "", user.Id, nil)
+	_,err := datastore.Put(ctx, userKey, &user)
+	return err
+}
+
+func DeleteUser(ctx context.Context, id int64) error {
+	userKey := datastore.NewKey(ctx, "User", "", id, nil)
+	err := datastore.Delete(ctx, userKey)
+	return err
+}

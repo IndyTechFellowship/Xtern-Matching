@@ -10,6 +10,7 @@ import (
 	"log"
 	"fmt"
 	"errors"	
+	"strconv"
 )
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -104,4 +105,38 @@ func GetUsers(w http.ResponseWriter, r *http.Request){
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
+}
+
+func UpdateUser(w http.ResponseWriter, r *http.Request){
+	ctx := appengine.NewContext(r)
+	var user models.User
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&user); err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	err := services.UpdateUser(ctx, user)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}	
+}
+
+func DeleteUser(w http.ResponseWriter, r *http.Request){
+	ctx := appengine.NewContext(r)
+	id, id_ok := mux.Vars(r)["Id"]
+	if !id_ok {
+		log.Println("Missing Id to delete user")
+		http.Error(w, errors.New("Missing Id to delete user").Error(), http.StatusBadRequest)
+		return
+	}
+	num_id, _ := strconv.ParseInt(id, 10, 64)
+	err := services.DeleteUser(ctx, num_id)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
