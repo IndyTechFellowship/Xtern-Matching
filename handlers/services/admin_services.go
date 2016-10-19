@@ -38,11 +38,13 @@ func GetUsers(ctx context.Context, org string, role string) ([]models.User, erro
 	query := datastore.NewQuery("User").Filter("Role =", role).Filter("Organization =", org)
 	var users []models.User
 	
-	_, err := query.GetAll(ctx, &users)
+	keys, err := query.GetAll(ctx, &users)
 	if err != nil {
 		return nil, err
 	}
-	
+	for i := 0; i < len(users); i++ {
+		users[i].Id = keys[i].IntID()
+	}
 	return users, err
 }
 
