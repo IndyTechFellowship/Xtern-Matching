@@ -11,5 +11,6 @@ func GetStudentRoutes() *mux.Router {
 	router.HandleFunc("/student", handlers.GetStudents).Methods("GET").Name("GetStudents")
 	router.HandleFunc("/student", handlers.PostStudent).Methods("POST").Name("CreateStudent")
 	router.HandleFunc("/student/getstudents", handlers.GetStudentsFromIds).Methods("POST").Name("GetStudentsFromIds")
+	router.HandleFunc("/student/addComment/{Id}", handlers.AddComment).Methods("GET").Name("AddComment")
 	return router
 }

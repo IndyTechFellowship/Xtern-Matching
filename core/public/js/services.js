@@ -68,9 +68,7 @@
             if(!self.company || self.company._id !== id) {
                 $http({
                     method: 'POST',
-                    // TODO: replace this id when company login is done
                     url: "http://localhost:8080/company/getCurrentCompany",
-                    // url: "http://localhost:8080/company/" + id,
                     data: {
                         "token": getToken('auth')
                     },
@@ -80,9 +78,9 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    console.log('get current company data:');
-                    console.log(data.data);
-                    // self.company = data.data;
+                    // console.log('get current company data:');
+                    // console.log(data.data);
+                    self.company = data.data;
                     callback(self.company);
                 }, function errorCallback(response) {
                     console.log('error occured: ' + response);
@@ -98,9 +96,7 @@
             if(!self.company || self.company._id !== id) {
                 $http({
                     method: 'GET',
-                    // TODO: replace this id when company login is done
-                    url: "http://localhost:8080/company/" + 5066549580791808,
-                    // url: "http://localhost:8080/company/" + id,
+                    url: "http://localhost:8080/company/" + id,
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
@@ -127,7 +123,8 @@
                 url: "http://localhost:8080/company/addStudent",
                 // url: "http://localhost:8080/company/" + id,
                 data: {
-                    "id": 5066549580791808,
+                    // "id": 5066549580791808,
+                    "token": getToken('auth'),
                     "studentId": studentId
                 },
                 headers: {

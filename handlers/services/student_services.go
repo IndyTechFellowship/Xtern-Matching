@@ -57,3 +57,41 @@ func GetStudentsFromIds(ctx context.Context, _ids []int64) ([]models.Student,err
 	}
 	return students, nil
 }
+
+func AddComment(ctx context.Context, studentId int64, newComment models.Comment) (int,error) {
+	studentKey := datastore.NewKey(ctx, "Student", "", studentId, nil)
+	var student models.Student
+
+	err := datastore.RunInTransaction(ctx, func(ctx context.Context) error {
+		err := datastore.Get(ctx, studentKey, &student)
+		if err != nil && err != datastore.ErrNoSuchEntity {
+			return err
+		}
+		student.Comments = ExtendComments(student.Comments, newComment)
+		_, err = datastore.Put(ctx, studentKey, &student)
+		return err
+		}, nil)
+	
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusAccepted, nil
+
+}
+
+
+////////////////////////////////////////////////
+/////////////// HELPER FUNCTIONS ///////////////
+////////////////////////////////////////////////
+
+func ExtendComments(commentSlice []models.Comment, newComment models.Comment) []models.Comment {
+    sliceSize := len(commentSlice)
+    if sliceSize == cap(commentSlice) { // Check slice size versus max slice size
+        newSlice := make([]models.Comment, len(commentSlice), 2*len(commentSlice)+1)
+        copy(newSlice, commentSlice)
+        commentSlice = newSlice
+    }
+    commentSlice = commentSlice[0 : sliceSize+1] // Grow size by 1
+    commentSlice[sliceSize] = newComment
+    return commentSlice
+}

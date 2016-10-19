@@ -34,6 +34,7 @@ func Login(ctx context.Context,user models.User) ([]byte, error) {
 			"role": account.Role,
 		})
 
+//TODO: Don't hardcode this here and in company_handlers.go
 		tokenString, err := token.SignedString([]byte("My Secret"))
 		if err != nil {
 			return []byte(""), err

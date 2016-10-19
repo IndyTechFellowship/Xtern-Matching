@@ -224,25 +224,23 @@ angular.module('Xtern')
     .controller('CompanyRecruiting', ['$scope', '$state', 'ProfileService', 'CompanyService', function ($scope, $state, ProfileService, CompanyService) {
         var self = this;
         $scope.recruitmentList = [];
-        companyId = 5733953138851840;
 
-        // console.log(getToken('auth'));
-        CompanyService.getCurrentCompany(getToken('auth'), function(data) {
+        CompanyService.getCurrentCompany(getToken('auth'), function(companyToken) {
             console.log("get current company from token in controller:   ");
-            console.log(data);
+            console.log(companyToken);
             console.log("^^^^ the token! ^^^^^");
-        });
-        //TODO: pull company from JWT
-        CompanyService.getCompanyDataForId(companyId, function(data)            
-        // CompanyService.getCompanyDataForId($stateParams._id, function(data)            
-        {
-            $scope.companyData = data;
-            console.log("company data in recruiting controller:");
-            console.log($scope.companyData);
-            console.log($scope.companyData.studentIds);
+            
+            CompanyService.getCompanyDataForId(companyToken.Claims.org, function(data)                      
+            {
+                $scope.companyData = data;
+                console.log("company data in recruiting controller:");
+                console.log($scope.companyData);
+                console.log($scope.companyData.studentIds);
 
-            ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
-                $scope.recruitmentList = data;
+                ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
+                    $scope.recruitmentList = data;
+                });
+
             });
 
         });

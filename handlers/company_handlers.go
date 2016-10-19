@@ -10,13 +10,16 @@ import (
 	"Xtern-Matching/handlers/services"
 	"github.com/dgrijalva/jwt-go"
 	"fmt"
+	"log"
 	// "github.com/gorilla/context"
 	// "github.com/dgrijalva/jwt-go"
 )
 
 func AddStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
-	// claims := context.Get(r, "user").(*jwt.Token).Claims.(jwt.MapClaims)
+	// ezclaims := context.Get(r, "user").(*jwt.Token).Claims.(jwt.MapClaims)
+	log.Print("ADD STUDENT------------------")
+
 
 	var dat map[string]interface{}
 	decoder := json.NewDecoder(r.Body)
@@ -26,16 +29,40 @@ func AddStudent(w http.ResponseWriter,r *http.Request) {
 	}
 
 	studentId :=  int64(dat["studentId"].(float64));
-	companyId :=  int64(dat["id"].(float64));
+	// companyId :=  int64(dat["id"].(float64));
+	tokenString := dat["token"].(string)
 
-	// if(claims["org"] == companyId) {
+	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			log.Print("---Handler: AddStudent: Unexpected singin method")
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		//TODO: don't hardcode this here and in authentication_services.go
+		return []byte("My Secret"), nil
+		})
 
-		_, err := services.AddStudentIdToCompanyList(ctx, companyId, studentId)
+	parsedOrg := strconv.FormatFloat(token.Claims.(jwt.MapClaims)["org"].(float64), 'E', -1, 64)
+
+
+
+	log.Print("--TOKEN:-- "+parsedOrg)
+
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok {
+	// if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		log.Print("CLAIMS ------------"+claims["org"].(string))
+		_, err := services.AddStudentIdToCompanyList(ctx, claims["org"].(int64), studentId)
 		if err != nil {
+			log.Print("CLAIMS ------------"+claims["org"].(string))
 			http.Error(w, err.Error(), 500)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
+	}
+
+	// if(claims["org"] == companyId) {
+
+
 	// } else {
 	// 	w.WriteHeader(http.StatusUnauthorized)
 	// }
@@ -129,8 +156,6 @@ func GetCompany(w http.ResponseWriter,r *http.Request) {
 }
 
 func GetCurrentCompany(w http.ResponseWriter,r *http.Request) {
-	// ctx := appengine.NewContext(r)
-
 	var dat map[string]interface{}
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&dat); err != nil {
@@ -139,68 +164,23 @@ func GetCurrentCompany(w http.ResponseWriter,r *http.Request) {
 	}
 
 	tokenString := dat["token"].(string)
-	// // var token []byte
-	// // token, _ = jwt.DecodeSegment(tokenString)
 
-	// // Parse the token
-	// token, err := jwt.ParseWithClaims(tokenString, &CustomClaimsExample{}, func(token *jwt.Token) (interface{}, error) {
- //    // since we only use the one private key to sign the tokens,
- //    // we also only use its public counter part to verify
-	// 	return verifyKey, nil
-	// })
-	// // fatal(err)
-
-	// claims := token.Claims.(*CustomClaimsExample)
-	// // fmt.Println(claims.CustomerInfo.Name)
-
-
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-    // Don't forget to validate the alg is what you expect:
+	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte("My Secret"), nil
+		//TODO: don't hardcode this here and in authentication_services.go
+			return []byte("My Secret"), nil
 		})
 
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		fmt.Println(claims["foo"], claims["nbf"])
-	} else {
-		fmt.Println(err)
-	}
-
-
-
-
-	// func DecodeSegment(seg string) ([]byte, error)
-
-	// token, err := jwt.Parse(tokenString, func(token *jwt.Token) ([]byte, error) {
-
- //        // fmt.Printf("parsed token obj: %v\n", token)
- //        // publicKey, err := ioutil.ReadFile("keys/app.rsa.pub")
- //        // if err != nil {
- //        //     return nil, fmt.Errorf("Error reading public key")
- //        // }
- //        var publicKey = ([]byte("My Secret"));
-
- //        return publicKey, nil
- //    })
-
-
-
+	// if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+	// 	fmt.Println(claims["foo"], claims["nbf"])
+	// } else {
+	// 	fmt.Println(err)
+	// }
 
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(token)
-	w.WriteHeader(http.StatusInternalServerError)
-
-
-	// token :=  int64(dat["studentId"].(float64));
-
-	// _, err := services.RemoveStudentIdFromCompanyList(ctx, companyId, studentId)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), 500)
-	// 	return
-	// }
-	// w.WriteHeader(http.StatusOK)
 }
