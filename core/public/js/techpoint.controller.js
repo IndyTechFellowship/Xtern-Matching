@@ -20,7 +20,7 @@ angular.module('Xtern')
             $scope.loggedIn = false;
         };
     }])
-    .controller('TechPointAccountCtrl', ['$scope', '$rootScope', '$state','AccountControlService', function ($scope, $rootScope, $state, AccountControlService) {
+    .controller('TechPointAccountCtrl', ['$scope', '$rootScope', '$state', 'AccountControlService', function ($scope, $rootScope, $state, AccountControlService) {
         var self = this;
 
         $scope.techPointUsers = [];
@@ -32,16 +32,16 @@ angular.module('Xtern')
         $scope.selectedGroup = {
             active: 'TechPoint',
             activeCompany: 'ININ',
-            changeGroup: function(group){
+            changeGroup: function (group) {
                 $scope.selectedGroup.active = group;
                 swapActiveArray(group);
             },
-            changeCompany: function(){
+            changeCompany: function () {
                 refreshCompany($scope.selectedGroup.activeCompany);
             },
             selectedUsers: $scope.techPointUsers
         };
-     
+
         $scope.tableHeaders = [
             { title: 'Name', sortPropertyName: 'name', displayPropertyName: 'name', asc: true },
             { title: 'Email', sortPropertyName: 'email', displayPropertyName: 'email', asc: true }//,
@@ -58,45 +58,135 @@ angular.module('Xtern')
             $scope.techPointUsers.sort(sortFunc);
         };
 
-        var refreshCompany = function(company){
-            AccountControlService.getUsers('Company', company, function(data){
+        $scope.launchAddUserModal = function () {
+            $('#accountsModal').modal('show');
+           // $('#accountModalform').form('reset');
+            $('#accountModalform .error.message').empty();
+        }
+
+        $scope.UserFormData = {
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+            role: "TechPoint",
+            organization: "ININ",
+            newUser: true
+        };
+
+        $scope.submitUser = function(){
+            //calls success or fail funcitons defined in the form config object
+            $('#accountModalform').form('validate form');
+        };
+
+        var refreshCompany = function (company) {
+            AccountControlService.getUsers('Company', company, function (data) {
                 $scope.companyUsers.length = 0; //We want to keep array refrences but replace all of the elements 
-                    data.forEach(function(user){
+                data.forEach(function (user) {
                     $scope.companyUsers.push(user);
-                }); 
+                });
             });
         };
 
-        var refreshAccounts = function(group, company, array){
-            AccountControlService.getUsers(group, company, function(data){
+        var refreshAccounts = function (group, company, array) {
+            AccountControlService.getUsers(group, company, function (data) {
                 array.length = 0; //We want to keep array refrences but replace all of the elements 
-                    data.forEach(function(user){
+                data.forEach(function (user) {
                     array.push(user);
-                }); 
+                });
             });
         }
 
-        var swapActiveArray = function(group){
-            if(group == 'TechPoint'){
+        var swapActiveArray = function (group) {
+            if (group == 'TechPoint') {
                 $scope.selectedGroup.selectedUsers = $scope.techPointUsers;
                 refreshAccounts(group, group, $scope.techPointUsers);
-            }else if(group == 'Instructor'){
+            } else if (group == 'Instructor') {
                 $scope.selectedGroup.selectedUsers = $scope.techPointUsers;
                 refreshAccounts(group, group, $scope.techPointUsers);
             }
-            else if(group == 'Company'){
+            else if (group == 'Company') {
                 $scope.selectedGroup.selectedUsers = $scope.companyUsers;
                 refreshAccounts(group, $scope.selectedGroup.activeCompany, $scope.companyUsers);
-            }else{
+            } else {
                 //ran out of cases
-                $scope.selectedUsers.length =0;
+                $scope.selectedUsers.length = 0;
             }
         };
 
+        var submitUser = function(){
+            console.log('pased and submitting', $scope.UserFormData);
+        }
 
-        var setup = function(){
-             refreshAccounts('TechPoint', 'TechPoint', $scope.techPointUsers);
-             refreshAccounts('Instructor', 'Instructor', $scope.techPointUsers);
+        var formConfig = function () {
+            $('#accountModalform')
+                .form({
+                    fields: {
+                        fname: {
+                            identifier: 'first-name',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: 'Please enter a first name'
+                                }
+                            ]
+                        },
+                        lname: {
+                            identifier: 'last-name',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: 'Please enter a last name'
+                                }
+                            ]
+                        },
+                        email: {
+                            identifier: 'email',
+                            rules: [
+                                {
+                                    type: 'email',
+                                    prompt: 'Please enter a valid e-mail'
+                                }
+                            ]
+                        },
+                        password: {
+                            identifier: 'password',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: 'Please enter a password'
+                                },
+                                {
+                                    type: 'minLength[6]',
+                                    prompt: 'Your password must be at least {ruleValue} characters'
+                                }
+                            ]
+                        },
+                        group: {
+                            identifier: 'group',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: 'Please select a group'
+                                }
+                            ]
+                        },
+                    },
+                    onSuccess:function(){
+                        submitUser();
+                    },
+                    onFailure: function(){
+                        console.log('failed');
+                    }
+                })
+                ;
+        }
+
+
+        var setup = function () {
+            refreshAccounts('TechPoint', 'TechPoint', $scope.techPointUsers);
+            refreshAccounts('Instructor', 'Instructor', $scope.techPointUsers);
+            formConfig();
         }
         setup();
 
