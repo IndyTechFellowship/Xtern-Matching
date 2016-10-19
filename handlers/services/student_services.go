@@ -71,12 +71,31 @@ func AddComment(ctx context.Context, studentId int64, newComment models.Comment)
 		_, err = datastore.Put(ctx, studentKey, &student)
 		return err
 		}, nil)
-	
+
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
 	return http.StatusAccepted, nil
+}
 
+func DeleteComment(ctx context.Context, studentId int64, commentToDelete models.Comment) (int,error) {
+	studentKey := datastore.NewKey(ctx, "Student", "", studentId, nil)
+	var student models.Student
+
+	err := datastore.RunInTransaction(ctx, func(ctx context.Context) error {
+		err := datastore.Get(ctx, studentKey, &student)
+		if err != nil && err != datastore.ErrNoSuchEntity {
+			return err
+		}
+		student.Comments = removeComment(student.Comments, commentToDelete);
+		_, err = datastore.Put(ctx, studentKey, &student)
+		return err
+		}, nil)
+
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusAccepted, nil
 }
 
 
@@ -94,4 +113,14 @@ func ExtendComments(commentSlice []models.Comment, newComment models.Comment) []
     commentSlice = commentSlice[0 : sliceSize+1] // Grow size by 1
     commentSlice[sliceSize] = newComment
     return commentSlice
+}
+
+func removeComment(commentSlice []models.Comment, commentToRemove models.Comment) []models.Comment {
+    filteredCommentSlice := commentSlice[:0]
+    for _, comment := range commentSlice {
+        if comment != commentToRemove {
+            filteredCommentSlice = append(filteredCommentSlice, comment)
+        }
+    }
+    return filteredCommentSlice
 }

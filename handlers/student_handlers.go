@@ -130,3 +130,29 @@ func AddComment(w http.ResponseWriter,r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
 }
 
+func DeleteComment(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	if id, ok := mux.Vars(r)["Id"]; ok {
+		num_id, _ := strconv.ParseInt(id, 10, 64)
+		student, err := services.GetStudent(ctx, num_id)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+
+		commentToDelete := models.Comment{Author: "golang test author", Group: "golang test org", Text: "golang test text"}
+
+		_, addCommentErr := services.DeleteComment(ctx, student.Id, commentToDelete)
+		if addCommentErr != nil {
+			http.Error(w, addCommentErr.Error(), 500)
+			return
+		}
+
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(student)
+	}
+	w.WriteHeader(http.StatusInternalServerError)
+}
