@@ -86,6 +86,26 @@
                 callback('','err')
             });
         }
+
+        self.renderTokens = function(){
+            $http({
+                method: 'GET',
+                url: host + "getUser",//NICCUM CAN FIX THIS
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer '+getToken('auth')
+                }
+            }).then(function (data) {
+                setToken(data.role, "role");
+                setToken(data.organization, "organization");
+
+            }, function errorCallback(response) {
+            
+            });
+            
+            
+        }
     }]).service('ResumeService',['$http', function ($http) {
         var self = this;
         self.jwtToken = null;
