@@ -66,6 +66,13 @@ func UpdateUser(ctx context.Context, user *models.User) error {
 			return err
 		}
 		user.Password = oldUser.Password
+	} else {
+		//Hash Password
+		pass, err := bcrypt.GenerateFromPassword([]byte(user.Password),14);
+		if err != nil {
+			return http.StatusInternalServerError, err
+		}
+		user.Password = string(pass)
 	}
 	_,err := datastore.Put(ctx, userKey, &user)
 	return err
