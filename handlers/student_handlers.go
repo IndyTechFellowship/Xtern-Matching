@@ -59,7 +59,7 @@ func PostStudent(w http.ResponseWriter,r *http.Request) {
 	}
 
 	for _, student := range students {
-		_, err := services.NewStudent(ctx, &student)
+		_, err := services.NewStudent(ctx, student)
 		if err != nil {
 			log.Println(err.Error())
 			http.Error(w, err.Error(), 500)

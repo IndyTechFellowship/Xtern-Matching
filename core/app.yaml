@@ -8,6 +8,10 @@ handlers:
   static_files: index.html
   upload: index.html
 
+- url: /favicon.ico
+  static_files: favicon.ico
+  upload: favicon.ico
+
 # Serving static files
 - url: /public
   static_dir: public
@@ -22,5 +26,5 @@ handlers:
   script: _go_app
 
 env_variables:
-  ENVIRONMENT: 'production'
-  GOOGLE_APPLICATION_CREDENTIALS: cloudstore-dev.json
+  XTERN_ENVIRONMENT: 'production'
+  GOOGLE_APPLICATION_CREDENTIALS: 'environments/production/cloudstore.json'

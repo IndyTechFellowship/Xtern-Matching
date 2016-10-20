@@ -52,13 +52,13 @@ func GetStudent(ctx context.Context,_id int64) (models.Student, error) {
 
 func GetStudents(ctx context.Context) ([]models.Student,error) {
 	q := datastore.NewQuery("Student")
-	log.Printf("%v",q)
+	//log.Printf("%v",q)
 	var students []models.Student
 	keys, err := q.GetAll(ctx,&students)
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("%v",keys)
+	//log.Printf("%v",keys)
 
 	for i := 0; i < len(students); i++ {
 		students[i].Id = keys[i].IntID()
@@ -70,7 +70,7 @@ func UpdateResume(ctx context.Context, id int64, file io.Reader) error {
 	sid := strconv.Itoa(int(id))
 	var bucketName string
 	var projectID string
-	if os.Getenv("ENVIRONMENT") != "production" {
+	if os.Getenv("XTERN_ENVIRONMENT") != "production" {
 		bucketName = "xtern-matching-143216.appspot.com"//DEV Server
 		projectID = "xtern-matching-143216"
 	} else {

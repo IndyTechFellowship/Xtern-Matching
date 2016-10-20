@@ -13,7 +13,6 @@ func NewRouter() *mux.Router {
 			//return context.Get(r,"ctx")
 			return []byte("My Secret"), nil
 		},
-		//SigningMethod: jwt.GetSigningMethod("AppEngine"),
 		SigningMethod: jwt.SigningMethodHS512,
 	});
 	router := mux.NewRouter().StrictSlash(true)

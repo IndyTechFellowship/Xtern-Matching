@@ -28,6 +28,7 @@ dependencies:
     - npm install core
 test:
   override:
+    - export GOOGLE_APPLICATION_CREDENTIALS=$GOPATH/src/Xtern-Matching/core/environments/test/cloudstore-dev.json
     - goapp test Xtern-Matching/tests
 
 deployment:
