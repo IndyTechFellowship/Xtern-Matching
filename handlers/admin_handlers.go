@@ -105,3 +105,8 @@ func GetUsers(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
 }
+
+//func PullForm(w http.ResponseWriter, r *http.Request) {
+//	services.Authorize("13675","https://www.google.com/","code")
+//
+//}
