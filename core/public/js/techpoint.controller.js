@@ -45,8 +45,7 @@ angular.module('Xtern')
 
         $scope.tableHeaders = [
             { title: 'Name', sortPropertyName: 'name', displayPropertyName: 'name', asc: true },
-            { title: 'Email', sortPropertyName: 'email', displayPropertyName: 'email', asc: true }//,
-            //{title: '', sortPropertyName: 'Rated', asc: true }
+            { title: 'Email', sortPropertyName: 'email', displayPropertyName: 'email', asc: true }
         ];
 
         $scope.sort = function (header, event) {
@@ -60,38 +59,43 @@ angular.module('Xtern')
         };
 
         $scope.launchAddEditUserModal = function (user) {
-            resetUserForm(user);
+           
             $('#accountsModal').modal('show');
+             resetUserForm(user);
            // $('#accountModalform').form('reset');
             $('#accountModalform .error.message').empty();
         }
 
-
-
         var resetUserForm = function(user){
-            if(user){
+            //$('#accountModalform').form('clear')
+            if (user) {
                 var nameArr = user.name.split(' ', 2);
                 console.log(user);
-                $scope.UserFormData = {
-                    firstName: nameArr[0],
-                    lastName: nameArr[1],
-                    email: user.email,
-                    password: user.password,
-                    role: user.role,
-                    organization: user.organization,
-                    newUser: false
-                };
+                $scope.UserFormData.firstName = nameArr[0];
+                $scope.UserFormData.lastName = nameArr[1];
+                $scope.UserFormData.email = user.email;
+                $scope.UserFormData.password = user.password;
+                $scope.UserFormData.role = user.role;
+                $scope.UserFormData.organization = user.organization;
+                $scope.UserFormData.newUser = false;
             }
             else{
-                $scope.UserFormData = {
-                    firstName: "",
-                    lastName: "",
-                    email: "",
-                    password: "",
-                    role: "TechPoint",
-                    organization: "ININ",
-                    newUser: true
-                };
+                $scope.UserFormData.firstName ='';
+                $scope.UserFormData.lastName = '';
+                $scope.UserFormData.email = '';
+                $scope.UserFormData.password = '';
+                $scope.UserFormData.role = 'TechPoint';
+                $scope.UserFormData.organization = 'ININ';
+                $scope.UserFormData.newUser = true;
+                // $scope.UserFormData = {
+                //     firstName: "",
+                //     lastName: "",
+                //     email: "",
+                //     password: "",
+                //     role: "TechPoint",
+                //     organization: "ININ",
+                //     newUser: true
+                // };
             }
         };
 
@@ -214,6 +218,7 @@ angular.module('Xtern')
         var setup = function () {
             refreshAccounts('TechPoint', 'TechPoint', $scope.techPointUsers);
             refreshAccounts('Instructor', 'Instructor', $scope.techPointUsers);
+            swapActiveArray($scope.selectedGroup.active);
             formConfig();
             modalConfig();
         }
