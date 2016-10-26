@@ -11,7 +11,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"fmt"
 	"log"
-	// "github.com/gorilla/context"
+	"github.com/gorilla/context"
 	// "github.com/dgrijalva/jwt-go"
 )
 
@@ -156,31 +156,62 @@ func GetCompany(w http.ResponseWriter,r *http.Request) {
 }
 
 func GetCurrentCompany(w http.ResponseWriter,r *http.Request) {
-	var dat map[string]interface{}
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&dat); err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
+	ctx := appengine.NewContext(r)
+	// ctx := context.Get(r, "user")
 
-	tokenString := dat["token"].(string)
+	// user := user.New()
+	log.Print("---MAYBE CLAIMS? IDK:---")
+	
+	user := context.Get(r, "user")
+	// cur_user := user.Current(ctx)
+    // claims := user.(*jwt.Token).Claims 
 
-	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-		}
-		//TODO: don't hardcode this here and in authentication_services.go
-			return []byte("My Secret"), nil
-		})
+    token, err := user.(*jwt.Token)
 
-	// if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-	// 	fmt.Println(claims["foo"], claims["nbf"])
-	// } else {
-	// 	fmt.Println(err)
+    if claims := token.Claims; token.Valid {
+    	log.Print("---IF CLAIMS:---")
+        fmt.Printf("%v", claims)
+        log.Print(claims)
+        mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+        log.Print("---MAP CLAIMS:---")
+        log.Print(mapClaims)
+        log.Print(mapClaims["role"])
+        log.Print(mapClaims["org"])
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode("test")
+    } else {
+        fmt.Println(err)
+    }
+    
+
+	// if claims, ok := claims["role"]; ok {
+	// 	num_id, _ := strconv.ParseInt(id, 10, 64)
+	// 	company, err := services.GetCompany(ctx, num_id)
+	// 	if err != nil {
+	// 		http.Error(w, err.Error(), 500)
+	// 		return
+	// 	}
+
+	// 	w.Header().Add("Access-Control-Allow-Origin", "*")
+	// 	w.Header().Set("Content-Type", "application/json")
+	// 	w.WriteHeader(http.StatusOK)
+	// 	json.NewEncoder(w).Encode(company)
+
 	// }
+		if id, ok := mux.Vars(r)["Id"]; ok {
+		num_id, _ := strconv.ParseInt(id, 10, 64)
+		company, err := services.GetCompany(ctx, num_id)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
 
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(token)
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(company)
+	}
+	w.WriteHeader(http.StatusInternalServerError)
 }
