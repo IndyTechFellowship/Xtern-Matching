@@ -15,13 +15,24 @@ machine:
     # Add GOPATH
     GOPATH: ${HOME}/go_appengine/gopath
     # Project-ID
-    GCLOUD_PROJECT: "xtern-matching"
+    GCLOUD_PROJECT: "xtern-matching-dev"
 
 dependencies:
   pre:
     # Download App Engine SDK
     - curl -o $HOME/go_appengine_sdk_linux_amd64-1.9.40.zip https://storage.googleapis.com/appengine-sdks/featured/go_appengine_sdk_linux_amd64-1.9.40.zip
     - unzip -q -d $HOME $HOME/go_appengine_sdk_linux_amd64-1.9.40.zip
+
+    # Retrieve our secrets from the CircleCI environment
+    - echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
+
+    # Make sure gcloud is up to date
+    - gcloud --quiet components update app
+    # authenticate gcloud
+    - gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
+    # Replace <your-project-id>
+    - gcloud config set project $GCLOUD_PROJECT
+
     - mkdir $HOME/go_appengine/gopath/src
     - ln -s $HOME/Xtern-Matching $HOME/go_appengine/gopath/src
   override:
@@ -36,4 +47,4 @@ deployment:
   staging:
     branch: master
     commands:
-      - appcfg.py update core --noauth_local_webserver -A xtern-matching-dev -V 4 
+      - appcfg.py update core --noauth_local_webserver -A xtern-matching-dev -V 4
