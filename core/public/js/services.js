@@ -59,7 +59,6 @@
     }]).service('AccountControlService',['$http', function ($http){
         var self = this;
         self.userData = null;
-
         self.getUsers = function(role, company, callback){
             var route = "/admin/getusers/"+role+"/"+company;
             $http({
@@ -78,6 +77,68 @@
                 callback('','err')
             });
         };
+        self.addUser = function(user, callback){
+            var route = "/admin/register" //??
+            $http({
+                method: 'POST',
+                url: host + route,
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                },
+                data: {'user': user}
+            }).then(function (data) {
+                //success
+                callback(data);
+            }, function errorCallback(response) {
+                console.log('error occured: ' + response);
+                console.log('Here: ' + getToken('auth'));
+                callback('', 'err')
+            });
+        };
+
+        self.updateUser = function(user, callback){
+            var route = "/admin" //??
+            $http({
+                method: 'PUT',
+                url: host + route,
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                },
+                data: {'user': user}
+            }).then(function (data) {
+                //success
+                callback(data);
+            }, function errorCallback(response) {
+                console.log('error occured: ' + response);
+                console.log('Here: ' + getToken('auth'));
+                callback('', 'err')
+            });
+        };
+
+        self.deleteUser = function (id, callback) {
+            var route = "/admin/" + id;
+            $http({
+                method: 'DELETE',
+                url: host + route,
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                }
+            }).then(function (data) {
+                //success
+                callback(data);
+            }, function errorCallback(response) {
+                console.log('error occured: ' + response);
+                console.log('Here: ' + getToken('auth'));
+                callback('', 'err')
+            });
+        };
+
     }]).service('AuthService',['$http', function ($http) {
         var self = this;
         self.jwtToken = null;

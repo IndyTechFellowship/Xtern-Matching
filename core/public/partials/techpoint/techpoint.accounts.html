@@ -67,7 +67,7 @@
 				<label>Password</label>
 				<input type="text" name="password" placeholder="Password" ng-model="UserFormData.password">
 			</div>
-			<div class="two fields">
+			<div class="two fields" ng-show="UserFormData.newUser">
 				<div class="required field">
 					<label>Group</label>
 					<select class="ui fluid search dropdown" name="group" ng-model="UserFormData.role" ng-change="" aria-placeholder="Select a Role">

@@ -87,15 +87,6 @@ angular.module('Xtern')
                 $scope.UserFormData.role = 'TechPoint';
                 $scope.UserFormData.organization = 'ININ';
                 $scope.UserFormData.newUser = true;
-                // $scope.UserFormData = {
-                //     firstName: "",
-                //     lastName: "",
-                //     email: "",
-                //     password: "",
-                //     role: "TechPoint",
-                //     organization: "ININ",
-                //     newUser: true
-                // };
             }
         };
 
@@ -136,6 +127,11 @@ angular.module('Xtern')
 
         var submitUser = function(){
              console.log('pased and submitting', $scope.UserFormData);
+             if($scope.UserFormData.newUser){
+                 AccountControlService.addUser($scope.UserFormData, function(){});
+             }else{
+                AccountControlService.updateUser($scope.UserFormData, function(){});
+             }
             $('#accountsModal').modal('hide');
         }
 
