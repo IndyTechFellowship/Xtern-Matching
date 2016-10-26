@@ -37,6 +37,7 @@ angular.module('Xtern')
 			PDFJS.getDocument(data.resume).then(renderPages);
         });
 
+        // TODO: turn this into point grade
         $scope.statusOptions = [
             'Stage 1 Approved',
             'Stage 2 Approved',
@@ -85,6 +86,15 @@ angular.module('Xtern')
         };
 
         $scope.addComment = function(){
+            // TODO: fix/update this for new data format
+            var author_name = "controller test author";
+            var group_name = "controller test group";
+            var text = "controller test text bla bla bla. bla bla bla.";
+
+            ProfileService.addCommentToStudent($scope.studentData._id, author_name, group_name, text, function (data) {
+                // console.log(data);
+            });
+
             $scope.comment.author = 'test user'; //temporary
             $scope.comment.group = 'test users'; //temporary
             var newComment = angular.copy($scope.comment);
@@ -92,8 +102,17 @@ angular.module('Xtern')
         };
 
         $scope.removeComment = function(commentToRemove) {
+            var author_name = "controller test author";
+            var group_name = "controller test group";
+            var text = "controller test text bla bla bla. bla bla bla.";
+
+            ProfileService.removeCommentFromStudent($scope.studentData._id, author_name, group_name, text, function (data) {
+                // console.log(data);git 
+            });
+
+            // TODO: fix/update this for new data format
             for(var i = $scope.studentData.comments.length - 1; i >= 0; i--){
-                if($scope.studentData.comments[i].text == commentToRemove.text){
+                if($scope.studentData.comments[i].text == text){
                     $scope.studentData.comments.splice(i,1);
                 }
             }

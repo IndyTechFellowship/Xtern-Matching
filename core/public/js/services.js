@@ -60,6 +60,56 @@
                 });
         };
 
+        self.addCommentToStudent = function(student_id, author_name, group_name, text, callback){
+            $http({
+                method: 'POST',
+                // TODO: replace this when comments are redone
+                url: host + "student/addComment",
+                data: {
+                    "id": student_id,
+                    "author_name": author_name,
+                    "group_name": group_name,
+                    "text": text
+                },
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                }
+            }).then(function (data) {
+                callback(data);
+            }, function errorCallback(response) {
+                console.log('error occured: ' );
+                console.log(response);
+                callback('', 'err');
+            });
+        };
+
+        self.removeCommentFromStudent = function(student_id, author_name, group_name, text, callback){
+            $http({
+                method: 'POST',
+                // TODO: replace this when comments are redone
+                url: host + "student/deleteComment",
+                data: {
+                    "id": student_id,
+                    "author_name": author_name,
+                    "group_name": group_name,
+                    "text": text
+                },
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                }
+            }).then(function (data) {
+                callback(data);
+            }, function errorCallback(response) {
+                console.log('error occured: ' );
+                console.log(response);
+                callback('', 'err');
+            });
+        };
+
     }]).service('CompanyService', ['$http', function ($http){
         var self = this;
         self.company = null;
