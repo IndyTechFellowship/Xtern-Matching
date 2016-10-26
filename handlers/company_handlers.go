@@ -11,6 +11,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"fmt"
 	"log"
+	"strings"
 	"github.com/gorilla/context"
 	// "github.com/dgrijalva/jwt-go"
 )
@@ -18,7 +19,7 @@ import (
 func AddStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 	// ezclaims := context.Get(r, "user").(*jwt.Token).Claims.(jwt.MapClaims)
-	log.Print("ADD STUDENT------------------")
+	// log.Print("ADD STUDENT------------------")
 
 
 	var dat map[string]interface{}
@@ -157,61 +158,33 @@ func GetCompany(w http.ResponseWriter,r *http.Request) {
 
 func GetCurrentCompany(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
-	// ctx := context.Get(r, "user")
-
-	// user := user.New()
-	log.Print("---MAYBE CLAIMS? IDK:---")
-	
 	user := context.Get(r, "user")
-	// cur_user := user.Current(ctx)
-    // claims := user.(*jwt.Token).Claims 
-
     token, err := user.(*jwt.Token)
 
-    if claims := token.Claims; token.Valid {
-    	log.Print("---IF CLAIMS:---")
-        fmt.Printf("%v", claims)
-        log.Print(claims)
+    if token.Valid {
         mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-        log.Print("---MAP CLAIMS:---")
-        log.Print(mapClaims)
-        log.Print(mapClaims["role"])
-        log.Print(mapClaims["org"])
-		w.Header().Add("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode("test")
-    } else {
-        fmt.Println(err)
-    }
-    
-
-	// if claims, ok := claims["role"]; ok {
-	// 	num_id, _ := strconv.ParseInt(id, 10, 64)
-	// 	company, err := services.GetCompany(ctx, num_id)
-	// 	if err != nil {
-	// 		http.Error(w, err.Error(), 500)
-	// 		return
-	// 	}
-
-	// 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	// 	w.Header().Set("Content-Type", "application/json")
-	// 	w.WriteHeader(http.StatusOK)
-	// 	json.NewEncoder(w).Encode(company)
-
-	// }
-		if id, ok := mux.Vars(r)["Id"]; ok {
-		num_id, _ := strconv.ParseInt(id, 10, 64)
+        // log.Print(mapClaims)
+        org := strings.TrimSpace(mapClaims["org"].(string))
+        // log.Print(org)
+		num_id, er1 := strconv.ParseInt(org, 10, 64)
+		if er1 != nil {
+			log.Print("ERROR PARSING STRING TO INT64")
+			log.Print(er1)
+		}
+		// log.Print(num_id)
 		company, err := services.GetCompany(ctx, num_id)
 		if err != nil {
+			log.Print("ERROR GETTING COMPANY")
+			log.Print(err)
 			http.Error(w, err.Error(), 500)
 			return
 		}
-
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(company)
-	}
+    } else {
+        fmt.Println(err)
+    }
 	w.WriteHeader(http.StatusInternalServerError)
 }

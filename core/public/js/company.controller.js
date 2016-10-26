@@ -224,25 +224,16 @@ angular.module('Xtern')
     .controller('CompanyRecruiting', ['$scope', '$state', 'ProfileService', 'CompanyService', function ($scope, $state, ProfileService, CompanyService) {
         var self = this;
         $scope.recruitmentList = [];
+        // console.log(getToken('auth'));
 
-        CompanyService.getCurrentCompany(getToken('auth'), function(companyToken) {
-            console.log("get current company from token in controller:   ");
-            console.log(companyToken);
-            console.log("^^^^ the token! ^^^^^");
-            
-            CompanyService.getCompanyDataForId(companyToken.Claims.org, function(data)                      
-            {
-                $scope.companyData = data;
-                console.log("company data in recruiting controller:");
-                console.log($scope.companyData);
-                console.log($scope.companyData.studentIds);
+        CompanyService.getCurrentCompany(function(company) {
+            $scope.companyData = company;
+            console.log("company data in recruiting controller:");
+            console.log($scope.companyData);
 
-                ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
-                    $scope.recruitmentList = data;
-                });
-
+            ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
+                $scope.recruitmentList = data;
             });
-
         });
 
         $scope.sortableOptions = {

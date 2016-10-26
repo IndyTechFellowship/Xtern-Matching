@@ -64,15 +64,12 @@
         var self = this;
         self.company = null;
 
-        self.getCurrentCompany = function(id, callback){
+        self.getCurrentCompany = function(callback){
             // console.log(id);
-            if(!self.company || self.company._id !== id) {
+            // if(!self.company || self.company._id !== id) {
                 $http({
-                    method: 'POST',
-                    url: host + "company/getCurrentCompany",
-                    data: {
-                        "token": getToken('auth')
-                    },
+                    method: 'GET',
+                    url: host + "company/getCurrentCompany/0",
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
@@ -87,9 +84,9 @@
                     console.log('error occured: ' + response);
                     callback('', 'err');
                 });
-            } else {
-                 callback(self.company);
-            }
+            // } else {
+            //      callback(self.company);
+            // }
         };
 
         self.getCompanyDataForId = function(id, callback){
