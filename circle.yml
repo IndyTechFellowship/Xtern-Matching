@@ -47,4 +47,4 @@ deployment:
   staging:
     branch: master
     commands:
-      - appcfg.py update core --noauth_local_webserver -A xtern-matching-dev -V 4
+      - gcloud -q preview app deploy core/app.yaml --promote --version=1
