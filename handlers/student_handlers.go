@@ -66,6 +66,7 @@ func PostStudent(w http.ResponseWriter,r *http.Request) {
 			return
 		}
 	}
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 }
 
