@@ -145,7 +145,7 @@
                 // TODO: replace this id when company login is done
                 url: host + "company/removeStudent",
                 data: {
-                    "id": 5066549580791808,
+                    // "id": 5066549580791808,
                     "studentId": studentId
                 },
                 headers: {
