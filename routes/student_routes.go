@@ -11,7 +11,7 @@ func GetStudentRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/student/resume/{Id}", handlers.PostPDF).Methods("POST").Name("CreatePDF")
 	router.HandleFunc("/student", handlers.PostStudent).Methods("POST").Name("CreateStudent")
 	router.HandleFunc("/student/getstudents", handlers.GetStudentsFromIds).Methods("POST").Name("GetStudentsFromIds")
-	router.HandleFunc("/student/addComment/{Id}", handlers.AddComment).Methods("GET").Name("AddComment")
-	router.HandleFunc("/student/deleteComment/{Id}", handlers.DeleteComment).Methods("GET").Name("DeleteComment")
+	router.HandleFunc("/student/addComment", handlers.AddComment).Methods("POST").Name("AddComment")
+	router.HandleFunc("/student/deleteComment", handlers.DeleteComment).Methods("POST").Name("DeleteComment")
 	return router
 }

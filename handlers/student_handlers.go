@@ -113,55 +113,59 @@ func PostStudent(w http.ResponseWriter,r *http.Request) {
 func AddComment(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	if id, ok := mux.Vars(r)["Id"]; ok {
-		num_id, _ := strconv.ParseInt(id, 10, 64)
-		student, err := services.GetStudent(ctx, num_id)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-
-		newComment := models.Comment{Author: "golang test author", Group: "golang test org", Text: "golang test text"}
-
-		_, addCommentErr := services.AddComment(ctx, student.Id, newComment)
-		if addCommentErr != nil {
-			http.Error(w, addCommentErr.Error(), 500)
-			return
-		}
-
-		w.Header().Add("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(student)
+	var dat map[string]interface{}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
 	}
-	w.WriteHeader(http.StatusInternalServerError)
+	newComment := models.Comment{Author: dat["author_name"].(string), Group: dat["group_name"].(string), Text: dat["text"].(string)}
+	studentId :=  int64(dat["id"].(float64))
+	student, err := services.GetStudent(ctx, studentId)
+	if err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	_, addCommentErr := services.AddComment(ctx, student.Id, newComment)
+	if addCommentErr != nil {
+		http.Error(w, addCommentErr.Error(), 500)
+		return
+	}
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(student)
 }
 
 func DeleteComment(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	if id, ok := mux.Vars(r)["Id"]; ok {
-		num_id, _ := strconv.ParseInt(id, 10, 64)
-		student, err := services.GetStudent(ctx, num_id)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-
-		commentToDelete := models.Comment{Author: "golang test author", Group: "golang test org", Text: "golang test text"}
-
-		_, addCommentErr := services.DeleteComment(ctx, student.Id, commentToDelete)
-		if addCommentErr != nil {
-			http.Error(w, addCommentErr.Error(), 500)
-			return
-		}
-
-		w.Header().Add("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(student)
+	var dat map[string]interface{}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
 	}
-	w.WriteHeader(http.StatusInternalServerError)
+	commentToDelete := models.Comment{Author: dat["author_name"].(string), Group: dat["group_name"].(string), Text: dat["text"].(string)}
+	studentId :=  int64(dat["id"].(float64))
+	student, err := services.GetStudent(ctx, studentId)
+	if err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	_, addCommentErr := services.DeleteComment(ctx, student.Id, commentToDelete)
+	if addCommentErr != nil {
+		http.Error(w, addCommentErr.Error(), 500)
+		return
+	}
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(student)
 }
 
 //8 MB file limit
