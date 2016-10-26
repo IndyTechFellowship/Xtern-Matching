@@ -26,7 +26,7 @@ dependencies:
     - ln -s $HOME/Xtern-Matching $HOME/go_appengine/gopath/src
   override:
     - goapp get Xtern-Matching/core
-    - npm install core
+    - npm install
 test:
   override:
     # - export GOOGLE_APPLICATION_CREDENTIALS=$GOPATH/src/Xtern-Matching/core/environments/test/cloudstore-dev.json
@@ -37,8 +37,8 @@ deployment:
   production:
     branch: production
     commands:
-      - goapp deploy -application xtern-matching
+      - goapp deploy -application xtern-matching core
   staging:
     branch: master
     commands:
-      - goapp deploy -application xtern-matching-dev
+      - goapp deploy -application xtern-matching-dev core
