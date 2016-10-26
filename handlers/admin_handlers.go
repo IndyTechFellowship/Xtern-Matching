@@ -102,12 +102,16 @@ func GetUsers(w http.ResponseWriter, r *http.Request){
 		return
 	}
 	
+	//Don't want to send back the passwords for security resaons
+	for i := 0; i < len(users); i++ {
+		users[i].Password = "********"
+	}
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
 }
 
-func UpdateUser(w http.ResponseWriter, r *http.Request){
+func PutUser(w http.ResponseWriter, r *http.Request){
 	ctx := appengine.NewContext(r)
 	var user models.User
 	decoder := json.NewDecoder(r.Body)
@@ -116,7 +120,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request){
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	err := services.UpdateUser(ctx, user)
+	err := services.UpdateUser(ctx, &user)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
