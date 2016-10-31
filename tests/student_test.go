@@ -1,69 +1,190 @@
 package tests
 
 import (
-	"os"
-	"strings"
+	//"os"
 	"testing"
-	"encoding/json"
 	"google.golang.org/appengine/aetest"
 	"Xtern-Matching/handlers/services"
+	"net/http"
 	"Xtern-Matching/models"
+	"google.golang.org/appengine/datastore"
+	"time"
+	"reflect"
 	"golang.org/x/net/context"
 )
 
-func TestPost(t *testing.T) {
-	//ctx, done, err := aetest.NewContext()
-	//if err != nil {
-	//	t.Fatal(err)
-	//}
-	//defer done()
-}
 
-func TestGet(t *testing.T) {
-	//ctx, done, err := aetest.NewContext()
-	//if err != nil {
-	//	t.Fatal(err)
-	//}
-	//defer done()
-}
-
-/*
-	Creates a sample user in the test database we can use for purposes such as testing a resume upload
-*/
-func createUser(ctx context.Context) (models.Student, error) {
-	userJson := "{\"_id\":123456789012345,\"firstName\":\"Verna\",\"lastName\":\"Gomez\",\"email\":\"vernagomez@sportan.com\",\"university\":\"Rose-Hulman Institute of Technology\",\"major\":\"Computer Science\",\"gradYear\":\"2019\",\"workStatus\":\"EAD\",\"homeState\":\"Minnesota\",\"gender\":\"female\",\"languages\":[{\"name\":\"Ruby\",\"category\":\"General\"},{\"name\":\"Python\",\"category\":\"General\"},{\"name\":\"HTML\",\"category\":\"Front-End\"},{\"name\":\"CSS\",\"category\":\"Front-End\"},{\"name\":\"Knockout\",\"category\":\"Front-End\"},{\"name\":\"Ruby\",\"category\":\"General\"},{\"name\":\".Net\",\"category\":\"Full-Stack\"},{\"name\":\"SQL\",\"category\":\"Database\"}],\"githubUrl\":\"https://github.com/davisnygren\",\"linkedinUrl\":\"http://www.linkedin.com/\",\"personalWebiteUrl\":\"http://www.rose-hulman.edu/\",\"interestedIn\":[\"Product Management\",\"Project Management\",\"Software Engineer- Front-end Web Dev\"],\"interestedInEmail\":\"true\",\"r1Grade\":{},\"status\":\"Stage 1 Approved\",\"comments\":[{\"author\":\"Adams Lane\",\"group\":\"Xtern\",\"Text\":\"Tempor Lorem elit nostrud pariatur in non quis. Laboris minim incididunt in ad mollit anim cupidatat enim commodo proident nostrud minim excepteur. Deserunt duis mollit amet sint aliquip nulla ea aliquip labore tempor mollit nulla. Nostrud anim deserunt anim ex aute. Fugiat officia irure do excepteur occaecat exercitation. Sunt sit enim reprehenderit nostrud minim.\"}]}"
+func createStudent(ctx context.Context) (models.Student, error) {
 	var student models.Student
-	decoder := json.NewDecoder(strings.NewReader(userJson))
-	if err := decoder.Decode(&student); err != nil {
-		return student, err
-	}
-	_,err := services.NewStudent(ctx,&student)
+	student.FirstName = "Darla"
+	student.LastName = "leach"
+	student.Email = "darlaleach@stockpost.com"
+	student.University = "Rose-Hulman Institute of Technology"
+	student.Major = "Computer Engineering"
+	student.GradYear = "2017"
+	student.WorkStatus = "US Citizen"
+	student.HomeState = "West Virginia"
+	student.Gender = "female"
+	student.Skills = []models.Skill{ {Name: "SQL",Category:"Database"}, {Name: "HTML",Category:"Frontend"}}
+	student.Github = "https://github.com/xniccum"
+	student.Linkin = ""
+	student.PersonalSite = ""
+	student.Interests = []string{"Product Management","Software Engineer- Middle-tier Dev."}
+	student.EmailIntrest = "false"
+	student.R1Grade = models.Grade{Text: "C",Value: "8"}
+	student.Status = "Stage 1 Approved"
+	student.Comments = []models.Comment{}
+	student.Resume = "public/data_mocks/sample.pdf"
+	student.Active = true
+
+	key := datastore.NewIncompleteKey(ctx, "Student", nil)
+	key, err := datastore.Put(ctx, key, &student);
 	if err != nil {
-		return student, err
+		return models.Student{}, err
 	}
+	time.Sleep(time.Millisecond * 500)
+	student.Id = key.IntID()
+
 	return student, nil
 }
 
-func TestResumePost(t *testing.T) {
+func TestPost(t *testing.T) {
 	ctx, done, err := aetest.NewContext()
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer done()
-	
-	student, err := createUser(ctx)
+
+	var student models.Student
+	student.FirstName = "Darla"
+	student.LastName = "leach"
+	student.Email = "darlaleach@stockpost.com"
+	student.University = "Rose-Hulman Institute of Technology"
+	student.Major = "Computer Engineering"
+	student.GradYear = "2017"
+	student.WorkStatus = "US Citizen"
+	student.HomeState = "West Virginia"
+	student.Gender = "female"
+	student.Skills = []models.Skill{ {Name: "SQL",Category:"Database"}, {Name: "HTML",Category:"Frontend"}}
+	student.Github = "https://github.com/xniccum"
+	student.Linkin = ""
+	student.PersonalSite = ""
+	student.Interests = []string{"Product Management","Software Engineer- Middle-tier Dev."}
+	student.EmailIntrest = "false"
+	student.R1Grade = models.Grade{ Text: "C",Value: "8"}
+	student.Status = "Stage 1 Approved"
+	student.Comments = []models.Comment{}
+
+
+	// Basic input
+	_, err = services.NewStudent(ctx, student)
 	if err != nil {
 		t.Fatal(err)
 	}
-	
-	file, err := os.Open("resources/sample.pdf")
+
+	// Check for bad input
+	empty_student := models.Student{}
+	status, err := services.NewStudent(ctx, empty_student)
+	if status != http.StatusBadRequest {
+		t.Fatal("Accepted empty student")
+	}
+}
+
+func TestGet(t *testing.T) {
+	ctx, done, err := aetest.NewContext()
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer file.Close()
-	
-	err = services.UpdateResume(ctx, student.Id, file)
+	defer done()
+
+	// Add student to get
+	var student models.Student
+	student.FirstName = "Darla"
+	student.LastName = "leach"
+	student.Email = "darlaleach@stockpost.com"
+	student.University = "Rose-Hulman Institute of Technology"
+	student.Major = "Computer Engineering"
+	student.GradYear = "2017"
+	student.WorkStatus = "US Citizen"
+	student.HomeState = "West Virginia"
+	student.Gender = "female"
+	student.Skills = []models.Skill{ {Name: "SQL",Category:"Database"}, {Name: "HTML",Category:"Frontend"}}
+	student.Github = "https://github.com/xniccum"
+	student.Linkin = ""
+	student.PersonalSite = ""
+	student.Interests = []string{"Product Management","Software Engineer- Middle-tier Dev."}
+	student.EmailIntrest = "false"
+	student.R1Grade = models.Grade{Text: "C",Value: "8"}
+	student.Status = "Stage 1 Approved"
+	student.Comments = []models.Comment{}
+
+	key := datastore.NewIncompleteKey(ctx, "Student", nil)
+	if _, err := datastore.Put(ctx, key, &student); err != nil {
+		t.Fatal(err)
+	}
+
+
+	student.FirstName = "Lee"
+	student.LastName = "Robinson"
+	student.Email = "leeson@stockpost.com"
+
+	key = datastore.NewIncompleteKey(ctx, "Student", nil)
+	if _, err := datastore.Put(ctx, key, &student); err != nil {
+		t.Fatal(err)
+	}
+
+	time.Sleep(time.Millisecond * 500)
+
+	students, err := services.GetStudents(ctx)
 	if err != nil {
 		t.Fatal(err)
-	}	
+	}
+
+	if len(students) != 2 {
+		//log.Print(len(students))
+		//t.Fatal("Didn't grab all students")
+		t.Fatal(students)
+	}
+
+	first := students[0].FirstName
+	last := students[0].LastName
+	id := students[0].Id
+	student, err = services.GetStudent(ctx, id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if student.FirstName != first || student.LastName != last {
+		t.Fatal("Grabbed wrong student")
+	}
+
+	student, err = services.GetStudent(ctx, -4)
+	if !reflect.DeepEqual(student, (models.Student{})) {
+		t.Fatal("student shouldn't exist")
+	}
+
+}
+
+func TestResumePost(t *testing.T) {
+	// Due to current dependecy credentials, turning off this test until better alternative can be found
+	//ctx, done, err := aetest.NewContext()
+	//if err != nil {
+	//	t.Fatal(err)
+	//}
+	//defer done()
+	//
+	//student, err := createStudent(ctx)
+	//if err != nil {
+	//	t.Fatal(err)
+	//}
+	//
+	//file, err := os.Open("resources/sample.pdf")
+	//if err != nil {
+	//	t.Fatal(err)
+	//}
+	//defer file.Close()
+	//
+	//err = services.UpdateResume(ctx, student.Id, file)
+	//if err != nil {
+	//	t.Fatal(err)
+	//}
 }

@@ -28,17 +28,17 @@ func TestRegister(t *testing.T) {
 	user2.Role = "company"
 
 	responseStatus, err := services.Register(ctx,user1)
-	if responseStatus != http.StatusAccepted {
-		t.Fail()
+	if responseStatus != http.StatusCreated {
+		t.Fatal("Failed to register user1")
 	}
 	responseStatus, err = services.Register(ctx,user2)
-	if responseStatus != http.StatusAccepted {
-		t.Fail()
+	if responseStatus != http.StatusCreated {
+		t.Fatal("Failed to register user2")
 	}
 
 	responseStatus, err = services.Register(ctx,user1)
-	if responseStatus != http.StatusInternalServerError {
-		t.Fail()
+	if responseStatus != http.StatusBadRequest {
+		t.Fatal("User1 already exists")
 	}
 }
 
@@ -62,11 +62,11 @@ func TestLogin(t *testing.T) {
 	user2.Role = "company"
 
 	responseStatus, err := services.Register(ctx,user1)
-	if responseStatus != http.StatusAccepted {
+	if responseStatus != http.StatusCreated {
 		t.Fail()
 	}
 	responseStatus, err = services.Register(ctx,user2)
-	if responseStatus != http.StatusAccepted {
+	if responseStatus != http.StatusCreated {
 		t.Fail()
 	}
 

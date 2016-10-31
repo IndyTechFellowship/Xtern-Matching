@@ -5,8 +5,8 @@ angular.module('Xtern')
         $scope.companyName = getToken('companyName');
         $scope.isCompany = true;
 
-        CompanyService.getCompanyDataForId(5733953138851840, function(data)            
-        // CompanyService.getCompanyDataForId($stateParams._id, function(data)            
+        CompanyService.getCompanyDataForId(5733953138851840, function(data)
+        // CompanyService.getCompanyDataForId($stateParams._id, function(data)
         {
             $scope.companyData = data;
             console.log("companyData: "+data);
@@ -30,9 +30,8 @@ angular.module('Xtern')
         };
 
         $scope.logout = function () {
-            localStorage.removeItem("auth");
-            localStorage.removeItem("role");
             logoutStorage("auth");
+            logoutStorage("company");
             $state.go('company.login');
             $scope.loggedIn = false;
         };
@@ -214,8 +213,8 @@ angular.module('Xtern')
                 if (err) {
                     console.log('bad login');
                 } else {
-                    localStorage.setItem("auth", token);
-                    $scope.isCompany = true;
+                    setToken(token, "auth");
+                    setToken("ININ", "company");
                     $state.go('company.dashboard');
                 }
             });

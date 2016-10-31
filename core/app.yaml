@@ -1,7 +1,3 @@
-application: xtern-matching
-#application: xtern-matching-143216
-version: 2
-
 runtime: go
 api_version: go1
 threadsafe: true
@@ -10,6 +6,10 @@ handlers:
 - url: /
   static_files: index.html
   upload: index.html
+
+- url: /favicon.ico
+  static_files: favicon\ico
+  upload: favicon.ico
 
 # Serving static files
 - url: /public
@@ -25,4 +25,5 @@ handlers:
   script: _go_app
 
 env_variables:
-  NODE_ENV: 'production'
+  XTERN_ENVIRONMENT: 'production'
+  GOOGLE_APPLICATION_CREDENTIALS: 'environments/production/cloudstore.json'
