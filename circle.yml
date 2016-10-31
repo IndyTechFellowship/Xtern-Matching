@@ -2,53 +2,49 @@ general:
   branches:
     only:
       - master
+      - production
       
 machine:
   environment:
+    # Add app engine sdk to pythonpath for local unit tests.
     PYTHONPATH: $(PYTHONPATH):$(HOME)/google_appengine
-    PATH: "${HOME}/go_appengine/:${PATH}"
-    GOPATH: "${HOME}/go_appengine/gopath"
-    GOROOT: "${HOME}/go_appengine/goroot"
-    GCLOUD_PROJECT: "xtern-matching"
-    CLOUDSDK_PYTHON_SITEPACKAGES: 1
+    # Add app engine sdk to path
+    PATH: ${HOME}/go_appengine/:${PATH}
+    # Add GOROOT
+    GOROOT: ${HOME}/go_appengine/goroot
+    # Add GOPATH
+    GOPATH: ${HOME}/go_appengine/gopath
+    # Project-ID
+    GCLOUD_PROJECT: "xtern-matching-dev"
 
 dependencies:
   pre:
     # Download App Engine SDK
-    # This is not necessary to deploy, its only necessary  to run local tests importing the App Engine SDK
     - curl -o $HOME/go_appengine_sdk_linux_amd64-1.9.40.zip https://storage.googleapis.com/appengine-sdks/featured/go_appengine_sdk_linux_amd64-1.9.40.zip
     - unzip -q -d $HOME $HOME/go_appengine_sdk_linux_amd64-1.9.40.zip
-    #- ls
-    #- mv ../Combined ../Xtern-Matching
-    - mkdir ../go_appengine/gopath/bin
-    - mkdir ../go_appengine/gopath/pkg
-    - mkdir ../go_appengine/gopath/src
-    - cp -R ../Xtern-Matching ../go_appengine/gopath/src
-    - echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
-    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
-    #- sudo apt-get install python-openssl
-    - sudo apt-get remove python-virtualenv python-openssl python3-openssl
-    - sudo apt-get update
-    - sudo apt-get install python-openssl python3-openssl
-    #- sudo rm -rf /opt/google-cloud-sdk/
-    - export CLOUDSDK_CORE_DISABLE_PROMPTS=1
-    - export CLOUDSDK_PYTHON_SITEPACKAGES=1
-    #- curl https://sdk.cloud.google.com | bash
-    #- source ~/.bashrc
-    - export CLOUDSDK_CORE_DISABLE_PROMPTS=0
-    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account ci-deploy@xtern-matching.iam.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json
-    - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
+
+    # Retrieve our secrets from the CircleCI environment
+    - echo $CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
+
+    # Make sure gcloud is up to date
+    - gcloud --quiet components update app
+    # authenticate gcloud
+    - gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
+    # Replace <your-project-id>
+    - gcloud config set project $GCLOUD_PROJECT
+
+    - mkdir $HOME/go_appengine/gopath/src
+    - ln -s $HOME/Xtern-Matching $HOME/go_appengine/gopath/src
   override:
-    # './...' is a relative pattern which means all subdirectories
-    #- cd ../go_appengine/gopath/src/Xtern-Matching/core
-    #- ln -s $HOME/go_appengine/gopath/src/Xtern-Matching/core $HOME/
-    - goapp get ../go_appengine/gopath/src/Xtern-Matching/core
-    - npm install ../go_appengine/gopath/src/Xtern-Matching/core
+    - goapp get Xtern-Matching/core
+    - npm install core
 test:
   override:
-  #TODO: Add tests
+    # - export GOOGLE_APPLICATION_CREDENTIALS=$GOPATH/src/Xtern-Matching/core/environments/test/cloudstore-dev.json
+    - goapp test Xtern-Matching/tests
+
 deployment:
-    staging:
-        branch: master
-        commands:
-            - sudo /opt/google-cloud-sdk/bin/gcloud -q app deploy ../go_appengine/gopath/src/Xtern-Matching/core/app.yaml
+  staging:
+    branch: master
+    commands:
+      - gcloud app deploy core/app.yaml --promote

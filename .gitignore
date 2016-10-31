@@ -39,3 +39,4 @@ core/node_modules
 
 *.zip
 .DS_Store
+/core/environments/development/cloudstore-dev.json

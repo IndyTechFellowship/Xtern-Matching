@@ -17,6 +17,7 @@ angular.module('Xtern')
             });
         
         $scope.logout = function () {
+            logoutStorage("auth");
             logoutStorage("company");
             $state.go('company.login');
             $scope.loggedIn = false;
@@ -200,8 +201,8 @@ angular.module('Xtern')
                 if (err) {
                     console.log('bad login')
                 } else {
-                    setToken(token, "company");
-                    setToken("ININ", "companyName");
+                    setToken(token, "auth");
+                    setToken("ININ", "company");
                     $state.go('company.dashboard');
                 }
             });
