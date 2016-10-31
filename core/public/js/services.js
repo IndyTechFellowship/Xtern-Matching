@@ -64,8 +64,8 @@
                 method: 'POST',
                 url: host + "auth/login",
                 data: {
-                    "email":"xniccum@gmail.com",
-                    "password": "admin1"
+                    "email":email,
+                    "password": password
                 },
                 headers: {
                     'Content-Type': "application/json",
@@ -78,12 +78,17 @@
                 console.log('error occured: '+response);
                 callback('','err')
             });
-        }
+        };
+
+        self.logout = function (callback) {
+            self.jwtToken = null;
+            callback();
+        };
 
         self.renderTokens = function(){
             $http({
                 method: 'GET',
-                url: host + "getUser",//NICCUM CAN FIX THIS
+                url: host + "getUser",
                 headers: {
                     'Content-Type': "application/json",
                     'Accept': "application/json",

@@ -8,13 +8,10 @@ function getToken(tokenName) {
     return localStorage.getItem(tokenName);
 }
 
-function loadLogin() {
-
-};
-
-function logoutStorage(type) {
-    localStorage.removeItem(type);
-};
+function logout() {
+    localStorage.removeItem("auth");
+    localStorage.removeItem("role");
+}
 
 var isLoggedInTechPoint = function ($q) {
     var role = getToken("role");

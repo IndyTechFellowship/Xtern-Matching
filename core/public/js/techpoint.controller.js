@@ -15,7 +15,7 @@ angular.module('Xtern')
             });
 
         $scope.logout = function () {
-            logoutStorage("auth");
+            logout();
             $state.go('techpoint.login');
             $scope.loggedIn = false;
         };
@@ -186,7 +186,7 @@ angular.module('Xtern')
 
         //END CONFIG DATA
     }])
-    .controller('TechpointLogin',['$scope','$state','AuthService','TechPointDashboardService', function($scope, $state, AuthService, TechPointDashboardService) {
+    .controller('TechpointLogin',['$scope','$state','AuthService','TechPointDashboardService', function($scope, $state, AuthService) {
         //$('.ui.form')
         //    .form({
         //        fields: {
