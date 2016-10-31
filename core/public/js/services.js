@@ -64,7 +64,7 @@
                 method: 'POST',
                 url: host + "auth/login",
                 data: {
-                    "email":email,
+                    "email": email,
                     "password": password
                 },
                 headers: {
@@ -101,7 +101,6 @@
             }, function errorCallback(response) {
             
             });
-            
             
         }
     }]).service('ResumeService',['$http', function ($http) {
