@@ -8,7 +8,7 @@ handlers:
   upload: index.html
 
 - url: /favicon.ico
-  static_files: favicon\ico
+  static_files: favicon.ico
   upload: favicon.ico
 
 # Serving static files
