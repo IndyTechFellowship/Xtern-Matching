@@ -1,11 +1,12 @@
 angular.module('Xtern')
-    .controller('TechPointMain', ['$scope', '$rootScope', '$state', 'TechPointDashboardService', function($scope, $rootScope, $state, TechPointDashboardService){
+    .controller('TechPointMain', ['$scope', '$rootScope', '$state', 'TechPointDashboardService', function($scope, $rootScope, $state, TechPointDashboardService,
+                                                                                                          AuthService){
         var self = this;
-        $scope.loggedIn = isLoggedIn('techPoint');
+        //$scope.loggedIn = isLoggedIn('techPoint');
 
         $rootScope.$on('$stateChangeStart',
             function (event, toState, toParams, fromState, fromParams, options) {
-                $scope.loggedIn = isLoggedIn('techPoint');
+                $scope.loggedIn = isLoggedInTechPoint();
                 if (toState.name == "techpoint.profile") {
                     $('#profile').show();
                 }
@@ -15,6 +16,7 @@ angular.module('Xtern')
             });
 
         $scope.logout = function () {
+            AuthService.logout();
             logout();
             $state.go('techpoint.login');
             $scope.loggedIn = false;
@@ -182,9 +184,6 @@ angular.module('Xtern')
             // }
             $scope.DATA = data;
         });
-
-
-        //END CONFIG DATA
     }])
     .controller('TechpointLogin',['$scope','$state','AuthService','TechPointDashboardService', function($scope, $state, AuthService) {
         //$('.ui.form')

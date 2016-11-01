@@ -80,11 +80,6 @@
             });
         };
 
-        self.logout = function (callback) {
-            self.jwtToken = null;
-            callback();
-        };
-
         self.renderTokens = function(){
             $http({
                 method: 'GET',
@@ -92,7 +87,7 @@
                 headers: {
                     'Content-Type': "application/json",
                     'Accept': "application/json",
-                    'Authorization': 'bearer '+getToken('auth')
+                    'Authorization': 'bearer ' + self.jwtToken
                 }
             }).then(function (data) {
                 setToken(data.role, "role");
@@ -102,7 +97,28 @@
             
             });
             
-        }
+        };
+
+        self.logout = function (callback) {
+            $http({
+                method: 'POST',
+                url: host + "auth/logout",
+                data: {},
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer '+getToken('auth')
+                }
+            }).then(function () {
+                self.jwtToken = null;
+                logout();
+                callback();
+            }, function errorCallback(response) {
+                console.log('error occured: '+response);
+                callback('','err')
+            });
+        };
+
     }]).service('ResumeService',['$http', function ($http) {
         var self = this;
         self.jwtToken = null;

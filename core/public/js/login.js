@@ -11,13 +11,14 @@ function getToken(tokenName) {
 function logout() {
     localStorage.removeItem("auth");
     localStorage.removeItem("role");
+    localStorage.removeItem("organization");
 }
 
-var isLoggedInTechPoint = function ($q) {
+var isLoggedInTechPoint = function () {
     var role = getToken("role");
     if (!role) {
         var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
-        return $q.reject(errorObject);
+        return errorObject;
     }
     else if(role =="admin"){
         return;
@@ -27,15 +28,15 @@ var isLoggedInTechPoint = function ($q) {
     }
     else if(role == "Company"){
         var errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
-        return $q.reject(errorObject);        
+        return errorObject;
     }
     else if(role == "Instructor"){
         var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' };
-        return $q.reject(errorObject);        
+        return errorObject;
     }
     else{
         var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
-        return $q.reject(errorObject);
+        return errorObject;
     }
 };
 
