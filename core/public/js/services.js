@@ -88,7 +88,7 @@
         self.renderTokens = function(){
             $http({
                 method: 'GET',
-                url: host + "getUser",
+                url: host + "/getUser",
                 headers: {
                     'Content-Type': "application/json",
                     'Accept': "application/json",

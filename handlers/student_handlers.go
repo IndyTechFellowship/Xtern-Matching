@@ -47,6 +47,7 @@ func GetStudents(w http.ResponseWriter,r *http.Request) {
 	json.NewEncoder(w).Encode(students)
 }
 
+// Add Student
 func PostStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 

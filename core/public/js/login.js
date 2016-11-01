@@ -2,7 +2,7 @@
 function setToken(token, type) {
     //localStorage.setItem('token', token);
     localStorage.setItem(type, token);
-};
+}
 
 function getToken(tokenName) {
     return localStorage.getItem(tokenName);
@@ -37,7 +37,7 @@ var isLoggedInTechPoint = function ($q) {
         var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
         return $q.reject(errorObject);
     }
-}
+};
 
 var isLoggedInInstructor = function ($q) {
     var role = getToken("role");
@@ -63,7 +63,7 @@ var isLoggedInInstructor = function ($q) {
         var errorObject = { code: 'NOT_AUTHENTICATED_INSTRUCTOR' };
         return $q.reject(errorObject);
     }
-}
+};
 
 var isLoggedInCompany = function ($q) {
     var role = getToken("role");
@@ -89,7 +89,7 @@ var isLoggedInCompany = function ($q) {
         var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);
     }
-}
+};
 
 var isLoggedIn = function ($q) {
     var role = getToken("role");

@@ -232,7 +232,6 @@ angular.module('Xtern')
                     console.log('Moving');
                     console.log(getToken("auth"));
                     $state.go('techpoint.dashboard');
-                    console.log('Didn\'t move');
                 }
             });
         };
