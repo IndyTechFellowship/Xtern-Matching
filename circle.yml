@@ -15,7 +15,7 @@ machine:
     # Add GOPATH
     GOPATH: ${HOME}/go_appengine/gopath
     # Project-ID
-    GCLOUD_PROJECT: "xtern-matching-dev"
+    GCLOUD_PROJECT: "xtern-matching-test"
 
 dependencies:
   pre:
@@ -37,7 +37,7 @@ dependencies:
     - ln -s $HOME/Xtern-Matching $HOME/go_appengine/gopath/src
   override:
     - goapp get Xtern-Matching/core
-    - npm install core
+    - npm install core --prefix core
 test:
   override:
     # - export GOOGLE_APPLICATION_CREDENTIALS=$GOPATH/src/Xtern-Matching/core/environments/test/cloudstore-dev.json
