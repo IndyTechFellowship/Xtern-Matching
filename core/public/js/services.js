@@ -87,7 +87,7 @@
                     'Accept': "application/json",
                     'Authorization': 'bearer ' + getToken('auth')
                 },
-                data: {'user': user}
+                data: user
             }).then(function (data) {
                 //success
                 callback(data);
@@ -108,7 +108,7 @@
                     'Accept': "application/json",
                     'Authorization': 'bearer ' + getToken('auth')
                 },
-                data: {'user': user}
+                data: user
             }).then(function (data) {
                 //success
                 callback(data);
