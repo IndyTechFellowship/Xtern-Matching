@@ -92,7 +92,6 @@
             }).then(function (data) {
                 setToken(data.role, "role");
                 setToken(data.organization, "organization");
-
             }, function errorCallback(response) {
             
             });
@@ -115,7 +114,7 @@
                 callback();
             }, function errorCallback(response) {
                 console.log('error occured: '+response);
-                callback('','err')
+                callback('err')
             });
         };
 

@@ -70,25 +70,25 @@ var isLoggedInCompany = function ($q) {
     var role = getToken("role");
     if (!role) {
         var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
-        return $q.reject(errorObject);
+        return errorObject;
     }
     else if(role =="admin"){
         return;
     }
     else if (role == "TechPoint") {
         var errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
-        return $q.reject(errorObject);      
+        return errorObject;
     }
     else if(role == "Company"){
         return;
     }
     else if(role == "Instructor"){
         var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' };
-        return $q.reject(errorObject);        
+        return errorObject;
     }
     else{
         var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
-        return $q.reject(errorObject);
+        return errorObject;
     }
 };
 

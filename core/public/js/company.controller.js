@@ -1,13 +1,11 @@
 angular.module('Xtern')
-    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'TechPointDashboardService', function ($scope, $rootScope, $state, TechPointDashboardService) {
+    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'AuthService', function ($scope, $rootScope, $state, AuthService) {
         var self = this;
-        $scope.loggedIn = isLoggedIn('company');
-        $scope.companyName = getToken('companyName');
+        $scope.loggedIn = isLoggedInCompany();
 
         $rootScope.$on('$stateChangeStart',
             function (event, toState, toParams, fromState, fromParams, options) {
-               $scope.loggedIn = isLoggedIn('company');
-                $scope.companyName = getToken('companyName');
+               $scope.loggedIn = isLoggedInCompany();
                if(toState.name == "company.profile"){
                     $('#profile').show();
                 }
@@ -17,10 +15,14 @@ angular.module('Xtern')
             });
         
         $scope.logout = function () {
-            logoutStorage("auth");
-            logoutStorage("company");
-            $state.go('company.login');
-            $scope.loggedIn = false;
+            AuthService.logout(function (err) {
+                if(err) {
+                    console.log('Logout unsuccessful');
+                } else {
+                    localStorage.removeItem("auth");
+                    $state.go('company.login');
+                }
+            });
         };
     }])
     .controller('CompanyDashboardCtrl', ['$scope', 'TechPointDashboardService', function ($scope, TechPointDashboardService) {
@@ -156,9 +158,7 @@ angular.module('Xtern')
         });
         //END CONFIG DATA
     }])
-    .controller('CompanyLogin', ['$scope', '$state','AuthService', function ($scope, $state,AuthService) {
-        console.log('attached');
-        $scope.company = "ININ";
+    .controller('CompanyLogin', ['$scope', '$state','AuthService', function ($scope, $state, AuthService) {
         //$('.ui.form')
         //    .form({
         //        fields: {
@@ -195,14 +195,12 @@ angular.module('Xtern')
             //    $('.ui.form .message').show();
             //    return false;
             //}
-            // do more stuff
-            //setToken("token_placeholder", "company");
             AuthService.login('xniccum@gmail.com','admin1', function (token,err) {
                 if (err) {
-                    console.log('bad login')
+                    console.log('Login unsuccessful');
                 } else {
-                    setToken(token, "auth");
-                    setToken("ININ", "company");
+                    console.log('Login Successful');
+                    setToken(token,"auth");
                     $state.go('company.dashboard');
                 }
             });
