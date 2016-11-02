@@ -60,7 +60,7 @@
         var self = this;
         self.userData = null;
         self.getUsers = function(role, company, callback){
-            var route = "/admin/getusers/"+role+"/"+company;
+            var route = "admin/getusers/"+role+"/"+company;
             $http({
                 method: 'GET',
                 url: host + route,
@@ -77,8 +77,9 @@
                 callback('','err')
             });
         };
+
         self.addUser = function(user, callback){
-            var route = "/admin/register" //??
+            var route = "admin/register" //??
             $http({
                 method: 'POST',
                 url: host + route,
@@ -92,14 +93,13 @@
                 //success
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ' + response);
-                console.log('Here: ' + getToken('auth'));
+                console.log('error occured: ', response);
+                // console.log('Here: ' + getToken('auth'));
                 callback('', 'err')
             });
         };
-
         self.updateUser = function(user, callback){
-            var route = "/admin" //??
+            var route = "admin" //??
             $http({
                 method: 'PUT',
                 url: host + route,

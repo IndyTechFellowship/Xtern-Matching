@@ -28,7 +28,7 @@ angular.module('Xtern')
         $scope.companyUsers = [];
         $scope.UserFormData = {};
 
-        $scope.companyList = ["ININ", "Salesforce","Instructor","Company"];
+        $scope.companyList = ["ININ", "Salesforce","Instructor","TechPoint"];
 
         $scope.selectedGroup = {
             active: 'TechPoint',
@@ -40,7 +40,11 @@ angular.module('Xtern')
             changeCompany: function () {
                 refreshCompany($scope.selectedGroup.activeCompany);
             },
-            selectedUsers: $scope.techPointUsers
+            selectedUsers: $scope.techPointUsers,
+            refresh: function(){
+                console.log('refreshed');
+                swapActiveArray( $scope.selectedGroup.active);
+            }
         };
 
         $scope.tableHeaders = [
@@ -58,19 +62,13 @@ angular.module('Xtern')
             $scope.techPointUsers.sort(sortFunc);
         };
 
-        $scope.launchAddEditUserModal = function (user) {
-           
-            $('#accountsModal').modal('show');
-             resetUserForm(user);
-           // $('#accountModalform').form('reset');
-            $('#accountModalform .error.message').empty();
-        }
 
         var resetUserForm = function(user){
             //$('#accountModalform').form('clear')
             if (user) {
                 var nameArr = user.name.split(' ', 2);
                 console.log(user);
+                $scope.UserFormData._id = user._id;
                 $scope.UserFormData.firstName = nameArr[0];
                 $scope.UserFormData.lastName = nameArr[1];
                 $scope.UserFormData.email = user.email;
@@ -80,6 +78,7 @@ angular.module('Xtern')
                 $scope.UserFormData.newUser = false;
             }
             else{
+                $scope.UserFormData._id = null;
                 $scope.UserFormData.firstName ='';
                 $scope.UserFormData.lastName = '';
                 $scope.UserFormData.email = '';
@@ -89,6 +88,15 @@ angular.module('Xtern')
                 $scope.UserFormData.newUser = true;
             }
         };
+
+        $scope.launchAddEditUserModal = function (user) {
+            console.log(user);           
+            $('#accountsModal').modal('show');
+             resetUserForm(user);
+           // $('#accountModalform').form('reset');
+            $('#accountModalform .error.message').empty();
+        }
+
 
         var refreshCompany = function (company) {
             AccountControlService.getUsers('Company', company, function (data) {
@@ -127,13 +135,24 @@ angular.module('Xtern')
 
         var submitUser = function(){
              console.log('pased and submitting', $scope.UserFormData);
+             $scope.UserFormData.name = $scope.UserFormData.firstName + " "+ $scope.UserFormData.lastName;
              if($scope.UserFormData.newUser){
-                 AccountControlService.addUser($scope.UserFormData, function(){});
+                 AccountControlService.addUser($scope.UserFormData, function(){
+                     $scope.selectedGroup.refresh();
+                 });
              }else{
-                AccountControlService.updateUser($scope.UserFormData, function(){});
+                AccountControlService.updateUser($scope.UserFormData, function(){
+                    $scope.selectedGroup.refresh();
+                });
              }
             $('#accountsModal').modal('hide');
         }
+
+        $scope.deleteUser = function(user){
+            AccountControlService.deleteUser(user._id, function(){
+                $scope.selectedGroup.refresh();
+            });
+        };
 
         var formConfig = function () {
             $('#accountModalform')
@@ -212,11 +231,11 @@ angular.module('Xtern')
             });
         }
         var setup = function () {
-            refreshAccounts('TechPoint', 'TechPoint', $scope.techPointUsers);
-            refreshAccounts('Instructor', 'Instructor', $scope.techPointUsers);
-            swapActiveArray($scope.selectedGroup.active);
+           // refreshAccounts('TechPoint', 'TechPoint', $scope.techPointUsers);
+           // refreshAccounts('Instructor', 'Instructor', $scope.techPointUsers);
             formConfig();
             modalConfig();
+            $scope.selectedGroup.refresh();
         }
         setup();
 
