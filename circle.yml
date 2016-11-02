@@ -9,7 +9,7 @@ machine:
     # Add app engine sdk to pythonpath for local unit tests.
     PYTHONPATH: $(PYTHONPATH):$(HOME)/google_appengine
     # Add app engine sdk to path
-    PATH: ${HOME}/go_appengine/:${PATH}
+    PATH: ${HOME}/go_appengine/:${HOME}/go_appengine/gopath/bin:${PATH}
     # Add GOROOT
     GOROOT: ${HOME}/go_appengine/goroot
     # Add GOPATH
@@ -47,4 +47,5 @@ deployment:
   staging:
     branch: master
     commands:
-      - gcloud --quiet app deploy core/app.yaml --promote
+      - goapp get -u google.golang.org/appengine/cmd/aedeploy
+      - aedeploy gcloud --quiet app deploy core/app.yaml --promote
