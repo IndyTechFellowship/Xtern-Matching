@@ -47,4 +47,4 @@ deployment:
   staging:
     branch: master
     commands:
-      - gcloud app deploy core/app.yaml --promote
+      - echo yes < gcloud app deploy core/app.yaml --promote
