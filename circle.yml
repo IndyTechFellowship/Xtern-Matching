@@ -49,4 +49,4 @@ deployment:
     commands:
       - goapp get -u google.golang.org/appengine/cmd/aedeploy
       - cd core
-      - aedeploy gcloud --quiet app deploy core/app.yaml --promote
+      - aedeploy gcloud --quiet app deploy --promote
