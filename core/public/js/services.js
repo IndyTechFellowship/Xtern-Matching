@@ -75,12 +75,11 @@
                 self.jwtToken = data.data['token'];
                 callback(self.jwtToken);
             }, function errorCallback(response) {
-                console.log('error occured: '+response);
                 callback('','err')
             });
         };
 
-        self.renderTokens = function(){
+        self.renderTokens = function (callback) {
             $http({
                 method: 'GET',
                 url: host + "/getUser",
@@ -92,10 +91,10 @@
             }).then(function (data) {
                 setToken(data.role, "role");
                 setToken(data.organization, "organization");
+                callback(data);
             }, function errorCallback(response) {
-            
+                callback('', response);
             });
-            
         };
 
         self.logout = function (callback) {
@@ -113,7 +112,7 @@
                 logout();
                 callback();
             }, function errorCallback(response) {
-                console.log('error occured: '+response);
+                // console.log('error occured: '+response);
                 callback('err')
             });
         };

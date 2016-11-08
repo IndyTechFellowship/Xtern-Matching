@@ -3,7 +3,7 @@ angular.module('Xtern')
         var self = this;
         $scope.loggedIn = isLoggedInTechPoint();
 
-        $rootScope.$on('$stateChangeStart',
+       $rootScope.$on('$stateChangeStart',
             function (event, toState, toParams, fromState, fromParams, options) {
                 $scope.loggedIn = isLoggedInTechPoint();
                 if (toState.name == "techpoint.profile") {
@@ -186,50 +186,76 @@ angular.module('Xtern')
         });
     }])
     .controller('TechpointLogin',['$scope','$state','AuthService','TechPointDashboardService', function($scope, $state, AuthService) {
-        $('.ui.form')
-           .form({
-               fields: {
-                   email: {
-                       identifier: 'email',
-                       rules: [
-                           {
-                               type: 'empty',
-                               prompt: 'Please enter your e-mail'
-                           },
-                           {
-                               type: 'email',
-                               prompt: 'Please enter a valid e-mail'
-                           }
-                       ]
-                   },
-                   password: {
-                       identifier: 'password',
-                       rules: [
-                           {
-                               type: 'empty',
-                               prompt: 'Please enter your password'
-                           },
-                           {
-                               type: 'length[2]',
-                               prompt: 'Your password must be at least 6 characters'
-                           }
-                       ]
-                   }
-               }
-           });
-        $scope.login = function(){
-            //if($('.ui.form').form('validate form')){
-            //    $('.ui.form .message').show();
-            //    return false;
-            //}
-            AuthService.login("xniccum@gmail.com","admin1", function (token,err) {
-                if (err) {
-                    console.log('Login unsuccessful');
-                } else {
-                    console.log('Login Successful');
-                    setToken(token,"auth");
-                    $state.go('techpoint.dashboard');
+        var formConfig = function () {
+            $('#techpointLogin').form({
+                fields: {
+                    email: {
+                        identifier: 'email',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: 'Please enter your e-mail'
+                            },
+                            {
+                                type: 'email',
+                                prompt: 'Please enter a valid e-mail'
+                            }
+                        ]
+                    },
+                    password: {
+                        identifier: 'password',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: 'Please enter a password'
+                            },
+                            {
+                                type: 'minLength[6]',
+                                prompt: 'Your password must be at least {ruleValue} characters'
+                            }
+                        ]
+                    }
+                },
+                onSuccess: function (event, fields) {
+                    authenticate(fields);
+                },
+                onFailure: function (formErrors, fields) {
+                    return '';
                 }
             });
         };
+        
+        formConfig();
+        $scope.login = function () {
+             formConfig();
+            $('#techpointLogin').form('validate form');
+        };
+        var authenticate = function (fields) {
+            console.log(fields);
+            var tempFields = {
+                email: "xniccum@gmail.com",
+                password: "admin1"
+            }
+            AuthService.login(tempFields.email, tempFields.password, function (token, err) {
+                if (err) {
+                    console.log('Login unsuccessful');
+                    $('#techpointLogin .ui.error.message').html(
+                        '<ui class="list"><li>Invalid Username or Passord</li></ui>'
+                    );
+                } else {
+                    setToken(token, "auth");
+                    AuthService.renderTokens(function (token, err) {
+                        if (err) {
+                            console.log('Render Token unsuccessful', err);
+                            $('#techpointLogin .ui.error.message').html(
+                                '<ui class="list"><li>A server error occured</li></ui>'
+                            ).show();
+                        } else {
+                            $state.go('techpoint.dashboard');
+                        }
+                    });
+                }
+            });
+        };
+
     }]);
