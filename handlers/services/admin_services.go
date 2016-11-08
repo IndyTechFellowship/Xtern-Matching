@@ -16,7 +16,7 @@ func Register(ctx context.Context,user models.User) (int,error) {
 	} else if count != 0 {
 		//Successful Response, but user already exists
 		// Should Update the user????
-		return http.StatusAccepted, errors.New("User already exist")
+		return http.StatusBadRequest, errors.New("User already exist")
 	} else {
 		key := datastore.NewIncompleteKey(ctx, "User", nil)
 		
