@@ -1,7 +1,8 @@
 (function () {
     var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable", "DataManager", "ngSanitize"]);//ngSanitize
 
-    app.config(function ($stateProvider, $urlRouterProvider) {
+    app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+        // $locationProvider.html5Mode(true);
         $urlRouterProvider.when('/techpoint', '/techpoint/login');
         $urlRouterProvider.when('/techpoint/', '/techpoint/login');
         $urlRouterProvider.when('/company', '/company/login');

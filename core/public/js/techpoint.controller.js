@@ -186,7 +186,7 @@ angular.module('Xtern')
         });
     }])
     .controller('TechpointLogin',['$scope','$state','AuthService','TechPointDashboardService', function($scope, $state, AuthService) {
-        var formConfig = function () {
+        var formConfig = function() {
             $('#techpointLogin').form({
                 fields: {
                     email: {
@@ -216,27 +216,27 @@ angular.module('Xtern')
                         ]
                     }
                 },
-                onSuccess: function (event, fields) {
+                onSuccess: function(event, fields) {
                     authenticate(fields);
                 },
-                onFailure: function (formErrors, fields) {
+                onFailure: function(formErrors, fields) {
                     return '';
                 }
             });
         };
-        
+
         formConfig();
-        $scope.login = function () {
-             formConfig();
-            $('#techpointLogin').form('validate form');
+
+        $scope.login = function() {
+           $('#techpointLogin').form('validate form');
         };
-        var authenticate = function (fields) {
+        var authenticate = function(fields) {
             console.log(fields);
             var tempFields = {
                 email: "xniccum@gmail.com",
                 password: "admin1"
             }
-            AuthService.login(tempFields.email, tempFields.password, function (token, err) {
+            AuthService.login(tempFields.email, tempFields.password, function(token, err) {
                 if (err) {
                     console.log('Login unsuccessful');
                     $('#techpointLogin .ui.error.message').html(
@@ -244,7 +244,7 @@ angular.module('Xtern')
                     );
                 } else {
                     setToken(token, "auth");
-                    AuthService.renderTokens(function (token, err) {
+                    AuthService.renderTokens(function(token, err) {
                         if (err) {
                             console.log('Render Token unsuccessful', err);
                             $('#techpointLogin .ui.error.message').html(
@@ -257,5 +257,9 @@ angular.module('Xtern')
                 }
             });
         };
+
+        $scope.$on('$viewContentLoaded', function(event, viewConfig) {
+            formConfig();
+        });
 
     }]);
