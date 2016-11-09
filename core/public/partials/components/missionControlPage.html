@@ -70,7 +70,6 @@
             <tr ng-repeat="row in summaryData" ng-click="rowClick(row._id)" class="clickable">
                 <td ng-repeat="header in tableHeaders" >
                     <div ng-bind-html="row[header.displayPropertyName]"></div>
-                    <!--{{row[header.displayPropertyName]}}-->
                 </td>
             </tr>
             </tbody>

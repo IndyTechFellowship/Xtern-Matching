@@ -8,16 +8,12 @@ function isLoggedIn() {
 function setToken(token, type) {
     //localStorage.setItem('token', token);
     localStorage.setItem(type, token);
-};
+}
 
 function getToken(tokenName) {
     return localStorage.getItem(tokenName);
 }
 
-function loadLogin() {
-
-};
-
 function logoutStorage(type) {
     localStorage.removeItem(type);
-};
+}

@@ -1,22 +1,37 @@
 angular.module('Xtern')
-    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'TechPointDashboardService', function ($scope, $rootScope, $state, TechPointDashboardService) {
+    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'TechPointDashboardService', 'CompanyService', function ($scope, $rootScope, $location, $state, CompanyService, TechPointDashboardService, $stateParams) {
         var self = this;
         $scope.loggedIn = isLoggedIn('company');
         $scope.companyName = getToken('companyName');
+        $scope.isCompany = true;
 
-        $rootScope.$on('$stateChangeStart',
-            function (event, toState, toParams, fromState, fromParams, options) {
-               $scope.loggedIn = isLoggedIn('company');
-                $scope.companyName = getToken('companyName');
-               if(toState.name == "company.profile"){
-                    $('#profile').show();
-                }
-                else{
-                    $('#profile').hide();
-                }
+        CompanyService.getCompanyDataForId(5733953138851840, function(data)
+        // CompanyService.getCompanyDataForId($stateParams._id, function(data)
+        {
+            $scope.companyData = data;
+            console.log("companyData: "+data);
+        });
+
+        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
+           $scope.loggedIn = isLoggedIn('company');
+            $scope.companyName = getToken('companyName');
+           if(toState.name == "company.profile"){
+                $('#profile').show();
+            }
+            else{
+                $('#profile').hide();
+            }
+        });
+
+        $scope.addStudentToCompany = function (studentID) {
+            CompanyService.addStudentToWishList(studentID, function (data) {
+                console.log(data);
             });
-        
+        };
+
         $scope.logout = function () {
+            localStorage.removeItem("auth");
+            localStorage.removeItem("role");
             logoutStorage("auth");
             logoutStorage("company");
             $state.go('company.login');
@@ -157,7 +172,6 @@ angular.module('Xtern')
         //END CONFIG DATA
     }])
     .controller('CompanyLogin', ['$scope', '$state','AuthService', function ($scope, $state,AuthService) {
-        console.log('attached');
         $scope.company = "ININ";
         //$('.ui.form')
         //    .form({
@@ -199,69 +213,32 @@ angular.module('Xtern')
             //setToken("token_placeholder", "company");
             AuthService.login('xniccum@gmail.com','admin1', function (token,err) {
                 if (err) {
-                    console.log('bad login')
+                    console.log('bad login');
                 } else {
                     setToken(token, "auth");
                     setToken("ININ", "company");
+
+                    localStorage.setItem("auth", token);
+                    $scope.isCompany = true;
                     $state.go('company.dashboard');
                 }
             });
         };
     }])
-    .controller('CompanyRecruiting', ['$scope', '$state', function ($scope, $state) {
+    .controller('CompanyRecruiting', ['$scope', '$state', 'ProfileService', 'CompanyService', function ($scope, $state, ProfileService, CompanyService) {
         var self = this;
+        $scope.recruitmentList = [];
+        // console.log(getToken('auth'));
 
-        $scope.recruitmentList = [
-            {
-                _id: "57269aa3bf79bbf8cc55d9d",
-                name: "Verna Gomez",
-                gradYear: 2019,
-                university: "Rose-Hulman Institute of Technology",
-                summary: "Front End",
-                notes: "Verna would be a great addition to Aarons Front end team. They use similar tools"
-            },
-            {
-                _id: "573a010c27b02303a5819515",
-                name: "Henderson Whitley",
-                gradYear: 2018,
-                university: "Indiana State University",
-                summary: "Security",
-                notes: "Phasellus ex nisl, pulvinar tempus dolor non, aliquam maximus ante.  Sed et nunc lectus. Phasellus eget lectus sit amet felis interdum tristique."
-            },
-            {
-                _id: "573a010cdaf1dc6ea094593e",
-                name: "Cross Berg",
-                gradYear: 2018,
-                university: "Indiana State University",
-                summary: "Security",
-                notes: "Fusce a est pulvinar, dictum tellus ut, cursus risus. Morbi bibendum elementum risus, in cursus dolor dictum luctus."
-            },
-            {
-                _id: "573a010cc2cac4dfe9497bb2",
-                name: "Loraine Pace",
-                gradYear: 2017,
-                university: "Rose-Hulman Institute of Technology",
-                summary: "SE - Full Stack (Eric's Team)",
-                notes: "Ut sollicitudin nunc ac mauris hendrerit consectetur. Pellentesque imperdiet ullamcorper augue et fermentum."
-            },
-            {
-                _id: "573a010c7afd6700cb9c8598",
-                name: "Maureen Mclean",
-                gradYear: 2018,
-                university: "Indiana State University",
-                summary: "CPE - Hardware",
-                notes: "Integer laoreet ornare interdum. Nunc dapibus elit et purus scelerisque rhoncus. Nullam sagittis nulla eget diam scelerisque euismod."
-            },
-            {
-                _id: "573a010cfcbfb6015c7a6669",
-                name: "Bell Simon",
-                gradYear: 2017,
-                university: "Rose-Hulman Institute of Technology",
-                summary: "Backend API - Main Product",
-                notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ac suscipit velit. Fusce sollicitudin non massa ac blandit."
-            }
+        CompanyService.getCurrentCompany(function(company) {
+            $scope.companyData = company;
+            console.log("company data in recruiting controller:");
+            console.log($scope.companyData);
 
-        ];
+            ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
+                $scope.recruitmentList = data;
+            });
+        });
 
         $scope.sortableOptions = {
             containment: '#table-container',
@@ -269,14 +246,35 @@ angular.module('Xtern')
         };
 
         $scope.removeRecruit = function (_id) {
-            for (var i = $scope.recruitmentList.length - 1; i >= 0; i--) {
-                if ($scope.recruitmentList[i]._id == _id) {
-                    $scope.recruitmentList.splice(i, 1);
+            console.log("remove recruit:");
+            console.log(_id);
+            CompanyService.removeStudentFromWishList(_id, function(data) {
+                for (var i = $scope.recruitmentList.length - 1; i >= 0; i--) {
+                    if ($scope.recruitmentList[i]._id == _id) {
+                        $scope.recruitmentList.splice(i, 1);
+                    }
                 }
-            }
+            });
+
         };
 
         $scope.viewRecruit = function (_id) {
             $state.go('company.profile', { _id: _id });
-        }
+        };
+
+        $scope.addStudent = function (_id) {
+            console.log("add student:");
+            console.log(_id);
+        };
+
+        $scope.dragControlListeners = {
+            orderChanged: function(obj) {
+
+                CompanyService.switchStudentsInWishList($scope.recruitmentList[obj.source.index]._id, $scope.recruitmentList[obj.dest.index]._id, function(data) {
+                    console.log("order changed: ");
+                    console.log(data);
+                });
+            }
+        };
+
     }]);
