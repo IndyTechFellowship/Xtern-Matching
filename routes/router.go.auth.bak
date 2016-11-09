@@ -1,37 +1,29 @@
 package routes
 
+/**
+	DO NOT COMMIT THIS FILE AS A GO FILE
+	
+	USE THIS FILE TO BYPASS AUTH AND RUN SCRIPTS
+	-- will mostlikely cause front end errors
+
+	TO USE:
+	rename router.go to router.go.primary.bak
+	rename this file to router.go
+
+	WHEN FINISHED:
+	rename this file to router.go.bak
+	remane router.go.primary.bak to router.go 
+
+**/
+
 import (
-	"github.com/auth0/go-jwt-middleware"
-	"github.com/codegangsta/negroni"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 )
 
 func NewRouter() *mux.Router {
-	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
-		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-			//return context.Get(r,"ctx")
-			return []byte("My Secret"), nil
-		},
-		SigningMethod: jwt.SigningMethodHS512,
-	})
 	router := mux.NewRouter().StrictSlash(true)
-
-	router.PathPrefix("/auth").Handler(negroni.New(
-		negroni.Wrap(GetAuthenticationRoutes(mux.NewRouter().StrictSlash(true))),
-	))
-	router.PathPrefix("/admin").Handler(negroni.New(
-		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
-		negroni.Wrap(GetAdminRoutes(mux.NewRouter().StrictSlash(true))),
-	))
-	router.PathPrefix("/student").Handler(negroni.New(
-		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
-		negroni.Wrap(GetStudentRoutes(mux.NewRouter().StrictSlash(true))),
-	))
-	router.PathPrefix("/company").Handler(negroni.New(
-		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
-		negroni.Wrap(GetCompanyRoutes()),
-	))
-
+	router = GetAdminRoutes(router) // Add Admin Routes
+	router = GetStudentRoutes(router) // Add Student Routes
+	router = GetAuthenticationRoutes(router) // Add Authentication Routes
 	return router
 }

@@ -30,6 +30,8 @@ angular.module('Xtern')
         };
 
         $scope.logout = function () {
+            localStorage.removeItem("auth");
+            localStorage.removeItem("role");
             logoutStorage("auth");
             logoutStorage("company");
             $state.go('company.login');
@@ -215,6 +217,9 @@ angular.module('Xtern')
                 } else {
                     setToken(token, "auth");
                     setToken("ININ", "company");
+
+                    localStorage.setItem("auth", token);
+                    $scope.isCompany = true;
                     $state.go('company.dashboard');
                 }
             });

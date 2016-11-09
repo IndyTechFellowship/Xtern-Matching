@@ -254,7 +254,8 @@
                 callback(self.userSummaryData);
             }, function errorCallback(response) {
                 console.log('error occured: '+response);
-                callback('','err')
+                console.log('Here: '+getToken('auth'));
+                callback('','err');
             });
         };
     }]).service('AuthService',['$http', function ($http) {
