@@ -313,7 +313,9 @@
                 }
             }).then(function () {
                 self.jwtToken = null;
-                logout();
+                localStorage.removeItem("auth");
+                localStorage.removeItem("role");
+                localStorage.removeItem("organization");
                 callback();
             }, function errorCallback(response) {
                 // console.log('error occured: '+response);
