@@ -20,7 +20,6 @@ angular.module('Xtern')
                 if(err) {
                     console.log('Logout unsuccessful');
                 } else {
-                    localStorage.removeItem("auth");
                     $state.go('techpoint.login');
                 }
             });
