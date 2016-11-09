@@ -100,13 +100,14 @@ func PostStudent(w http.ResponseWriter,r *http.Request) {
 	}
 
 	for _, student := range students {
-		_, err := services.NewStudent(ctx, &student)
+		_, err := services.NewStudent(ctx, student)
 		if err != nil {
 			log.Println(err.Error())
 			http.Error(w, err.Error(), 500)
 			return
 		}
 	}
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -170,7 +171,6 @@ func DeleteComment(w http.ResponseWriter,r *http.Request) {
 
 //8 MB file limit
 const MAX_MEMORY = 8 * 1024 * 1024
-
 func PostPDF(w http.ResponseWriter,r *http.Request){
 
 	//Get context and storage service

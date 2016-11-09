@@ -7,28 +7,35 @@ import (
 	"Xtern-Matching/models"
 	"net/http"
 	"google.golang.org/appengine/datastore"
+	"reflect"
+	"errors"
 	"golang.org/x/oauth2/google"
 	storage "google.golang.org/api/storage/v1"
 	"strconv"
+	"os"
 )
 
-func NewStudent(ctx context.Context, student *models.Student) (int,error) {
-	//Give default pdf mock for now
+func NewStudent(ctx context.Context,student models.Student) (int,error) {
+	if reflect.DeepEqual(student, (models.Student{})) {
+		return http.StatusBadRequest, errors.New("Not a proper student")
+	}
+
+
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
 	student.Resume = "public/data_mocks/sample.pdf"
 	student.Active = true
+
 	if _, err := datastore.Put(ctx, key, student); err != nil {
 		return http.StatusInternalServerError, err
 	}
-	//student.Id = key.IntID()
-	//UpdateStudent(ctx, student)
+	student.Id = key.IntID()
+	UpdateStudent(ctx, student)
 	return http.StatusAccepted, nil
 }
 
-func UpdateStudent(ctx context.Context, student *models.Student) error {
+func UpdateStudent(ctx context.Context, student models.Student) error {
 	studentKey := datastore.NewKey(ctx, "Student", "", student.Id, nil)
-	log.Println(student.Id)
-	_,err := datastore.Put(ctx, studentKey, student)
+	_,err := datastore.Put(ctx, studentKey, &student)
 	return err
 }
 
@@ -39,17 +46,19 @@ func GetStudent(ctx context.Context,_id int64) (models.Student, error) {
 	if err != nil {
 		return models.Student{}, err
 	}
-	student.Id = studentKey.IntID()
+	student.Id = _id
 	return student, nil
 }
 
 func GetStudents(ctx context.Context) ([]models.Student,error) {
 	q := datastore.NewQuery("Student")
+	//log.Printf("%v",q)
 	var students []models.Student
 	keys, err := q.GetAll(ctx,&students)
 	if err != nil {
 		return nil, err
 	}
+	//log.Printf("%v",keys)
 
 	for i := 0; i < len(students); i++ {
 		students[i].Id = keys[i].IntID()
@@ -145,10 +154,15 @@ func removeComment(commentSlice []models.Comment, commentToRemove models.Comment
 
 func UpdateResume(ctx context.Context, id int64, file io.Reader) error {
 	sid := strconv.Itoa(int(id))
-	bucketName := "xtern-matching.appspot.com"
-	projectID := "xtern-matching"
-	//bucketName := "xtern-matching-143216.appspot.com"//DEV Server
-	//projectID := "xtern-matching-143216"
+	var bucketName string
+	var projectID string
+	if os.Getenv("XTERN_ENVIRONMENT") != "production" {
+		bucketName = "xtern-matching-143216.appspot.com"//DEV Server
+		projectID = "xtern-matching-143216"
+	} else {
+		bucketName = "xtern-matching.appspot.com"
+		projectID = "xtern-matching"
+	}
 
 	client, err := google.DefaultClient(ctx, storage.DevstorageFullControlScope)
 	if err != nil {
@@ -192,12 +206,14 @@ func UpdateResume(ctx context.Context, id int64, file io.Reader) error {
 	//Update student record to include resume link
 	student, err := GetStudent(ctx, id)
 	if err != nil {
+		log.Println("Here")
 		return err
 	}
 	student.Resume = res.MediaLink
 	
-	err = UpdateStudent(ctx, &student)
+	err = UpdateStudent(ctx, student)
 	if err != nil {
+		log.Println("Here1")
 		return err
 	}
 	return nil

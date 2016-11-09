@@ -33,6 +33,7 @@ angular.module('Xtern')
             localStorage.removeItem("auth");
             localStorage.removeItem("role");
             logoutStorage("auth");
+            logoutStorage("company");
             $state.go('company.login');
             $scope.loggedIn = false;
         };
@@ -214,8 +215,13 @@ angular.module('Xtern')
                 if (err) {
                     console.log('bad login');
                 } else {
+<<<<<<< HEAD
                     localStorage.setItem("auth", token);
                     $scope.isCompany = true;
+=======
+                    setToken(token, "auth");
+                    setToken("ININ", "company");
+>>>>>>> master
                     $state.go('company.dashboard');
                 }
             });
