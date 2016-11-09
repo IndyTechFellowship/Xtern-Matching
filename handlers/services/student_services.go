@@ -25,7 +25,7 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 	student.Resume = "public/data_mocks/sample.pdf"
 	student.Active = true
 
-	if _, err := datastore.Put(ctx, key, student); err != nil {
+	if _, err := datastore.Put(ctx, key, &student); err != nil {
 		return http.StatusInternalServerError, err
 	}
 	student.Id = key.IntID()
