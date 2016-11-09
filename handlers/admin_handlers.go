@@ -111,6 +111,35 @@ func GetUsers(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(users)
 }
 
+func GetUser(w http.ResponseWriter, r *http.Request){
+	ctx := appengine.NewContext(r)
+
+	role, role_ok := mux.Vars(r)["Role"]
+	org, org_ok := mux.Vars(r)["Organization"]
+
+	if !role_ok || !org_ok {
+		//params not found
+		log.Println("Missing either Role or Organization")
+		http.Error(w, errors.New("Missing either Role or Organization").Error(), http.StatusBadRequest)
+		return
+	}
+
+	users, err := services.GetUser(ctx, org, role)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	//Don't want to send back the passwords for security resaons
+	for i := 0; i < len(users); i++ {
+		users[i].Password = "********"
+	}
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users)
+}
+
 func PutUser(w http.ResponseWriter, r *http.Request){
 	ctx := appengine.NewContext(r)
 	var user models.User
