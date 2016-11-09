@@ -6,7 +6,8 @@
   "scripts": {
     "prestart": "",
     "start": "goapp serve",
-    "test": "goapp test Xtern-Matching/tests"
+	"pretest" : "goapp get github.com/stretchr/testify/assert",
+    "test": "goapp test ../tests/..."
   },
   "repository": {
     "type": "git",

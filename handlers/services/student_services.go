@@ -29,7 +29,6 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 		return http.StatusInternalServerError, err
 	}
 	student.Id = key.IntID()
-	UpdateStudent(ctx, student)
 	return http.StatusAccepted, nil
 }
 
