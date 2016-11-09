@@ -3,7 +3,7 @@
         <div class="column">
             <div class="ui grid">
                 <div class="ten wide column">
-                    <img src="/core/public/images/xtern-logo.png" class="">
+                    <img src="/public/images/xtern-logo.png" class="">
                 </div>
                 <div class="six wide column">
                     <h2 class="xternBlue">
@@ -11,15 +11,22 @@
                     </h2>
                 </div>
             </div>
-            <form class="ui large form">
+            <form class="ui large form" id="companyLogin">
                 <div class="ui stacked segment">
                     <div class="field">
-                        <select class="ui search dropdown">
-                            <option disabled selected value="">Company</option>
+                        <select class="ui search dropdown" name="company-dropdown">
+                            <option value="">Select Company</option>
                             <option value="ININ">Interactive Intelligence</option>
                             <option value="LILLY">Lilly</option>
                         </select>
                     </div>
+                    <!--<div class="field">
+                        <select class="ui search dropdown">
+                            <div class="default text">
+                            <option value="ININ">Interactive Intelligence</option>
+                            <option value="LILLY">Lilly</option>
+                        </select>
+                    </div>-->
                     <div class="field">
                         <div class="ui left icon input">
                             <i class="user icon"></i>
@@ -35,7 +42,7 @@
                     <div class="ui buttons fluid">
                         <!--<div class="ui   button">Request an Account</div>-->
                         <!--<div class="or"></div>-->
-                        <div class="ui xternBlue  submit button" ng-click="login()">Login</div>
+                        <div class="ui xternBlue button" ng-click="login()">Login</div>
                     </div>
                 </div>
 
