@@ -1,5 +1,5 @@
 angular.module('Xtern')
-    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'AuthService', function ($scope, $rootScope, $state, AuthService) {
+    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'AuthService','CompanyService', function ($scope, $rootScope, $state, AuthService,CompanyService) {
         var self = this;
         $scope.loggedIn = isLoggedInCompany();
         $scope.companyName = getToken('companyName');
