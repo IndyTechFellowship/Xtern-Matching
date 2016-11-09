@@ -18,13 +18,13 @@ var isLoggedInTechPoint = function () {
     var role = getToken("role");
     if (!role) {
         var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
-        return errorObject;
+        return false;
     }
     else if(role =="admin"){
-        return;
+        return true;
     }
     else if (role == "TechPoint") {
-        return;
+        return true;
     }
     else if(role == "Company"){
         var errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
@@ -70,17 +70,17 @@ var isLoggedInCompany = function ($q) {
     var role = getToken("role");
     if (!role) {
         var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
-        return errorObject;
+        return false;
     }
     else if(role =="admin"){
-        return;
+        return true;
     }
     else if (role == "TechPoint") {
         var errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
         return errorObject;
     }
     else if(role == "Company"){
-        return;
+        return true;
     }
     else if(role == "Instructor"){
         var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' };
