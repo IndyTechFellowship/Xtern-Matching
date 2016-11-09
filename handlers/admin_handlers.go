@@ -11,6 +11,9 @@ import (
 	"fmt"
 	"errors"	
 	"strconv"
+	"github.com/gorilla/context"
+	"github.com/dgrijalva/jwt-go"
+	"strings"
 )
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -112,32 +115,23 @@ func GetUsers(w http.ResponseWriter, r *http.Request){
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request){
-	ctx := appengine.NewContext(r)
+	contextUser := context.Get(r, "user")
+	token, _ := contextUser.(*jwt.Token)
+	if token.Valid {
+		mapClaims := token.Claims.(jwt.MapClaims)
+		org := strings.TrimSpace(mapClaims["org"].(string))
+		role := strings.TrimSpace(mapClaims["role"].(string))
 
-	role, role_ok := mux.Vars(r)["Role"]
-	org, org_ok := mux.Vars(r)["Organization"]
+		type Response struct {
+			Org   string	`json:"organization"`
+			Role string	`json:"role"`
+		}
 
-	if !role_ok || !org_ok {
-		//params not found
-		log.Println("Missing either Role or Organization")
-		http.Error(w, errors.New("Missing either Role or Organization").Error(), http.StatusBadRequest)
-		return
+		res := Response{Org: org, Role: role}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(res)
 	}
-
-	users, err := services.GetUser(ctx, org, role)
-	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	//Don't want to send back the passwords for security resaons
-	for i := 0; i < len(users); i++ {
-		users[i].Password = "********"
-	}
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
 }
 
 func PutUser(w http.ResponseWriter, r *http.Request){

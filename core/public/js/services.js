@@ -286,7 +286,7 @@
         self.renderTokens = function (callback) {
             $http({
                 method: 'GET',
-                url: host + "/getUser",
+                url: host + "admin/getUser",
                 headers: {
                     'Content-Type': "application/json",
                     'Accept': "application/json",
