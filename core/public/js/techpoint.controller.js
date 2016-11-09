@@ -2,6 +2,7 @@ angular.module('Xtern')
     .controller('TechPointMain', ['$scope', '$rootScope', '$state', 'TechPointDashboardService', 'AuthService', function($scope, $rootScope, $state, TechPointDashboardService, AuthService){
         var self = this;
         $scope.loggedIn = isLoggedInTechPoint();
+        $scope.isCompany = false;
 
        $rootScope.$on('$stateChangeStart',
             function (event, toState, toParams, fromState, fromParams, options) {
@@ -251,6 +252,8 @@ angular.module('Xtern')
                                 '<ui class="list"><li>A server error occured</li></ui>'
                             ).show();
                         } else {
+                            console.log('Login Success');
+                            $scope.isCompany = false;
                             $state.go('techpoint.dashboard');
                         }
                     });

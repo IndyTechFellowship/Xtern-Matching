@@ -112,7 +112,4 @@ var isLoggedIn = function ($q) {
         var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' };
         return $q.reject(errorObject);        
     }
-    else{
-        return;
-    }
-}
+};
