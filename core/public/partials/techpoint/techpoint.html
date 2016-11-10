@@ -1,6 +1,6 @@
 <!--<div ng-controller="TechPointMain as ctrl">-->
 
-    <div class="ui large inverted fixed top menu">
+    <div ng-if="loggedIn" class="ui large inverted fixed top menu">
         <div class="item">
             <img class="image" src="public/images/techpoint-logo-icon.png">
         </div>
@@ -10,7 +10,7 @@
         <!--<div >-->
             <div ng-if="loggedIn" class="item">Techpoint</div>
             <a ng-if="loggedIn" ui-sref="techpoint.dashboard" ui-sref-active="active" class="item">Dashboard</a>
-            <a ng-if="loggedIn" ui-sref-active="active" class="item">Statistics</a>
+            <!-- <a ng-if="loggedIn" ui-sref-active="active" class="item">Statistics</a> -->
             <!--<a id="profile" ng-if="loggedIn" ui-sref="techpoint.profile" ui-sref-active="active" class="item" hidden>Profile</a>-->
             <div class="right menu">
                 <a ng-if="loggedIn" ui-sref="techpoint.login" ng-click="logout()" class="item">Sign Out</a>

@@ -131,7 +131,8 @@
                     self.company = data.data;
                     callback(self.company);
                 }, function errorCallback(response) {
-                    console.log('error occured: ' + response);
+                    console.log('error occured in Company Services: getCurrentCompany: ' + response);
+                    console.log(response);
                     callback('', 'err');
                 });
             // } else {
@@ -156,7 +157,8 @@
                     self.company = data.data;
                     callback(self.company);
                 }, function errorCallback(response) {
-                    console.log('error occured: ' + response);
+                    console.log('Company Services: error occured: ' + response);
+                    console.log(response);
                     callback('', 'err');
                 });
             } else {
