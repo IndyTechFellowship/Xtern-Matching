@@ -10,17 +10,14 @@ handlers:
   static_files: index.html
   upload: index.html
 
+# Serving static files
 - url: /favicon.ico
   static_files: favicon.ico
   upload: favicon.ico
-
-# Serving static files
 - url: /public
   static_dir: public
-
 - url: /semantic
   static_dir: semantic
-
 - url: /node_modules
   static_dir: node_modules
 

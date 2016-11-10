@@ -267,8 +267,8 @@
                 method: 'POST',
                 url: host + "auth/login",
                 data: {
-                    "email":"xniccum@gmail.com",
-                    "password": "admin1"
+                    "email": email,
+                    "password": password
                 },
                 headers: {
                     'Content-Type': "application/json",
@@ -281,7 +281,48 @@
                 console.log('error occured: '+response);
                 callback('','err');
             });
-        }
+        };
+
+        self.renderTokens = function (callback) {
+            $http({
+                method: 'GET',
+                url: host + "admin/getUser",
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + self.jwtToken
+                }
+            }).then(function (data) {
+                setToken(data.role, "role");
+                setToken(data.organization, "organization");
+                callback(data);
+            }, function errorCallback(response) {
+                callback('', response);
+            });
+        };
+
+        self.logout = function (callback) {
+            $http({
+                method: 'POST',
+                url: host + "auth/logout",
+                data: {},
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer '+getToken('auth')
+                }
+            }).then(function () {
+                self.jwtToken = null;
+                localStorage.removeItem("auth");
+                localStorage.removeItem("role");
+                localStorage.removeItem("organization");
+                callback();
+            }, function errorCallback(response) {
+                // console.log('error occured: '+response);
+                callback('err')
+            });
+        };
+
     }]).service('ResumeService',['$http', function ($http) {
         var self = this;
         self.jwtToken = null;
