@@ -1,7 +1,7 @@
 package models
 
 type Company struct {
-	Id int64            `json:"_id" datastore:"-"`
 	Name string    		`json:"name"`
+	Type string		`json:"type"`
 	StudentIds []int64	`json:"studentIds"`
 }
