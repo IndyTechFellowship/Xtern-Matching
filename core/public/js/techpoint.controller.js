@@ -1,6 +1,11 @@
 angular.module('Xtern')
     .controller('TechPointMain', ['$scope', '$rootScope', '$state', 'TechPointDashboardService', 'AuthService', function($scope, $rootScope, $state, TechPointDashboardService, AuthService){
         var self = this;
+
+        isLoggedInTechPoint = function() {
+            return getToken('auth') !== null;
+        };
+
         $scope.loggedIn = isLoggedInTechPoint();
         $scope.isCompany = false;
 
@@ -20,6 +25,7 @@ angular.module('Xtern')
                 if(err) {
                     console.log('Logout unsuccessful');
                 } else {
+                    $scope.loggedIn = isLoggedInTechPoint();
                     $state.go('techpoint.login');
                 }
             });
@@ -138,7 +144,7 @@ angular.module('Xtern')
         $scope.TABLEHEADERS = [
             {
                 title: 'Name',
-                displayPropertyName: 'namelink',
+                displayPropertyName: 'name',
                 sortPropertyName: 'name',
                 sort: 'ascending',
                 selected: false

@@ -1,8 +1,17 @@
 angular.module('Xtern')
-    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'AuthService','CompanyService', function ($scope, $rootScope, $state, AuthService,CompanyService) {
+    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'AuthService','CompanyService', 'ProfileService', function ($scope, $rootScope, $state, AuthService, CompanyService, ProfileService) {
+        var self = this;
+
+        isLoggedInCompany = function() {
+            return getToken('auth') !== null;
+        };
+
         $scope.loggedIn = isLoggedInCompany();
-        $scope.companyName = getToken('companyName');
         $scope.isCompany = true;
+
+        CompanyService.getCurrentCompany(function(company) {
+            $scope.companyData = company;
+        });
 
         $rootScope.$on('$stateChangeStart',
             function (event, toState, toParams, fromState, fromParams, options) {
@@ -38,7 +47,7 @@ angular.module('Xtern')
                 if (err) {
                     console.log('Logout unsuccessful');
                 } else {
-                    localStorage.removeItem("auth");
+                    $scope.loggedIn = isLoggedInCompany();
                     $state.go('company.login');
                 }
             });
