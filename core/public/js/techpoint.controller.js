@@ -144,7 +144,7 @@ angular.module('Xtern')
         $scope.TABLEHEADERS = [
             {
                 title: 'Name',
-                displayPropertyName: 'namelink',
+                displayPropertyName: 'name',
                 sortPropertyName: 'name',
                 sort: 'ascending',
                 selected: false
