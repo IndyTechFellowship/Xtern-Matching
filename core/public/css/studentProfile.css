@@ -9,3 +9,20 @@
 #example1 {
 	margin-top: 15px;
 }
+
+.animate-switch {
+}
+
+.animate-switch.ng-animate {
+	transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940);
+
+}
+
+.animate-switch.ng-leave.ng-leave-active,
+.animate-switch.ng-enter {
+	opacity: 1;
+}
+.animate-switch.ng-leave,
+.animate-switch.ng-enter.ng-enter-active {
+	opacity: 0;
+}

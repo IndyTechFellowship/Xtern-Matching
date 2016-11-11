@@ -1,27 +1,4 @@
-<!--<div ng-controller="StudentProfileCtrl">-->
-    <!--<h1>{{ 1+1 }}</h1>-->
 <div>
-    <!--<p>{{id}}</p>-->
-    <!--<div class="ui borderless sticky main menu">-->
-        <!--<div class="ui text container">-->
-            <!--<div class="ui grid">-->
-                <!--<div class="row">-->
-                    <!--&lt;!&ndash; <div href="#" class="header item">-->
-                        <!--<img class="logo" src="..\..\images\sample_profile1.jpg">-->
-                      <!--</div> &ndash;&gt;-->
-                    <!--<div class="eight wide column">-->
-                        <!--<div class="header item">{{studentData.firstName}} {{studentData.lastName}}</div>-->
-                    <!--</div>-->
-                    <!--<div class="four wide column">-->
-                        <!--<div class="item">{{studentData.status}}</div>-->
-                    <!--</div>-->
-                    <!--<div class="four wide column">-->
-                        <!--<div class="item">{{studentData.r1Grade.text}}</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
     <div class="ui container" ng-cloak>
         <div class="ui centered internally celled grid">
             <div class="row">
@@ -77,20 +54,18 @@
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan mi ut faucibus convallis. </p>
                         </div>
                     </div>
-
-
-
                 </div>
                 <div class="five wide column">
-
-<!-- <<<<<<< HEAD
-                    <div ng-if="isCompany" class="ui button right floated fluid blue" ng-click="addStudent(studentData._id)"><i class="add user icon">Recruit</i></div>
+                    <div ng-if="isCompany" ng-switch on="!isStudentApplicant">
+                        <div ng-switch-when="true" ng-click="addStudentToCompany(studentData._id)" class="ui button right floated fluid blue animate-switch">
+                            <i class="add user icon">Recruit</i>
+                        </div>
+                        <div ng-switch-when="false" ng-click="removeRecruit(studentData._id)" class="ui button right floated fluid red animate-switch">
+                            <i class="remove user icon">Remove</i>
+                        </div>
+                    </div>
                     <br/>
-======= -->
-                    <div ng-if="isCompany" ng-click="addStudentToCompany(studentData._id)" class="ui button right floated fluid blue"><i class="add user icon">Recruit</i></div>
-<!-- >>>>>>> fdb644ab5ede72a63934ccdfac0ca28e1832f9e4 -->
-                    <br/>
-                    <div id="statusAndGrade">
+                    <div ng-if="!isCompany" id="statusAndGrade">
                         <div class="ui header">Status and Grade</div>
                         <div class="ui fluid selection dropdown">
                             <input name="status" type="hidden" value="0">
@@ -147,20 +122,7 @@
         </div>
     </div>
 </div>
-
-<!--Can Uncomment for testing-->
-<!-- <div class="ui container">
-    <form class="ui form" ng-controller="UploadCtrl as ctrl" enctype="multipart/form-data">
-
-        <label for="file">File:</label>
-        <input id="file" name="file" type="file"></input>
-
-        <input type="submit" ng-click="ctrl.uploadResume(4505248894812160);"></input>
-
-    </form>
-</div> -->
 <div class="vertical-spacer"></div>
-
 <script src="node_modules/pdfjs-dist/build/pdf.js">
 
 <script src="public/js/pdfobject.js"></script>
