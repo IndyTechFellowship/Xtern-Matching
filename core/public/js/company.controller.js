@@ -25,6 +25,17 @@ angular.module('Xtern')
                 }
             });
 
+        // CompanyService.getCompanyDataForId(5733953138851840, function(data)
+        // {
+        //     $scope.companyData = data;
+        //     console.log("companyData: "+data);
+        // });
+        CompanyService.getCurrentCompany(function(data)
+        {
+            $scope.companyData = data;
+            console.log("companyData: "+data);
+        });
+
         $scope.addStudentToCompany = function (studentID) {
             CompanyService.addStudentToWishList(studentID, function (data) {
                 console.log(data);
@@ -266,9 +277,7 @@ angular.module('Xtern')
         });
     }])
     .controller('CompanyRecruiting', ['$scope', '$state', 'ProfileService', 'CompanyService', function ($scope, $state, ProfileService, CompanyService) {
-        var self = this;
         $scope.recruitmentList = [];
-        // console.log(getToken('auth'));
 
         CompanyService.getCurrentCompany(function(company) {
             $scope.companyData = company;

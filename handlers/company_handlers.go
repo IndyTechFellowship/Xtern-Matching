@@ -30,22 +30,22 @@ func AddStudent(w http.ResponseWriter,r *http.Request) {
 
 	// Get the company id from the token org and call the service with it
 	user := context.Get(r, "user")
-    token, err := user.(*jwt.Token)
+    	token, err := user.(*jwt.Token)
     if token.Valid {
-        mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-        org := strings.TrimSpace(mapClaims["org"].(string))
-		company_num_id, er1 := strconv.ParseInt(org, 10, 64)
-		if er1 != nil {
-			log.Print("ERROR PARSING STRING TO INT64")
-			log.Print(er1)
-		}
-		_, err := services.AddStudentIdToCompanyList(ctx, company_num_id, studentId)
-		if err != nil {
-			log.Print(err)
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
+	    mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+	    org := strings.TrimSpace(mapClaims["org"].(string))
+	    company_num_id, er1 := strconv.ParseInt(org, 10, 64)
+	    if er1 != nil {
+		    log.Print("ERROR PARSING STRING TO INT64")
+		    log.Print(er1)
+	    }
+	    _, err := services.AddStudentIdToCompanyList(ctx, company_num_id, studentId)
+	    if err != nil {
+		    log.Print(err)
+		    http.Error(w, err.Error(), 500)
+		    return
+	    }
+	    w.WriteHeader(http.StatusOK)
     } else {
         fmt.Println(err)
     }
@@ -162,21 +162,21 @@ func GetCompany(w http.ResponseWriter,r *http.Request) {
 }
 
 func GetCurrentCompany(w http.ResponseWriter,r *http.Request) {
+	log.Print("hhh1")
 	ctx := appengine.NewContext(r)
 	user := context.Get(r, "user")
-    token, err := user.(*jwt.Token)
-
-    if token.Valid {
-        mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-        // log.Print(mapClaims)
-        org := strings.TrimSpace(mapClaims["org"].(string))
-        // log.Print(org)
+	token, err := user.(*jwt.Token)
+	log.Print("hhh1")
+    	if token.Valid	{
+        	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+        	org := strings.TrimSpace(mapClaims["org"].(string))
+        	log.Print("hhh1")
 		num_id, er1 := strconv.ParseInt(org, 10, 64)
 		if er1 != nil {
 			log.Print("ERROR PARSING STRING TO INT64")
 			log.Print(er1)
 		}
-		// log.Print(num_id)
+		log.Print("hhh2")
 		company, err := services.GetCompany(ctx, num_id)
 		if err != nil {
 			log.Print("ERROR GETTING COMPANY")
@@ -184,12 +184,13 @@ func GetCurrentCompany(w http.ResponseWriter,r *http.Request) {
 			http.Error(w, err.Error(), 500)
 			return
 		}
+		log.Print("hhh3")
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(company)
-    } else {
-        fmt.Println(err)
-    }
-	w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
