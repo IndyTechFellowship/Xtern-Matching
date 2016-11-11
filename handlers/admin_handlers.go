@@ -11,6 +11,9 @@ import (
 	"fmt"
 	"errors"	
 	"strconv"
+	"github.com/gorilla/context"
+	"github.com/dgrijalva/jwt-go"
+	"strings"
 )
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -109,6 +112,26 @@ func GetUsers(w http.ResponseWriter, r *http.Request){
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
+}
+
+func GetUser(w http.ResponseWriter, r *http.Request){
+	contextUser := context.Get(r, "user")
+	token, _ := contextUser.(*jwt.Token)
+	if token.Valid {
+		mapClaims := token.Claims.(jwt.MapClaims)
+		org := strings.TrimSpace(mapClaims["org"].(string))
+		role := strings.TrimSpace(mapClaims["role"].(string))
+
+		type Response struct {
+			Org   string	`json:"organization"`
+			Role string	`json:"role"`
+		}
+
+		res := Response{Org: org, Role: role}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(res)
+	}
 }
 
 func PutUser(w http.ResponseWriter, r *http.Request){

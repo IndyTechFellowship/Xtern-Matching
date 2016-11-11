@@ -1,26 +1,30 @@
 angular.module('Xtern')
-    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'TechPointDashboardService', 'CompanyService', function ($scope, $rootScope, $location, $state, CompanyService, TechPointDashboardService, $stateParams) {
-        var self = this;
-        $scope.loggedIn = isLoggedIn('company');
+    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'AuthService','CompanyService', function ($scope, $rootScope, $state, AuthService,CompanyService) {
+        $scope.loggedIn = isLoggedInCompany();
         $scope.companyName = getToken('companyName');
         $scope.isCompany = true;
 
-        CompanyService.getCompanyDataForId(5733953138851840, function(data)
-        // CompanyService.getCompanyDataForId($stateParams._id, function(data)
+        $rootScope.$on('$stateChangeStart',
+            function (event, toState, toParams, fromState, fromParams, options) {
+                $scope.loggedIn = isLoggedInCompany();
+                $scope.companyName = getToken('companyName');
+                if (toState.name == "company.profile") {
+                    $('#profile').show();
+                }
+                else {
+                    $('#profile').hide();
+                }
+            });
+
+        // CompanyService.getCompanyDataForId(5733953138851840, function(data)
+        // {
+        //     $scope.companyData = data;
+        //     console.log("companyData: "+data);
+        // });
+        CompanyService.getCurrentCompany(function(data)
         {
             $scope.companyData = data;
             console.log("companyData: "+data);
-        });
-
-        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
-           $scope.loggedIn = isLoggedIn('company');
-            $scope.companyName = getToken('companyName');
-           if(toState.name == "company.profile"){
-                $('#profile').show();
-            }
-            else{
-                $('#profile').hide();
-            }
         });
 
         $scope.addStudentToCompany = function (studentID) {
@@ -30,12 +34,14 @@ angular.module('Xtern')
         };
 
         $scope.logout = function () {
-            localStorage.removeItem("auth");
-            localStorage.removeItem("role");
-            logoutStorage("auth");
-            logoutStorage("company");
-            $state.go('company.login');
-            $scope.loggedIn = false;
+            AuthService.logout(function (err) {
+                if (err) {
+                    console.log('Logout unsuccessful');
+                } else {
+                    localStorage.removeItem("auth");
+                    $state.go('company.login');
+                }
+            });
         };
     }])
     .controller('CompanyDashboardCtrl', ['$scope', 'TechPointDashboardService', function ($scope, TechPointDashboardService) {
@@ -171,64 +177,98 @@ angular.module('Xtern')
         });
         //END CONFIG DATA
     }])
-    .controller('CompanyLogin', ['$scope', '$state','AuthService', function ($scope, $state,AuthService) {
-        $scope.company = "ININ";
-        //$('.ui.form')
-        //    .form({
-        //        fields: {
-        //            email: {
-        //                identifier: 'email',
-        //                rules: [
-        //                    {
-        //                        type: 'empty',
-        //                        prompt: 'Please enter your e-mail'
-        //                    },
-        //                    {
-        //                        type: 'email',
-        //                        prompt: 'Please enter a valid e-mail'
-        //                    }
-        //                ]
-        //            },
-        //            password: {
-        //                identifier: 'password',
-        //                rules: [
-        //                    {
-        //                        type: 'empty',
-        //                        prompt: 'Please enter your password'
-        //                    },
-        //                    {
-        //                        type: 'length[6]',
-        //                        prompt: 'Your password must be at least 6 characters'
-        //                    }
-        //                ]
-        //            }
-        //        }
-        //    });
-        $scope.login = function () {
-            //if($('.ui.form').form('validate form')){
-            //    $('.ui.form .message').show();
-            //    return false;
-            //}
-            // do more stuff
-            //setToken("token_placeholder", "company");
-            AuthService.login('xniccum@gmail.com','admin1', function (token,err) {
-                if (err) {
-                    console.log('bad login');
-                } else {
-                    setToken(token, "auth");
-                    setToken("ININ", "company");
+    .controller('CompanyLogin', ['$scope', '$state', 'AuthService', function ($scope, $state, AuthService) {
 
-                    localStorage.setItem("auth", token);
-                    $scope.isCompany = true;
-                    $state.go('company.dashboard');
+        var formConfig = function () {
+            $('#companyLogin').form({
+                fields: {
+                    email: {
+                        identifier: 'email',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: 'Please enter your e-mail'
+                            },
+                            {
+                                type: 'email',
+                                prompt: 'Please enter a valid e-mail'
+                            }
+                        ]
+                    },
+                    dropdown: {
+                        identifier: 'company-dropdown',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: 'Please select a dropdown value'
+                            }
+                        ]
+                    },
+                    password: {
+                        identifier: 'password',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: 'Please enter a password'
+                            },
+                            {
+                                type: 'minLength[6]',
+                                prompt: 'Your password must be at least {ruleValue} characters'
+                            }
+                        ]
+                    }
+                },
+                onSuccess: function (event, fields) {
+                    authenticate(fields);
+                },
+                onFailure: function (formErrors, fields) {
+                    return '';
                 }
             });
         };
+        formConfig();
+
+        $scope.login = function () {
+            //formConfig();
+            $('#companyLogin').form('validate form');
+        };
+        var authenticate = function (fields) {
+            console.log(fields);
+            var tempFields = {
+                email: "xniccum@gmail.com",
+                password: "admin1"
+            }
+            AuthService.login(tempFields.email, tempFields.password, function (token, err) {
+                if (err) {
+                    console.log('Login unsuccessful');
+                    $('#companyLogin .ui.error.message').html(
+                        '<ui class="list"><li>Invalid Username or Passord</li></ui>'
+                    );
+                } else {
+                    setToken(token, "auth");
+                    setToken("ININ", "company");
+                    AuthService.renderTokens(function (token, err) {
+                        if (err) {
+                            console.log('Render Token unsuccessful', err);
+                            $('#companyLogin .ui.error.message').html(
+                                '<ui class="list"><li>A server error occured</li></ui>'
+                            ).show();
+                        } else {
+                            $scope.isCompany = true;
+                            $state.go('company.dashboard');
+                        }
+                    });
+                }
+            });
+        };
+
+        $scope.$on('$viewContentLoaded', function (event, viewConfig) {
+            $('select.dropdown').dropdown();
+            formConfig();
+        });
     }])
     .controller('CompanyRecruiting', ['$scope', '$state', 'ProfileService', 'CompanyService', function ($scope, $state, ProfileService, CompanyService) {
-        var self = this;
         $scope.recruitmentList = [];
-        // console.log(getToken('auth'));
 
         CompanyService.getCurrentCompany(function(company) {
             $scope.companyData = company;

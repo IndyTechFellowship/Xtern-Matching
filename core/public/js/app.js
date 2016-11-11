@@ -1,7 +1,8 @@
 (function () {
-    var app = angular.module('Xtern', ["ui.router","angular-centered","chart.js","as.sortable","DataManager","ngSanitize"]);//ngSanitize
+    var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable", "DataManager", "ngSanitize"]);//ngSanitize
 
-    app.config(function($stateProvider, $urlRouterProvider) {
+    app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+        // $locationProvider.html5Mode(true);
         $urlRouterProvider.when('/techpoint', '/techpoint/login');
         $urlRouterProvider.when('/techpoint/', '/techpoint/login');
         $urlRouterProvider.when('/company', '/company/login');
@@ -10,130 +11,96 @@
         $stateProvider
             //Techpoint
             .state('techpoint', {
-                url:"/techpoint",
+                url: "/techpoint",
                 abstract: true,
                 templateUrl: "public/partials/techpoint/techpoint.html",
-                controller: 'TechPointMain'
+                controller: 'TechPointMain',
             })
-            .state('techpoint.dashboard',{
-                url:"/dashboard",
+            .state('techpoint.dashboard', {
+                url: "/dashboard",
                 templateUrl: "public/partials/techpoint/techpoint.missionControl.html",
-                //resolve: { authenticate: authenticate }
                 controller: 'TechPointDashboardCtrl',
                 resolve: {
-                    security: ['$q', function($q){
-                      //  console.log($q, status);
-                        if(!isLoggedIn()){
-                            var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
-                            return $q.reject(errorObject);
-                        }
+                    security: ['$q', function ($q) {
+                        isLoggedInTechPoint();
                     }]
                 }
             })
-            .state('techpoint.profile',{
-                url:"/profile/:_id",
+            .state('techpoint.profile', {
+                url: "/profile/:_id",
                 templateUrl: "public/partials/studentProfile.html",
-                //resolve: { authenticate: authenticate }
                 controller: 'StudentProfileCtrl',
                 resolve: {
-                    security: ['$q', function($q){
-                        //  console.log($q, status);
-                        if(!isLoggedIn()){
-                            var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
-                            return $q.reject(errorObject);
-                        }
+                    security: ['$q', function ($q) {
+                        isLoggedInTechPoint();
                     }]
                 }
             })
             .state('techpoint.login', {
-                url:"/login",
+                url: "/login",
                 templateUrl: "public/partials/techpoint/techpoint.login.html",
                 controller: 'TechpointLogin',
                 resolve: {
                     security: ['$q', function ($q) {
-                        //  console.log($q, status);
-                        if (isLoggedIn()) {
-                            console.log(isLoggedIn());
-                       // if(false){
-                            var errorObject = {code: 'ALREADY_AUTHENTICATED_TECHPOINT'};
-                            return $q.reject(errorObject);
-                        }
+                        isLoggedIn();
                     }]
                 }
             })
             //Company
             .state('company', {
-                url:"/company",
+                url: "/company",
                 abstract: true,
                 templateUrl: "public/partials/company/company.html",
-                controller: 'CompanyMain'
+                controller: 'CompanyMain',
             })
-            .state('company.dashboard',{
-                url:"/dashboard",
+            .state('company.dashboard', {
+                url: "/dashboard",
                 templateUrl: "public/partials/company/company.missionControl.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'CompanyDashboardCtrl',
                 resolve: {
-                    security: ['$q', function($q){
-                        //  console.log($q, status);
-                        if(!isLoggedIn()){
-                            var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
-                            return $q.reject(errorObject);
-                        }
+                    security: ['$q', function ($q) {
+                        isLoggedInCompany();
                     }]
                 }
-            }).state('company.recruting',{
-                url:"/recruting",
+            }).state('company.recruting', {
+                url: "/recruting",
                 templateUrl: "public/partials/company/company.recruting.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'CompanyRecruiting',
                 resolve: {
-                    security: ['$q', function($q){
-                        //  console.log($q, status);
-                        if(!isLoggedIn()){
-                            var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
-                            return $q.reject(errorObject);
-                        }
+                    security: ['$q', function ($q) {
+                        isLoggedInCompany();
                     }]
                 }
             })
-            .state('company.profile',{
-                url:"/profile/:_id",
+            .state('company.profile', {
+                url: "/profile/:_id",
                 templateUrl: "public/partials/studentProfile.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'StudentProfileCtrl',
                 resolve: {
-                    security: ['$q', function($q){
-                        //  console.log($q, status);
-                        if(!isLoggedIn()){
-                            var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
-                            return $q.reject(errorObject);
-                        }
+                    security: ['$q', function ($q) {
+                        isLoggedInCompany();
                     }]
                 }
             })
             .state('company.login', {
-                url:"/login",
+                url: "/login",
                 templateUrl: "public/partials/company/company.login.html",
                 controller: 'CompanyLogin',
                 resolve: {
                     security: ['$q', function ($q) {
-                        //  console.log($q, status);
-                        if (isLoggedIn('company')) {
-                            console.log(isLoggedIn());
-                            // if(false){
-                            var errorObject = {code: 'ALREADY_AUTHENTICATED_COMPANY'};
-                            return $q.reject(errorObject);
-                        }
+                        isLoggedIn();
                     }]
                 }
             })
-			.state('student-profile', {
-				url: "/student-profile",
-				templateUrl: "public/partials/studentProfile.html"
-			});
-	});
-    app.run(function($state, $rootScope){
+            .state('student-profile', {
+                url: "/student-profile",
+                templateUrl: "public/partials/studentProfile.html"
+            });
+    });
+    app.run(function ($state, $rootScope) {
         $rootScope.$on('$stateChangeError', function (evt, toState, toParams, fromState, fromParams, error) {
             if (angular.isObject(error) && angular.isString(error.code)) {
                 switch (error.code) {
@@ -153,6 +120,14 @@
                         //go to the dash board
                         $state.go('company.dashboard');
                         break;
+                    case 'NOT_AUTHENTICATED_INSTRUCTOR':
+                        // go to the login page
+                        //$state.go('company.login');
+                        break;
+                    case 'ALREADY_AUTHENTICATED_INSTRUCTOR':
+                        //go to the dash board
+                        //$state.go('company.dashboard');
+                        break;
                     default:
                         // set the error object on the error state and go there
                         $state.get('error').error = error;
@@ -169,9 +144,9 @@
 
 //---------------------Classes and Function - to be moved later --------------//
 
-var removeDataColors = function(data){
+var removeDataColors = function (data) {
     data.knownTech = [];
-    for(var i in data.languages){
+    for (var i in data.languages) {
         data.knownTech.push(data.languages[i].name);
     }
     //data.knownTech.sort();
@@ -179,13 +154,13 @@ var removeDataColors = function(data){
 
 // There should be a better way to do this, but I am blanking now -- maybe filter
 // Corrects data formatting
-var rowClass = function(data){
+var rowClass = function (data) {
     data.name = data.firstName + " " + data.lastName;
     //data.gradeLabel = data.r1Grade.text;
     //data.gradeValue = data.r1Grade.value;
     data.namelink = '<a ui-sref="profile/' + data._id + '">' + data.name + "</a>";
     removeDataColors(data);
-    
+
     //console.log(data);
     return data;
 };
@@ -196,7 +171,7 @@ var removedDuplicates = function (arr) {
     });
 };
 
-var cleanStudents = function(student){
+var cleanStudents = function (student) {
     student.interestedIn = removedDuplicates(student.interestedIn);
     //student.languages = removedDuplicates(student.interestedIn);
     return student;

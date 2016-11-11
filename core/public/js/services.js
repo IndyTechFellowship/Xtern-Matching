@@ -116,27 +116,25 @@
 
         self.getCurrentCompany = function(callback){
             // console.log(id);
-            // if(!self.company || self.company._id !== id) {
+            if(!self.company) {
                 $http({
                     method: 'GET',
-                    url: host + "company/getCurrentCompany/0",
+                    url: host + "company/getCurrentCompany",
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    // console.log('get current company data:');
-                    // console.log(data.data);
                     self.company = data.data;
                     callback(self.company);
                 }, function errorCallback(response) {
                     console.log('error occured: ' + response);
                     callback('', 'err');
                 });
-            // } else {
-            //      callback(self.company);
-            // }
+            } else {
+                 callback(self.company);
+            }
         };
 
         self.getCompanyDataForId = function(id, callback){
@@ -169,10 +167,7 @@
                 method: 'POST',
                 // TODO: replace this id when company login is done
                 url: host + "company/addStudent",
-                // url: "http://localhost:8080/company/" + id,
                 data: {
-                    // "id": 5066549580791808,
-                    "token": getToken('auth'),
                     "studentId": studentId
                 },
                 headers: {
@@ -267,8 +262,8 @@
                 method: 'POST',
                 url: host + "auth/login",
                 data: {
-                    "email":"xniccum@gmail.com",
-                    "password": "admin1"
+                    "email": email,
+                    "password": password
                 },
                 headers: {
                     'Content-Type': "application/json",
@@ -281,7 +276,48 @@
                 console.log('error occured: '+response);
                 callback('','err');
             });
-        }
+        };
+
+        self.renderTokens = function (callback) {
+            $http({
+                method: 'GET',
+                url: host + "admin/getUser",
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + self.jwtToken
+                }
+            }).then(function (data) {
+                setToken(data.role, "role");
+                setToken(data.organization, "organization");
+                callback(data);
+            }, function errorCallback(response) {
+                callback('', response);
+            });
+        };
+
+        self.logout = function (callback) {
+            $http({
+                method: 'POST',
+                url: host + "auth/logout",
+                data: {},
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer '+getToken('auth')
+                }
+            }).then(function () {
+                self.jwtToken = null;
+                localStorage.removeItem("auth");
+                localStorage.removeItem("role");
+                localStorage.removeItem("organization");
+                callback();
+            }, function errorCallback(response) {
+                // console.log('error occured: '+response);
+                callback('err')
+            });
+        };
+
     }]).service('ResumeService',['$http', function ($http) {
         var self = this;
         self.jwtToken = null;
