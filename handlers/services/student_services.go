@@ -28,8 +28,6 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 	if _, err := datastore.Put(ctx, key, &student); err != nil {
 		return http.StatusInternalServerError, err
 	}
-	student.Id = key.IntID()
-	UpdateStudent(ctx, student)
 	return http.StatusAccepted, nil
 }
 
