@@ -116,18 +116,16 @@
 
         self.getCurrentCompany = function(callback){
             // console.log(id);
-            // if(!self.company || self.company._id !== id) {
+            if(!self.company) {
                 $http({
                     method: 'GET',
-                    url: host + "company/getCurrentCompany/0",
+                    url: host + "company/getCurrentCompany",
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    // console.log('get current company data:');
-                    // console.log(data.data);
                     self.company = data.data;
                     callback(self.company);
                 }, function errorCallback(response) {
@@ -135,9 +133,9 @@
                     console.log(response);
                     callback('', 'err');
                 });
-            // } else {
-            //      callback(self.company);
-            // }
+            } else {
+                 callback(self.company);
+            }
         };
 
         self.getCompanyDataForId = function(id, callback){
@@ -171,10 +169,7 @@
                 method: 'POST',
                 // TODO: replace this id when company login is done
                 url: host + "company/addStudent",
-                // url: "http://localhost:8080/company/" + id,
                 data: {
-                    // "id": 5066549580791808,
-                    "token": getToken('auth'),
                     "studentId": studentId
                 },
                 headers: {
