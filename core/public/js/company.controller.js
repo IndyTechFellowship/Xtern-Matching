@@ -1,22 +1,26 @@
 angular.module('Xtern')
-    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'AuthService','CompanyService', 'ProfileService', function ($scope, $rootScope, $state, AuthService, CompanyService, ProfileService) {
-        var self = this;
-
+    .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'AuthService','CompanyService', 'ProfileService', function ($scope, $rootScope, $state, AuthService, CompanyService) {
         isLoggedInCompany = function() {
             return getToken('auth') !== null;
         };
 
         $scope.loggedIn = isLoggedInCompany();
         $scope.isCompany = true;
+        $scope.isStudentApplicant = false;
 
-        CompanyService.getCurrentCompany(function(company) {
-            $scope.companyData = company;
-        });
+        var isStudentApplicant = function (studentID) {
+            return $scope.companyData.studentIds.indexOf(studentID) != -1;
+        };
 
-        $rootScope.$on('$stateChangeStart',
-            function (event, toState, toParams, fromState, fromParams, options) {
+        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
+                CompanyService.getCurrentCompany(function(company) {
+                    $scope.companyData = company;
+                });
+
                 $scope.loggedIn = isLoggedInCompany();
                 $scope.companyName = getToken('companyName');
+                $scope.isStudentApplicant = isStudentApplicant(studentData._id);
+                console.log($scope.isStudentApplicant);
                 if (toState.name == "company.profile") {
                     $('#profile').show();
                 }
@@ -27,8 +31,17 @@ angular.module('Xtern')
 
         $scope.addStudentToCompany = function (studentID) {
             CompanyService.addStudentToWishList(studentID, function (data) {
-                console.log(data);
+                toastr.success('Added Applicant', 'Student added to your Recruitment List');
+                $scope.isStudentApplicant=true;
             });
+        };
+
+        $scope.removeRecruit = function (_id) {
+            CompanyService.removeStudentFromWishList(_id, function(data) {
+                $scope.isStudentApplicant=false;
+                toastr.error('Removed Applicant', 'Student removed to your Recruitment List');
+            });
+
         };
 
         $scope.logout = function () {
@@ -235,7 +248,7 @@ angular.module('Xtern')
             var tempFields = {
                 email: "xniccum@gmail.com",
                 password: "admin1"
-            }
+            };
             AuthService.login(tempFields.email, tempFields.password, function (token, err) {
                 if (err) {
                     console.log('Login unsuccessful');
@@ -266,9 +279,7 @@ angular.module('Xtern')
         });
     }])
     .controller('CompanyRecruiting', ['$scope', '$state', 'ProfileService', 'CompanyService', function ($scope, $state, ProfileService, CompanyService) {
-        var self = this;
         $scope.recruitmentList = [];
-        // console.log(getToken('auth'));
 
         CompanyService.getCurrentCompany(function(company) {
             $scope.companyData = company;
