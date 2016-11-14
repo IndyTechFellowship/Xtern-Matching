@@ -28,7 +28,7 @@
             })
             .state('techpoint.profile', {
                 url: "/profile/:_id",
-                templateUrl: "public/partials/studentProfile.html",
+                templateUrl: "public/shared/partials/studentProfile.html",
                 controller: 'StudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
@@ -76,7 +76,7 @@
             })
             .state('company.profile', {
                 url: "/profile/:_id",
-                templateUrl: "public//shared/partials/studentProfile.html",
+                templateUrl: "public/shared/partials/studentProfile.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'StudentProfileCtrl',
                 resolve: {
@@ -94,10 +94,6 @@
                         isLoggedIn();
                     }]
                 }
-            })
-            .state('student-profile', {
-                url: "/student-profile",
-                templateUrl: "public/shared/partials/studentProfile.html"
             });
     });
     app.run(function ($state, $rootScope) {
