@@ -2,7 +2,7 @@ angular.module('Xtern')
     .directive('studentProfileComment', function() {
         return {
             restrict: 'E',
-            templateUrl: 'public/partials/components/comment.html',
+            templateUrl: 'public/shared/partials/components/comment.html',
             // template: '<p>test</p>'
             controller: 'CommentCtrl'
         };
@@ -13,7 +13,7 @@ angular.module('Xtern')
             // scope: {
             //     labels: labels
             // },
-            templateUrl: 'public/partials/components/techLabels.html',
+            templateUrl: 'public/shared/partials/components/techLabels.html',
             controller: 'TechLabelsCtrl'
         };
     })
@@ -40,7 +40,7 @@ angular.module('Xtern')
                 change: '&'//function
 
             },
-            templateUrl: 'public/partials/components/simpleMSFilter.html'
+            templateUrl: 'public/shared/partials/components/simpleMSFilter.html'
         };
     })
     .directive('toggleFilter', function () {
@@ -50,7 +50,7 @@ angular.module('Xtern')
                 filterobject: '=',//two way binding
                 change: '&'//function
             },
-            templateUrl: 'public/partials/components/toggleMSFilter.html'
+            templateUrl: 'public/shared/partials/components/toggleMSFilter.html'
         };
     })
     .directive('missionControl', function () {// until a better name arrives
@@ -63,6 +63,6 @@ angular.module('Xtern')
                 data: '=', //two way binding
                 path: '<' // one way binding
             },
-            templateUrl: 'public/partials/components/missionControlPage.html'
+            templateUrl: 'public/shared/partials/components/missionControlPage.html'
         };
     });
