@@ -18,7 +18,7 @@
             })
             .state('techpoint.dashboard', {
                 url: "/dashboard",
-                templateUrl: "public/techpoint/partials/techpoint.missionControl.html",
+                templateUrl: "public/modules/dashboard/partials/techpoint.missionControl.html",
                 controller: 'TechPointDashboardCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
@@ -28,7 +28,7 @@
             })
             .state('techpoint.profile', {
                 url: "/profile/:_id",
-                templateUrl: "public/shared/partials/studentProfile.html",
+                templateUrl: "public/modules/student_profile/partials/studentProfile.html",
                 controller: 'StudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
@@ -38,7 +38,7 @@
             })
             .state('techpoint.login', {
                 url: "/login",
-                templateUrl: "public/techpoint/partials/techpoint.login.html",
+                templateUrl: "public/modules/login/partials/techpoint.login.html",
                 controller: 'TechpointLogin',
                 resolve: {
                     security: ['$q', function ($q) {
@@ -55,7 +55,7 @@
             })
             .state('company.dashboard', {
                 url: "/dashboard",
-                templateUrl: "public/company/partials/company.missionControl.html",
+                templateUrl: "public/modules/dashboard/partials/company.missionControl.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'CompanyDashboardCtrl',
                 resolve: {
@@ -76,7 +76,7 @@
             })
             .state('company.profile', {
                 url: "/profile/:_id",
-                templateUrl: "public/shared/partials/studentProfile.html",
+                templateUrl: "public/modules/student_profile/partials/studentProfile.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'StudentProfileCtrl',
                 resolve: {
@@ -87,7 +87,7 @@
             })
             .state('company.login', {
                 url: "/login",
-                templateUrl: "public/company/partials/company.login.html",
+                templateUrl: "public/modules/login/partials/company.login.html",
                 controller: 'CompanyLogin',
                 resolve: {
                     security: ['$q', function ($q) {
