@@ -22,7 +22,7 @@
                 controller: 'TechPointDashboardCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInTechPoint();
+                       return isLoggedInTechPoint($q);
                     }]
                 }
             })
@@ -32,7 +32,7 @@
                 controller: 'StudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInTechPoint();
+                       return isLoggedInTechPoint($q);
                     }]
                 }
             })
@@ -42,7 +42,7 @@
                 controller: 'TechpointLogin',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedIn();
+                        return isLoggedIn($q,'ALREADY_AUTHENTICATED_TECHPOINT');
                     }]
                 }
             })
@@ -60,7 +60,7 @@
                 controller: 'CompanyDashboardCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInCompany();
+                        return isLoggedInCompany($q);
                     }]
                 }
             }).state('company.recruting', {
@@ -70,7 +70,7 @@
                 controller: 'CompanyRecruiting',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInCompany();
+                        return isLoggedInCompany($q);
                     }]
                 }
             })
@@ -81,7 +81,7 @@
                 controller: 'StudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInCompany();
+                        return isLoggedInCompany($q);
                     }]
                 }
             })
@@ -91,7 +91,7 @@
                 controller: 'CompanyLogin',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedIn();
+                        return isLoggedIn($q,'ALREADY_AUTHENTICATED_COMPANY');
                     }]
                 }
             });

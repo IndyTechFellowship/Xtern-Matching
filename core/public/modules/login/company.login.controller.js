@@ -41,6 +41,7 @@ angular.module('Xtern')
                 }
             },
             onSuccess: function (event, fields) {
+                //event.preventDefault();
                 authenticate(fields);
             },
             onFailure: function (formErrors, fields) {
@@ -59,7 +60,7 @@ angular.module('Xtern')
         var tempFields = {
             email: "xniccum@gmail.com",
             password: "admin1"
-        }
+        };
         AuthService.login(tempFields.email, tempFields.password, function (token, err) {
             if (err) {
                 console.log('Login unsuccessful');

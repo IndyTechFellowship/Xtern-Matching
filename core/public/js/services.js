@@ -295,8 +295,8 @@
                     'Authorization': 'bearer ' + self.jwtToken
                 }
             }).then(function (data) {
-                setToken(data.role, "role");
-                setToken(data.organization, "organization");
+                setToken(data.data.role, "role");
+                setToken(data.data.organization, "organization");
                 callback(data);
             }, function errorCallback(response) {
                 callback('', response);

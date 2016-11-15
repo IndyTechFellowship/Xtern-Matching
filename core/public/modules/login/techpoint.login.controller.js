@@ -31,6 +31,7 @@ angular.module('Xtern')
                     }
                 },
                 onSuccess: function(event, fields) {
+                    //event.preventDefault();
                     authenticate(fields);
                 },
                 onFailure: function(formErrors, fields) {
