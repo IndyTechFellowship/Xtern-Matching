@@ -1,17 +1,26 @@
 
 function setToken(token, type) {
     //localStorage.setItem('token', token);
-    localStorage.setItem(type, token);
+    sessionStorage.setItem(type, token);
 }
 
 function getToken(tokenName) {
-    return localStorage.getItem(tokenName);
+    return sessionStorage.getItem(tokenName);
 }
 
 function logout() {
-    localStorage.removeItem("auth");
-    localStorage.removeItem("role");
-    localStorage.removeItem("organization");
+    sessionStorage.removeItem("auth");
+    sessionStorage.removeItem("role");
+    sessionStorage.removeItem("organization");
+    sessionStorage.removeItem("jwtToken");
+}
+
+function getJwtToken(){
+    sessionStorage.getItem("auth");
+}
+
+function removeToken(token){
+    sessionStorage.removeItem(token)
 }
 
 var isLoggedInTechPoint = function () {

@@ -262,8 +262,7 @@
         };
     }]).service('AuthService',['$http', function ($http) {
         var self = this;
-        self.jwtToken = null;
-
+        
         self.login = function(email,password,callback) {
             $http({
                 method: 'POST',
@@ -277,8 +276,9 @@
                     'Accept': "application/json"
                 }
             }).then(function (data) {
-                self.jwtToken = data.data['token'];
-                callback(self.jwtToken);
+               // setToken(data.data.token);
+               setToken(data.data['token'], "auth");
+                callback(data.data['token']);
             }, function errorCallback(response) {
                 console.log('error occured: '+response);
                 callback('','err');
@@ -292,7 +292,7 @@
                 headers: {
                     'Content-Type': "application/json",
                     'Accept': "application/json",
-                    'Authorization': 'bearer ' + self.jwtToken
+                    'Authorization': 'bearer ' + getToken('auth')
                 }
             }).then(function (data) {
                 setToken(data.data.role, "role");
@@ -314,10 +314,7 @@
                     'Authorization': 'bearer '+getToken('auth')
                 }
             }).then(function () {
-                self.jwtToken = null;
-                localStorage.removeItem("auth");
-                localStorage.removeItem("role");
-                localStorage.removeItem("organization");
+                logout()
                 callback();
             }, function errorCallback(response) {
                 // console.log('error occured: '+response);
@@ -327,7 +324,7 @@
 
     }]).service('ResumeService',['$http', function ($http) {
         var self = this;
-        self.jwtToken = null;
+        
 		self.uploadResume = function(id){
 			var fd = new FormData();
 			fd.append('file', document.getElementById("file").files[0]);

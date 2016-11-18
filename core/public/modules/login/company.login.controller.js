@@ -68,7 +68,7 @@ angular.module('Xtern')
                     '<ui class="list"><li>Invalid Username or Passord</li></ui>'
                 );
             } else {
-                setToken(token, "auth");
+                //setToken(token, "auth");
                 setToken("ININ", "company");
                 AuthService.renderTokens(function (token, err) {
                     if (err) {
