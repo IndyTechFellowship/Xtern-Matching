@@ -7,26 +7,26 @@ import (
 	"google.golang.org/appengine/datastore"
 	"golang.org/x/crypto/bcrypt"
 	"errors"
+	"time"
+	"github.com/dgrijalva/jwt-go"
+	_ "github.com/someone1/gcp-jwt-go"
 )
 
-func Register(ctx context.Context,user models.User) (int,error) {
-	count, err := datastore.NewQuery("User").Filter("Email =", user.Email).Count(ctx)
+func Register(ctx context.Context, organizationKey datastore.Key, user models.User) (int,error) {
+	count, err := datastore.NewQuery("User").Ancestor(organizationKey).Count(ctx)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	} else if count != 0 {
-		//Successful Response, but user already exists
-		// Should Update the user????
 		return http.StatusBadRequest, errors.New("User already exist")
 	} else {
-		key := datastore.NewIncompleteKey(ctx, "User", nil)
-		
 		//Hash Password
 		pass, err := bcrypt.GenerateFromPassword([]byte(user.Password),14);
 		if err != nil {
 			return http.StatusInternalServerError, err
 		}
 		user.Password = string(pass)
-		
+
+		key := datastore.NewIncompleteKey(ctx, "User", nil)
 		if _, err := datastore.Put(ctx, key, &user); err != nil {
 			return http.StatusInternalServerError, err
 		}
@@ -84,4 +84,37 @@ func DeleteUser(ctx context.Context, id int64) error {
 	userKey := datastore.NewKey(ctx, "User", "", id, nil)
 	err := datastore.Delete(ctx, userKey)
 	return err
+}
+
+func Login(ctx context.Context, email string, password string) ([]byte, error) {
+	q := datastore.NewQuery("User").Filter("Email =", email)
+
+
+	var account models.User
+	var accountKey datastore.Key
+	for t := q.Run(ctx); ; {
+		accountKey, err := t.Next(&account)
+		if err == datastore.Done || accountKey == nil {
+			return []byte(""), errors.New("User doesn't exist")
+		}
+		break
+	}
+	if account.Email == email && bcrypt.CompareHashAndPassword([]byte(account.Password),[]byte(password)) == nil {
+		token := jwt.NewWithClaims(jwt.SigningMethodHS512,jwt.MapClaims {
+			"iat": time.Now().Unix(),
+			"exp": time.Now().Add(time.Hour * time.Duration(24)).Unix(),
+			"org": accountKey.Parent(),
+			"key": accountKey,
+		})
+
+
+
+		//TODO: Don't hardcode this here and in company_handlers.go
+		tokenString, err := token.SignedString([]byte("My Secret"))
+		if err != nil {
+			return []byte(""), err
+		}
+		return []byte(tokenString), err
+	}
+	return []byte(""), errors.New("Wrong Password")
 }

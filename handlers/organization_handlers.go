@@ -16,6 +16,45 @@ import (
 	// "github.com/dgrijalva/jwt-go"
 )
 
+func GetOrganization(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	if id, ok := mux.Vars(r)["Id"]; ok {
+		num_id, _ := strconv.ParseInt(id, 10, 64)
+		company, err := services.GetCompany(ctx, num_id)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(company)
+	}
+	w.WriteHeader(http.StatusInternalServerError)
+}
+
+func PostOrganization(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	var companies []models.Company
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&companies); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	for _, company := range companies {
+		_, err := services.NewCompany(ctx, company)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
 func AddStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
@@ -120,45 +159,6 @@ func SwitchStudents(w http.ResponseWriter,r *http.Request) {
     } else {
         fmt.Println(err)
     }
-}
-
-func PostCompany(w http.ResponseWriter,r *http.Request) {
-	ctx := appengine.NewContext(r)
-
-	var companies []models.Company
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&companies); err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-
-	for _, company := range companies {
-		_, err := services.NewCompany(ctx, company)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-	}
-	w.WriteHeader(http.StatusOK)
-}
-
-func GetCompany(w http.ResponseWriter,r *http.Request) {
-	ctx := appengine.NewContext(r)
-
-	if id, ok := mux.Vars(r)["Id"]; ok {
-		num_id, _ := strconv.ParseInt(id, 10, 64)
-		company, err := services.GetCompany(ctx, num_id)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-
-		w.Header().Add("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(company)
-	}
-	w.WriteHeader(http.StatusInternalServerError)
 }
 
 func GetCurrentCompany(w http.ResponseWriter,r *http.Request) {

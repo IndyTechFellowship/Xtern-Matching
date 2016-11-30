@@ -8,14 +8,14 @@ import (
 )
 
 func NewRouter() *mux.Router {
-	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
+	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options {
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-			//return context.Get(r,"ctx")
 			return []byte("My Secret"), nil
 		},
 		SigningMethod: jwt.SigningMethodHS512,
 	})
 	router := mux.NewRouter().StrictSlash(true)
+
 
 	router.PathPrefix("/_ah").Handler(negroni.New(
 		negroni.Wrap(GetSystemRoutes(mux.NewRouter().StrictSlash(true))),
