@@ -1,24 +1,34 @@
 
 function setToken(token, type) {
     //localStorage.setItem('token', token);
-    localStorage.setItem(type, token);
+    sessionStorage.setItem(type, token);
 }
 
 function getToken(tokenName) {
-    return localStorage.getItem(tokenName);
+    return sessionStorage.getItem(tokenName);
 }
 
 function logout() {
-    localStorage.removeItem("auth");
-    localStorage.removeItem("role");
-    localStorage.removeItem("organization");
+    sessionStorage.removeItem("auth");
+    sessionStorage.removeItem("role");
+    sessionStorage.removeItem("organization");
+    sessionStorage.removeItem("jwtToken");
+}
+
+function getJwtToken(){
+    sessionStorage.getItem("auth");
+}
+
+function removeToken(token){
+    sessionStorage.removeItem(token)
 }
 
 var isLoggedInTechPoint = function () {
     var role = getToken("role");
     if (!role) {
         var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
-        return errorObject;
+        $q.reject(errorObject);
+        return;
     }
     else if(role =="admin"){
         return;
@@ -28,15 +38,15 @@ var isLoggedInTechPoint = function () {
     }
     else if(role == "Company"){
         var errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
-        return errorObject;
+        return $q.reject(errorObject);
     }
     else if(role == "Instructor"){
         var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' };
-        return errorObject;
+        return $q.reject(errorObject);
     }
     else{
         var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
-        return errorObject;
+        return $q.reject(errorObject);
     }
 };
 
@@ -70,35 +80,37 @@ var isLoggedInCompany = function ($q) {
     var role = getToken("role");
     if (!role) {
         var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
-        return errorObject;
+        return $q.reject(errorObject);
+
     }
     else if(role =="admin"){
         return;
     }
     else if (role == "TechPoint") {
         var errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
-        return errorObject;
+        return $q.reject(errorObject);
     }
     else if(role == "Company"){
         return;
     }
     else if(role == "Instructor"){
         var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' };
-        return errorObject;
+        return $q.reject(errorObject);
     }
     else{
         var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
-        return errorObject;
+        return $q.reject(errorObject);
     }
 };
 
-var isLoggedIn = function ($q) {
+var isLoggedIn = function ($q, code) {
     var role = getToken("role");
     if (!role) {
         return;
     }
     else if(role =="admin"){
-        return;// implemented reroute
+        var errorObject = {code: code};
+        return $q.reject(errorObject);
     }
     else if (role == "TechPoint") {
         var errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
