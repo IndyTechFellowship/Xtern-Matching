@@ -13,12 +13,12 @@
             .state('techpoint', {
                 url: "/techpoint",
                 abstract: true,
-                templateUrl: "public/partials/techpoint/techpoint.html",
-                controller: 'TechPointMain',
+                templateUrl: "public/techpoint/partials/techpoint.html",
+                controller: 'TechPointMain'
             })
             .state('techpoint.dashboard', {
                 url: "/dashboard",
-                templateUrl: "public/partials/techpoint/techpoint.missionControl.html",
+                templateUrl: "public/modules/dashboard/partials/techpoint.missionControl.html",
                 controller: 'TechPointDashboardCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
@@ -28,7 +28,7 @@
             })
             .state('techpoint.profile', {
                 url: "/profile/:_id",
-                templateUrl: "public/partials/studentProfile.html",
+                templateUrl: "public/modules/student_profile/partials/studentProfile.html",
                 controller: 'StudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
@@ -38,7 +38,7 @@
             })
             .state('techpoint.login', {
                 url: "/login",
-                templateUrl: "public/partials/techpoint/techpoint.login.html",
+                templateUrl: "public/modules/login/partials/techpoint.login.html",
                 controller: 'TechpointLogin',
                 resolve: {
                     security: ['$q', function ($q) {
@@ -50,12 +50,12 @@
             .state('company', {
                 url: "/company",
                 abstract: true,
-                templateUrl: "public/partials/company/company.html",
-                controller: 'CompanyMain',
+                templateUrl: "public/company/partials/company.html",
+                controller: 'CompanyMain'
             })
             .state('company.dashboard', {
                 url: "/dashboard",
-                templateUrl: "public/partials/company/company.missionControl.html",
+                templateUrl: "public/modules/dashboard/partials/company.missionControl.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'CompanyDashboardCtrl',
                 resolve: {
@@ -65,7 +65,7 @@
                 }
             }).state('company.recruting', {
                 url: "/recruting",
-                templateUrl: "public/partials/company/company.recruting.html",
+                templateUrl: "public/company/partials/company.recruting.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'CompanyRecruiting',
                 resolve: {
@@ -76,7 +76,7 @@
             })
             .state('company.profile', {
                 url: "/profile/:_id",
-                templateUrl: "public/partials/studentProfile.html",
+                templateUrl: "public/modules/student_profile/partials/studentProfile.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'StudentProfileCtrl',
                 resolve: {
@@ -87,17 +87,13 @@
             })
             .state('company.login', {
                 url: "/login",
-                templateUrl: "public/partials/company/company.login.html",
+                templateUrl: "public/modules/login/partials/company.login.html",
                 controller: 'CompanyLogin',
                 resolve: {
                     security: ['$q', function ($q) {
                         isLoggedIn();
                     }]
                 }
-            })
-            .state('student-profile', {
-                url: "/student-profile",
-                templateUrl: "public/partials/studentProfile.html"
             });
     });
     app.run(function ($state, $rootScope) {
