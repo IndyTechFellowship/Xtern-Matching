@@ -31,6 +31,7 @@ angular.module('Xtern')
                     }
                 },
                 onSuccess: function(event, fields) {
+                    //event.preventDefault();
                     authenticate(fields);
                 },
                 onFailure: function(formErrors, fields) {
@@ -57,7 +58,6 @@ angular.module('Xtern')
                         '<ui class="list"><li>Invalid Username or Password</li></ui>'
                     );
                 } else {
-                    setToken(token, "auth");
                     AuthService.renderTokens(function(token, err) {
                         if (err) {
                             console.log('Render Token unsuccessful', err);
