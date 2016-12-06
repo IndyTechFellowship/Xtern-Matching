@@ -19,6 +19,8 @@ type Student struct {
 	EmailIntrest string `json:"interestedInEmail"`
 	R1Grade Grade	    `json:"r1Grade"`
 	Status string	    `json:"status"`
+	Active bool	    `json:"active"`
+	Resume string	    `json:"resume"`
 	Comments []Comment  `json:"comments"`
 }
 
@@ -28,8 +30,8 @@ type Skill struct {
 }
 
 type Grade struct {
-	text string 		`json:"text"`
-	value string		`json:"value"`
+	Text string 		`json:"text"`
+	Value string		`json:"value"`
 }
 
 type Comment struct {

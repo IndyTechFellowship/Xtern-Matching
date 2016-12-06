@@ -10,6 +10,7 @@ import (
 	"errors"
 	"Xtern-Matching/models"
 	"time"
+	// "log"
 )
 
 func Login(ctx context.Context,user models.User) ([]byte, error) {
@@ -27,11 +28,20 @@ func Login(ctx context.Context,user models.User) ([]byte, error) {
 		// Create a new token object, specifying signing method and the claims
 		// you would like it to contain.
 		//token := jwt.New(jwt.GetSigningMethod("AppEngine"))
+		// log.Print("---MAKING TOKEN---")
+		// log.Print(account)
+		// log.Print(account.Organization)
+
+
 		token := jwt.NewWithClaims(jwt.SigningMethodHS512,jwt.MapClaims{
 			"iat": time.Now().Unix(),
 			"exp": time.Now().Add(time.Hour * time.Duration(24)).Unix(),
+			"org": account.Organization,
+			"role": account.Role,
 		})
+		// log.Print(token.Claims)
 
+//TODO: Don't hardcode this here and in company_handlers.go
 		tokenString, err := token.SignedString([]byte("My Secret"))
 		if err != nil {
 			return []byte(""), err
