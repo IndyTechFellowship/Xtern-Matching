@@ -9,10 +9,10 @@ function getToken(tokenName) {
 }
 
 function logout() {
-    sessionStorage.removeItem("auth");
-    sessionStorage.removeItem("role");
-    sessionStorage.removeItem("organization");
-    sessionStorage.removeItem("jwtToken");
+    var tokens = ['auth', 'role', 'organization', 'company', 'jwtToken'];
+    tokens.forEach(function(token){
+        removeToken(token);
+    });
 }
 
 function getJwtToken(){
@@ -23,12 +23,12 @@ function removeToken(token){
     sessionStorage.removeItem(token)
 }
 
-var isLoggedInTechPoint = function () {
+var isLoggedInTechPoint = function ($q) {
     var role = getToken("role");
     if (!role) {
         var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
         $q.reject(errorObject);
-        return;
+        return $q.reject(errorObject);
     }
     else if(role =="admin"){
         return;
@@ -41,7 +41,7 @@ var isLoggedInTechPoint = function () {
         return $q.reject(errorObject);
     }
     else if(role == "Instructor"){
-        var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' };
+        var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' }
         return $q.reject(errorObject);
     }
     else{

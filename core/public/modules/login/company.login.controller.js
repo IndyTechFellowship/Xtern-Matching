@@ -41,7 +41,8 @@ angular.module('Xtern')
                 }
             },
             onSuccess: function (event, fields) {
-                //event.preventDefault();
+                if(event)
+                    event.preventDefault();
                 authenticate(fields);
             },
             onFailure: function (formErrors, fields) {
@@ -56,12 +57,7 @@ angular.module('Xtern')
         $('#companyLogin').form('validate form');
     };
     var authenticate = function (fields) {
-        console.log(fields);
-        var tempFields = {
-            email: "xniccum@gmail.com",
-            password: "admin1"
-        };
-        AuthService.login(tempFields.email, tempFields.password, function (token, err) {
+        AuthService.login(fields.email, fields.password, function (token, err) {
             if (err) {
                 console.log('Login unsuccessful');
                 $('#companyLogin .ui.error.message').html(
@@ -69,7 +65,6 @@ angular.module('Xtern')
                 );
             } else {
                 //setToken(token, "auth");
-                setToken("ININ", "company");
                 AuthService.renderTokens(function (token, err) {
                     if (err) {
                         console.log('Render Token unsuccessful', err);

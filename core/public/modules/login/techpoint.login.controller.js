@@ -31,7 +31,8 @@ angular.module('Xtern')
                     }
                 },
                 onSuccess: function(event, fields) {
-                    //event.preventDefault();
+                    if(event)
+                        event.preventDefault();
                     authenticate(fields);
                 },
                 onFailure: function(formErrors, fields) {
@@ -46,12 +47,7 @@ angular.module('Xtern')
             $('#techpointLogin').form('validate form');
         };
         var authenticate = function(fields) {
-            console.log(fields);
-            var tempFields = {
-                email: "xniccum@gmail.com",
-                password: "admin1"
-            };
-            AuthService.login(tempFields.email, tempFields.password, function(token, err) {
+            AuthService.login(fields.email, fields.password, function(token, err) {
                 if (err) {
                     console.log('Login unsuccessful');
                     $('#techpointLogin .ui.error.message').html(
@@ -65,7 +61,7 @@ angular.module('Xtern')
                                 '<ui class="list"><li>A server error occured</li></ui>'
                             ).show();
                         } else {
-                            console.log('Login Success');
+                            // console.log('Login Success');
                             $scope.isCompany = false;
                             $state.go('techpoint.dashboard');
                         }
