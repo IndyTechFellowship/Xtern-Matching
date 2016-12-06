@@ -41,7 +41,7 @@ dependencies:
     - npm install core --prefix core
 test:
   override:
-    - goapp test Xtern-Matching/tests
+    - npm test --prefix core
 
 deployment:
   staging:
