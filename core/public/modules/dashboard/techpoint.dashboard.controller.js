@@ -155,7 +155,5 @@ angular.module('Xtern')
     $scope.DATA = null;
     $scope.PATH ='techpoint';
 
-    TechPointDashboardService.queryUserSummaryData(function (data) {
-        $scope.DATA = data;
-    });
+
 }]);

@@ -155,6 +155,7 @@ var rowClass = function (data) {
     //data.gradeLabel = data.r1Grade.text;
     //data.gradeValue = data.r1Grade.value;
     data.namelink = '<a ui-sref="profile/' + data._id + '">' + data.name + "</a>";
+    data.gradeLabel = data.r1Grade.value;
     removeDataColors(data);
 
     //console.log(data);
