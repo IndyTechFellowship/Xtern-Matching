@@ -1,16 +1,22 @@
 angular.module('Xtern')
-    .controller('MissionControl', ['$scope', '$state', function ($scope, $state) {
+    .controller('MissionControl', ['$scope', '$state','TechPointDashboardService', function ($scope, $state, TechPointDashboardService) {
         //Params from the parent
         var STARTCHARTSANDSTATS = $scope.startchartsandchats;
         var STARTFILTERS = $scope.startfilters;
         var TABLEHEADERS = $scope.tableheaders;
         var PATH = $scope.path;
 
+        //vars
+        $scope.summaryData = null;
+        $scope.rawData = null;
+        $scope.personsCount = 0;
+
+
         //DataLoad
-        $scope.$watch('data', function (newVal, oldval) {
-            if (newVal)
-                dataLoad(newVal);
-        }, true);
+        // $scope.$watch('data', function (newVal, oldval) {
+        //     if (newVal)
+        //         dataLoad(newVal);
+        // }, true);
 
         var dataLoad = function (data) {
             $scope.summaryData = $.map(data, function (person) {
@@ -26,10 +32,7 @@ angular.module('Xtern')
             $('.ui.dropdown').dropdown();//activates semantic drowpdowns
         };
 
-        //vars
-        $scope.summaryData = null;
-        $scope.rawData = null;
-        $scope.personsCount = 0;
+
 
 
         //Graph Stuff
@@ -84,7 +87,6 @@ angular.module('Xtern')
                 }
             }
         };
-        generateChartAndStatus(STARTCHARTSANDSTATS);
 
         var initCharts = function () {
             for (var stat in $scope.chartsAndStats) {
@@ -140,7 +142,7 @@ angular.module('Xtern')
         var setTableHeaders = function (jsonArray) {
             $scope.tableHeaders = jsonArray;
         };
-        setTableHeaders(TABLEHEADERS);
+
         $scope.sort = function (header) {
             var prop = header.sortPropertyName;
             var asc = header.asc === 'ascending';
@@ -188,7 +190,6 @@ angular.module('Xtern')
                 });
             }
         };
-        generateFilterObjects(STARTFILTERS);
 
         //Filter Helper Functions
         var generateHeaders = function (field, data, array) {
@@ -282,7 +283,24 @@ angular.module('Xtern')
         $scope.rowClick = function (id) {
             $state.go(PATH + '.profile', {_id: id});
         }
-        //DOM
-        $('.ui.accordion')
-            .accordion();
+
+        var run = function(data){
+            generateChartAndStatus(STARTCHARTSANDSTATS);
+            setTableHeaders(TABLEHEADERS);            
+            generateFilterObjects(STARTFILTERS);
+            
+            dataLoad(data);
+
+            //DOM
+            
+            $('.ui.accordion').accordion();
+        };
+
+
+
+        TechPointDashboardService.queryUserSummaryData(function (data) {
+            $scope.DATA = data;
+            run(data);
+        });
+
     }]);
