@@ -8,8 +8,12 @@ import (
 
 type Organization struct {
 	Name string 		`json:"name"`
-	Type string		`json:"type"`
+	Kind string		`json:"type"`
 	Students arraylist.List `json:"students"`
+}
+
+func NewOrganization(name string, kind string) Organization {
+	return Organization{Name: name, Kind: kind, Students: arraylist.New()}
 }
 
 func (org *Organization) AddStudent(studentKey datastore.Key) bool {

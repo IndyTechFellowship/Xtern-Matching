@@ -6,3 +6,4 @@ type Comment struct {
 	Message string		`json:"message"`
 	Author datastore.Key	`json:"Author"`
 }
+

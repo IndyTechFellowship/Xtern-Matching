@@ -19,13 +19,7 @@ import (
 func Register(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	dat := make(map[string]interface{})
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&dat); err != nil {
-		log.Println(err.Error())
-		http.Error(w, err.Error(), 500)
-		return
-	}
+
 	var user models.User
 	user.Name = dat["name"].(string)
 	user.Email = dat["email"].(string)
@@ -41,27 +35,25 @@ func Register(w http.ResponseWriter, r *http.Request) {
 func GetUsers(w http.ResponseWriter, r *http.Request){
 	ctx := appengine.NewContext(r)
 
-	role, role_ok := mux.Vars(r)["Role"]
-	org, org_ok := mux.Vars(r)["Organization"]
-	
-	if !role_ok || !org_ok {
-		//params not found
-		log.Println("Missing either Role or Organization")
-		http.Error(w, errors.New("Missing either Role or Organization").Error(), http.StatusBadRequest)
+	dat := make(map[string]interface{})
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		//log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	users, err := services.GetUsers(ctx, org, role)
+	user := context.Get(r, "user")
+	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+	org := mapClaims["org"].(datastore.Key)
+
+	users, err := services.GetUsers(ctx, org)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
-	//Don't want to send back the passwords for security resaons
-	for i := 0; i < len(users); i++ {
-		users[i].Password = "********"
-	}
+
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)

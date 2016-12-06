@@ -34,16 +34,16 @@ func Register(ctx context.Context, organizationKey datastore.Key, user models.Us
 	}
 }
 
-func GetUsers(ctx context.Context, org string, role string) ([]models.User, error){
-	query := datastore.NewQuery("User").Filter("Role =", role).Filter("Organization =", org)
+func GetUsers(ctx context.Context, org datastore.Key) ([]models.User, error){
+	query := datastore.NewQuery("User").Project("Name", "Email")
+	if org != nil {
+		query = query.Ancestor(org)
+	}
+
 	var users []models.User
-	
-	keys, err := query.GetAll(ctx, &users)
+	_, err := query.GetAll(ctx, &users)
 	if err != nil {
 		return nil, err
-	}
-	for i := 0; i < len(users); i++ {
-		users[i].Id = keys[i].IntID()
 	}
 	return users, err
 }
@@ -89,15 +89,10 @@ func DeleteUser(ctx context.Context, id int64) error {
 func Login(ctx context.Context, email string, password string) ([]byte, error) {
 	q := datastore.NewQuery("User").Filter("Email =", email)
 
-
 	var account models.User
-	var accountKey datastore.Key
-	for t := q.Run(ctx); ; {
-		accountKey, err := t.Next(&account)
-		if err == datastore.Done || accountKey == nil {
-			return []byte(""), errors.New("User doesn't exist")
-		}
-		break
+	accountKey, err := q.Run(ctx).Next(&account)
+	if err == datastore.Done || accountKey == nil {
+		return []byte(""), errors.New("User doesn't exist")
 	}
 	if account.Email == email && bcrypt.CompareHashAndPassword([]byte(account.Password),[]byte(password)) == nil {
 		token := jwt.NewWithClaims(jwt.SigningMethodHS512,jwt.MapClaims {

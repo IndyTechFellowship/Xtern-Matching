@@ -47,48 +47,46 @@ func GetStudent(w http.ResponseWriter,r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
 }
 
-func GetStudentsFromIds(w http.ResponseWriter,r *http.Request) {
-	ctx := appengine.NewContext(r)
-	type intIds struct {
-		Ids []int64 `json:"_ids"`
-	}
-	var _ids intIds
-
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&_ids); err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-
-	students, err := services.GetStudentsFromIds(ctx, _ids.Ids)
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(students)
-}
+//func GetStudentsFromIds(w http.ResponseWriter,r *http.Request) {
+//	ctx := appengine.NewContext(r)
+//	type intIds struct {
+//		Ids []int64 `json:"_ids"`
+//	}
+//	var _ids intIds
+//
+//	decoder := json.NewDecoder(r.Body)
+//	if err := decoder.Decode(&_ids); err != nil {
+//		http.Error(w, err.Error(), 500)
+//		return
+//	}
+//
+//	students, err := services.GetStudentsFromIds(ctx, _ids.Ids)
+//	if err != nil {
+//		http.Error(w, err.Error(), 500)
+//		return
+//	}
+//
+//	w.Header().Add("Access-Control-Allow-Origin", "*")
+//	w.Header().Set("Content-Type", "application/json")
+//	json.NewEncoder(w).Encode(students)
+//}
 
 func PostStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	var students models.Student
+	var student models.Student
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&students); err != nil {
+	if err := decoder.Decode(&student); err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	for _, student := range students {
-		_, err := services.NewStudent(ctx, student)
-		if err != nil {
-			log.Println(err.Error())
-			http.Error(w, err.Error(), 500)
-			return
-		}
+	_, err := services.NewStudent(ctx, student)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
 	}
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
@@ -97,8 +95,6 @@ func PostStudent(w http.ResponseWriter,r *http.Request) {
 //8 MB file limit
 const MAX_MEMORY = 8 * 1024 * 1024
 func PostPDF(w http.ResponseWriter,r *http.Request){
-
-	//Get context and storage service
 	ctx := appengine.NewContext(r)
 	
 	//Make sure pdf is less than 8 MB

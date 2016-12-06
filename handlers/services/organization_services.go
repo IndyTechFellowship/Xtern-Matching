@@ -8,16 +8,17 @@ import (
 	"log"
 )
 
-func NewOrganization(ctx context.Context,org *models.Organization) (int,error) {
+func NewOrganization(ctx context.Context,name string, kind string) (int,error) {
 	key := datastore.NewIncompleteKey(ctx, "Organization", nil)
-	if _, err := datastore.Put(ctx, key, org); err != nil {
+	org := models.NewOrganization(name, kind)
+	if _, err := datastore.Put(ctx, key, &org); err != nil {
 		return http.StatusInternalServerError, err
 	}
 	return http.StatusAccepted, nil
 }
 
-func GetOrganization(ctx context.Context, _id int64) (models.Organization,error) {
-	orgKey := datastore.NewKey(ctx, "Organization", "", _id, nil)
+func GetOrganization(ctx context.Context, orgKey datastore.Key) (models.Organization,error) {
+	//orgKey := datastore.NewKey(ctx, "Organization", "", _id, nil)
 	var org models.Organization
 	if err := datastore.Get(ctx, orgKey, &org); err != nil {
 		return models.Organization{}, err
@@ -69,15 +70,14 @@ func RemoveStudentFromOrganization(ctx context.Context, orgKey datastore.Key, st
 	return orgKey.IntID(), nil
 }
 
-func MoveStudentInOrganization(ctx context.Context, orgKey datastore.Key, student1Id int64) (int64,error)  {
+func MoveStudentInOrganization(ctx context.Context, orgKey datastore.Key, studentKey datastore.Key, pos int) (int64,error)  {
 	//orgKey := datastore.NewKey(ctx, "Company", "", companyId, nil)
 	var org models.Organization
 	if err := datastore.Get(ctx, orgKey, &org); err != nil {
 		return http.StatusInternalServerError, err
 	}
 
-	//TODO
-	org.RemoveStudent(studentKey)
+	org.MoveStudent(studentKey, pos)
 
 	if _, err := datastore.Put(ctx, orgKey, &org); err != nil {
 		return http.StatusInternalServerError, err
