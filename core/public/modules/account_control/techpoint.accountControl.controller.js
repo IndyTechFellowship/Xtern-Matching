@@ -7,29 +7,38 @@ angular.module('Xtern')
         $scope.companyUsers = [];
         $scope.UserFormData = {};
 
-        $scope.companyList = ["ININ", "Salesforce", "Instructor", "TechPoint"];
+        //TODO: REPLACE WITH BACKEND CALL
+        $scope.companyList = COMPANY_GLOBAL_LIST;
 
-        $scope.selectedGroup = {
-            active: 'TechPoint',
-            activeCompany: 'ININ',
-            changeGroup: function (group) {
-                $scope.selectedGroup.active = group;
-                swapActiveArray(group);
-            },
-            changeCompany: function () {
-                refreshCompany($scope.selectedGroup.activeCompany);
-            },
-            selectedUsers: $scope.techPointUsers,
-            refresh: function () {
-                console.log('refreshed');
-                swapActiveArray($scope.selectedGroup.active);
-            }
-        };
+        var declarePageVars = function () {
+            $scope.selectedGroup = {
+                active: 'TechPoint',
+                activeCompany: 'ININ',
+                changeGroup: function (group) {
+                    $scope.selectedGroup.active = group;
+                    swapActiveArray(group);
+                },
+                changeCompany: function () {
+                    refreshCompany($scope.selectedGroup.activeCompany);
+                },
+                selectedUsers: $scope.techPointUsers,
+                refresh: function () {
+                    console.log('refreshed');
+                    swapActiveArray($scope.selectedGroup.active);
+                }
+            };
 
-        $scope.tableHeaders = [
-            { title: 'Name', sortPropertyName: 'name', displayPropertyName: 'name', asc: true },
-            { title: 'Email', sortPropertyName: 'email', displayPropertyName: 'email', asc: true }
-        ];
+            $scope.tableHeaders = [
+                { title: 'Name', sortPropertyName: 'name', displayPropertyName: 'name', asc: true },
+                { title: 'Email', sortPropertyName: 'email', displayPropertyName: 'email', asc: true }
+            ];
+
+            //Set up CompanyAbbr
+            $scope.companyListAbbr = $scope.companyList.filter(function(item){
+                return !(item == 'TechPoint' || item == 'Instructor');
+            });
+            
+        }
 
         $scope.sort = function (header, event) {
             var prop = header.sortPropertyName;
@@ -72,7 +81,6 @@ angular.module('Xtern')
             console.log(user);
             $('#accountsModal').modal('show');
             resetUserForm(user);
-            // $('#accountModalform').form('reset');
             $('#accountModalform .error.message').empty();
         }
 
@@ -210,12 +218,13 @@ angular.module('Xtern')
             });
         }
         var setup = function () {
-            // refreshAccounts('TechPoint', 'TechPoint', $scope.techPointUsers);
-            // refreshAccounts('Instructor', 'Instructor', $scope.techPointUsers);
+            declarePageVars();
             formConfig();
             modalConfig();
             $scope.selectedGroup.refresh();
         }
-        setup();
 
-    }])
+        $rootScope.$on('$viewContentLoaded', function (evt) {
+            setup();
+        });
+    }]);

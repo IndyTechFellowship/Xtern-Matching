@@ -6,7 +6,7 @@
 	</div>
 	<div ng-show="selectedGroup.active == 'Company'">
 		<select class="ui fluid search dropdown" ng-model="selectedGroup.activeCompany" ng-change="selectedGroup.changeCompany()">
-            <option ng-repeat="item in companyList" value="{{item}}" on-last-repeat-drop-down>
+            <option ng-repeat="item in companyListAbbr" value="{{item}}" on-last-repeat-drop-down>
                 {{item}}
             </option>
         </select>
