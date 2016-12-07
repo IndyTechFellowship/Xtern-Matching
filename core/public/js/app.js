@@ -32,8 +32,7 @@
             })
             .state('techpoint.accounts',{
                 url:"/accounts",
-                templateUrl: "public/partials/techpoint/techpoint.accounts.html",
-                //resolve: { authenticate: authenticate }
+                templateUrl: "public/account-control/partials/accounts.html",
                 controller: 'TechPointAccountCtrl',
                 resolve: {
                     security: ['$q', function($q){
