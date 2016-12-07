@@ -113,32 +113,6 @@
     }]).service('CompanyService', ['$http', function ($http){
         var self = this;
         self.company = null;
-
-        self.getCurrentCompany = function(callback){
-            // console.log(id);
-            // if(!self.company || self.company._id !== id) {
-                $http({
-                    method: 'GET',
-                    url: host + "company/getCurrentCompany/0",
-                    headers: {
-                        'Content-Type': "application/json",
-                        'Accept': "application/json",
-                        'Authorization': 'bearer ' + getToken('auth')
-                    }
-                }).then(function (data) {
-                    // console.log('get current company data:');
-                    // console.log(data.data);
-                    self.company = data.data;
-                    callback(self.company);
-                }, function errorCallback(response) {
-                    console.log('error occured: ' + response);
-                    callback('', 'err');
-                });
-            // } else {
-            //      callback(self.company);
-            // }
-        };
-
         self.getCompanyDataForId = function(id, callback){
             // console.log(id);
             if(!self.company || self.company._id !== id) {
@@ -156,7 +130,8 @@
                     self.company = data.data;
                     callback(self.company);
                 }, function errorCallback(response) {
-                    console.log('error occured: ' + response);
+                    console.log('Company Services: error occured: ' + response);
+                    console.log(response);
                     callback('', 'err');
                 });
             } else {
@@ -260,8 +235,7 @@
         };
     }]).service('AuthService',['$http', function ($http) {
         var self = this;
-        self.jwtToken = null;
-
+        
         self.login = function(email,password,callback) {
             $http({
                 method: 'POST',
@@ -275,8 +249,9 @@
                     'Accept': "application/json"
                 }
             }).then(function (data) {
-                self.jwtToken = data.data['token'];
-                callback(self.jwtToken);
+               // setToken(data.data.token);
+               setToken(data.data['token'], "auth");
+                callback(data.data['token']);
             }, function errorCallback(response) {
                 console.log('error occured: '+response);
                 callback('','err');
@@ -290,11 +265,11 @@
                 headers: {
                     'Content-Type': "application/json",
                     'Accept': "application/json",
-                    'Authorization': 'bearer ' + self.jwtToken
+                    'Authorization': 'bearer ' + getToken('auth')
                 }
             }).then(function (data) {
-                setToken(data.role, "role");
-                setToken(data.organization, "organization");
+                setToken(data.data.role, "role");
+                setToken(data.data.organization, "organization");
                 callback(data);
             }, function errorCallback(response) {
                 callback('', response);
@@ -312,10 +287,7 @@
                     'Authorization': 'bearer '+getToken('auth')
                 }
             }).then(function () {
-                self.jwtToken = null;
-                localStorage.removeItem("auth");
-                localStorage.removeItem("role");
-                localStorage.removeItem("organization");
+                logout()
                 callback();
             }, function errorCallback(response) {
                 // console.log('error occured: '+response);
@@ -325,7 +297,7 @@
 
     }]).service('ResumeService',['$http', function ($http) {
         var self = this;
-        self.jwtToken = null;
+        
 		self.uploadResume = function(id){
 			var fd = new FormData();
 			fd.append('file', document.getElementById("file").files[0]);
