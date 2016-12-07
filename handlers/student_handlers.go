@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"google.golang.org/appengine"
 	"encoding/json"
-	"github.com/gorilla/mux"
-	"strconv"
 	"Xtern-Matching/models"
 	"Xtern-Matching/handlers/services"
 	"log"
+	"appengine/datastore"
+	"github.com/gorilla/context"
 )
 
 func GetStudents(w http.ResponseWriter,r *http.Request) {
@@ -28,50 +28,19 @@ func GetStudents(w http.ResponseWriter,r *http.Request) {
 func GetStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	if id, ok := mux.Vars(r)["Id"]; ok {
-		num_id, _ := strconv.ParseInt(id, 10, 64)
-		student, err := services.GetStudent(ctx, num_id)
-		if err != nil {
-			log.Println(err.Error())
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		// if student.Resume == "" {
-		// 	student.Resume = "public/data_mocks/sample.pdf"
-		// }
-		w.Header().Add("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(student)
+	studentKey := context.Get(r, "studentKey")
+	student, err := services.GetStudent(ctx, studentKey.(datastore.Key))
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
 	}
-	w.WriteHeader(http.StatusInternalServerError)
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(student)
 }
 
-//func GetStudentsFromIds(w http.ResponseWriter,r *http.Request) {
-//	ctx := appengine.NewContext(r)
-//	type intIds struct {
-//		Ids []int64 `json:"_ids"`
-//	}
-//	var _ids intIds
-//
-//	decoder := json.NewDecoder(r.Body)
-//	if err := decoder.Decode(&_ids); err != nil {
-//		http.Error(w, err.Error(), 500)
-//		return
-//	}
-//
-//	students, err := services.GetStudentsFromIds(ctx, _ids.Ids)
-//	if err != nil {
-//		http.Error(w, err.Error(), 500)
-//		return
-//	}
-//
-//	w.Header().Add("Access-Control-Allow-Origin", "*")
-//	w.Header().Set("Content-Type", "application/json")
-//	json.NewEncoder(w).Encode(students)
-//}
-
-func PostStudent(w http.ResponseWriter,r *http.Request) {
+func AddStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
 	var student models.Student
@@ -82,27 +51,11 @@ func PostStudent(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 
-	_, err := services.NewStudent(ctx, student)
-	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, err.Error(), 500)
-		return
-	}
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.WriteHeader(http.StatusOK)
-}
-
-//8 MB file limit
-const MAX_MEMORY = 8 * 1024 * 1024
-func PostPDF(w http.ResponseWriter,r *http.Request){
-	ctx := appengine.NewContext(r)
-	
 	//Make sure pdf is less than 8 MB
-	if err := r.ParseMultipartForm(MAX_MEMORY); err != nil {
+	if err := r.ParseMultipartForm(8 * 1024 * 1024); err != nil {
 		http.Error(w, err.Error(), http.StatusForbidden)
 		return
 	}
-	
 	//Fetch file from formdata
 	file, _, err := r.FormFile("file")
 	if err != nil {
@@ -110,12 +63,12 @@ func PostPDF(w http.ResponseWriter,r *http.Request){
 		return
 	}
 	defer file.Close()
-	
-	if id, ok := mux.Vars(r)["Id"]; ok {
-		num_id, _ := strconv.ParseInt(id,10,64)
-		err := services.UpdateResume(ctx, num_id, file)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-		}
+
+	status,err := services.NewStudent(ctx, student, file)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
 	}
+	w.WriteHeader(status)
 }

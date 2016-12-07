@@ -6,11 +6,10 @@ import (
 )
 
 func GetAdminRoutes(router *mux.Router) *mux.Router {
-	router.HandleFunc("/admin/register", handlers.Register).Methods("POST").Name("Register")
-	router.HandleFunc("/admin/bulkregister", handlers.BulkRegister).Methods("POST").Name("BulkRegister")
-	router.HandleFunc("/admin/getUser", handlers.GetUser).Methods("GET").Name("GetUser")
-	router.HandleFunc("/admin/getusers/{Role}/{Organization}", handlers.GetUsers).Methods("GET").Name("GetUsers")
-	router.HandleFunc("/admin", handlers.PutUser).Methods("PUT").Name("UpdateUser")
-	router.HandleFunc("/admin/{Id}", handlers.DeleteUser).Methods("DELETE").Name("DeleteUser")
+	router.HandleFunc("/admin", handlers.GetUsers).Methods("GET").Name("GetUsers")
+	router.HandleFunc("/admin/{userKey}", handlers.GetUser).Methods("GET").Name("GetUser")
+	router.HandleFunc("/admin", handlers.AddUser).Methods("POST").Name("AddUser")
+	router.HandleFunc("/admin/{userKey}", handlers.EditUser).Methods("PUT").Name("EditUser")
+	router.HandleFunc("/admin/{userKey}", handlers.DeleteUser).Methods("DELETE").Name("DeleteUser")
 	return router
 }

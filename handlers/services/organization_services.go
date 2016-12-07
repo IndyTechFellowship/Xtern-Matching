@@ -17,15 +17,6 @@ func NewOrganization(ctx context.Context,name string, kind string) (int,error) {
 	return http.StatusAccepted, nil
 }
 
-func GetOrganization(ctx context.Context, orgKey datastore.Key) (models.Organization,error) {
-	//orgKey := datastore.NewKey(ctx, "Organization", "", _id, nil)
-	var org models.Organization
-	if err := datastore.Get(ctx, orgKey, &org); err != nil {
-		return models.Organization{}, err
-	}
-	return org, nil
-}
-
 func GetOrganizations(ctx context.Context) ([]models.Organization,error) {
 	q := datastore.NewQuery("Organization")
 	log.Printf("%v",q)
@@ -84,3 +75,12 @@ func MoveStudentInOrganization(ctx context.Context, orgKey datastore.Key, studen
 	}
 	return orgKey.IntID(), nil
 }
+
+//func GetOrganization(ctx context.Context, orgKey datastore.Key) (models.Organization,error) {
+//	//orgKey := datastore.NewKey(ctx, "Organization", "", _id, nil)
+//	var org models.Organization
+//	if err := datastore.Get(ctx, orgKey, &org); err != nil {
+//		return models.Organization{}, err
+//	}
+//	return org, nil
+//}

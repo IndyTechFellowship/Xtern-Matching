@@ -11,7 +11,7 @@ import (
 
 func StartUp(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
-	log.Infof(ctx, "startup succesful")
+	log.Infof(ctx, "Startup Succesful")
 }
 
 func WarmUp(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +20,7 @@ func WarmUp(w http.ResponseWriter, r *http.Request) {
 	query := datastore.NewQuery("User")
 	count, _ := query.Count(ctx)
 	if count == 0 {
-		//TODO eventually change this to load from yml or json
+		//TODO change to load from yml
 		//Seed Database
 		var users [4]models.User
 		users[0] = models.User{

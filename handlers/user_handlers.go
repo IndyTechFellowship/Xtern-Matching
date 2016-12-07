@@ -16,9 +16,72 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
-func Register(w http.ResponseWriter, r *http.Request) {
+func Login(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
+	var dat map[string]interface{}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	token, err := services.Login(ctx, dat["email"].(string), dat["password"].(string))
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	dat = make(map[string]interface{})
+	dat["token"] = string(token)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(dat)
+}
+
+func GetUsers(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	user := context.Get(r, "user")
+	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+	org := mapClaims["org"].(datastore.Key)
+
+	users, err := services.GetUsers(ctx, org)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users)
+}
+
+func GetUser(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	userKey := context.Get(r, "userKey").(datastore.Key)
+	user, err := services.GetUser(ctx, userKey)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
+}
+
+func AddUser(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	dat := make(map[string]interface{})
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		//log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
 
 	var user models.User
 	user.Name = dat["name"].(string)
@@ -32,108 +95,41 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(responseStatus)
 }
 
-func GetUsers(w http.ResponseWriter, r *http.Request){
+func EditUser(w http.ResponseWriter, r *http.Request){
 	ctx := appengine.NewContext(r)
 
 	dat := make(map[string]interface{})
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&dat); err != nil {
-		//log.Println(err.Error())
+		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
+	name := dat["name"].(string)
+	email := dat["email"].(string)
+	password := dat["password"].(string)
 
-	user := context.Get(r, "user")
-	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	org := mapClaims["org"].(datastore.Key)
-
-	users, err := services.GetUsers(ctx, org)
+	userKey := context.Get(r, "userKey").(datastore.Key)
+	err := services.EditUser(ctx, userKey, name, email, password)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
-}
-
-func GetUser(w http.ResponseWriter, r *http.Request){
-	contextUser := context.Get(r, "user")
-	token, _ := contextUser.(*jwt.Token)
-	if token.Valid {
-		mapClaims := token.Claims.(jwt.MapClaims)
-		org := strings.TrimSpace(mapClaims["org"].(string))
-		role := strings.TrimSpace(mapClaims["role"].(string))
-
-		type Response struct {
-			Org   string	`json:"organization"`
-			Role string	`json:"role"`
-		}
-
-		res := Response{Org: org, Role: role}
-
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(res)
-	}
-}
-
-func PutUser(w http.ResponseWriter, r *http.Request){
-	ctx := appengine.NewContext(r)
-	var user models.User
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&user); err != nil {
-		log.Println(err.Error())
-		http.Error(w, err.Error(), 500)
-		return
-	}
-	err := services.UpdateUser(ctx, &user)
-	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}	
+	w.WriteHeader(http.StatusOK)
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request){
 	ctx := appengine.NewContext(r)
-	id, id_ok := mux.Vars(r)["Id"]
-	if !id_ok {
-		log.Println("Missing Id to delete user")
-		http.Error(w, errors.New("Missing Id to delete user").Error(), http.StatusBadRequest)
-		return
-	}
-	num_id, _ := strconv.ParseInt(id, 10, 64)
-	err := services.DeleteUser(ctx, num_id)
+
+	userKey := context.Get(r, "userKey").(datastore.Key)
+	err := services.DeleteUser(ctx, userKey)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-}
-
-func Login(w http.ResponseWriter, r *http.Request) {
-	ctx := appengine.NewContext(r)
-
-	var dat map[string]interface{}
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&dat); err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-
-	token, err := services.Login(ctx, dat["email"], dat["password"])
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-
-	dat = make(map[string]interface{})
-	dat["token"] = string(token)
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(dat)
+	w.WriteHeader(http.StatusOK)
 }
 
 //func BulkRegister(w http.ResponseWriter, r *http.Request) {

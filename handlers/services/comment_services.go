@@ -41,6 +41,22 @@ func AddComment(ctx context.Context, studentKey datastore.Key, message string, a
 	return http.StatusAccepted, nil
 }
 
+func EditComment(ctx context.Context, commentKey datastore.Key, message string) (int, error) {
+	//studentKey := datastore.NewKey(ctx, "Student", "", studentId, nil)
+	//commentKey := datastore.NewIncompleteKey(ctx, "Comment", &studentKey)
+
+	var comment models.Comment
+	err := datastore.Get(ctx, commentKey, &comment)
+	if err != nil {
+		return models.Student{}, err
+	}
+	comment.Message = message
+	if _, err := datastore.Put(ctx, commentKey, &comment); err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusAccepted, nil
+}
+
 func DeleteComment(ctx context.Context, commantKey datastore.Key) (int, error) {
 	if err := datastore.Delete(ctx, commantKey); err != nil {
 		return http.StatusInternalServerError, err
