@@ -28,15 +28,11 @@
             })
             .state('techpoint.accounts',{
                 url:"/accounts",
-                templateUrl: "public/account-control/partials/accounts.html",
+                templateUrl: "public/modules/account_control/partials/accounts.html",
                 controller: 'TechPointAccountCtrl',
                 resolve: {
                     security: ['$q', function($q){
-                      //  console.log($q, status);
-                        if(!isLoggedIn()){
-                            var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
-                            return $q.reject(errorObject);
-                        }
+                       return isLoggedInTechPoint($q);
                     }]
                 }
             })
