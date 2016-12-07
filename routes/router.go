@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"github.com/gorilla/mux"
 	"github.com/auth0/go-jwt-middleware"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/codegangsta/negroni"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/mux"
 )
 
 func NewRouter() *mux.Router {
@@ -14,7 +14,7 @@ func NewRouter() *mux.Router {
 			return []byte("My Secret"), nil
 		},
 		SigningMethod: jwt.SigningMethodHS512,
-	});
+	})
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.PathPrefix("/auth").Handler(negroni.New(
@@ -27,6 +27,10 @@ func NewRouter() *mux.Router {
 	router.PathPrefix("/student").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(GetStudentRoutes(mux.NewRouter().StrictSlash(true))),
+	))
+	router.PathPrefix("/company").Handler(negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(GetCompanyRoutes()),
 	))
 
 	return router
