@@ -29,7 +29,7 @@
             .state('techpoint.profile', {
                 url: "/profile/:_id",
                 templateUrl: "public/modules/student_profile/partials/techpoint.studentProfile.html",
-                controller: 'StudentProfileCtrl',
+                controller: 'TechPointStudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
                        return isLoggedInTechPoint($q);
@@ -78,7 +78,7 @@
                 url: "/profile/:_id",
                 templateUrl: "public/modules/student_profile/partials/company.studentProfile.html",
                 //resolve: { authenticate: authenticate }
-                controller: 'StudentProfileCtrl',
+                controller: 'CompanyStudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
                         return isLoggedInCompany($q);

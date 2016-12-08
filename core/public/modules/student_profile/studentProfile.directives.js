@@ -20,6 +20,6 @@ angular.module('Xtern')
         return {
             restrict: 'E',
             templateUrl: 'public/modules/student_profile/partials/studentDataPage.html',
-            controller: 'StudentProfileCtrl'
+            controller: 'StudentDataPageCtrl'
         };
     });
