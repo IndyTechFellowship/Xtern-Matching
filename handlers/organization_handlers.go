@@ -4,15 +4,11 @@ import (
 	"net/http"
 	"google.golang.org/appengine"
 	"encoding/json"
-	"github.com/gorilla/mux"
-	"strconv"
 	"Xtern-Matching/handlers/services"
 	"github.com/dgrijalva/jwt-go"
-	"fmt"
 	"log"
-	"strings"
 	"github.com/gorilla/context"
-	"appengine/datastore"
+	"google.golang.org/appengine/datastore"
 )
 
 func GetOrganizations(w http.ResponseWriter,r *http.Request) {
@@ -25,7 +21,7 @@ func GetOrganizations(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 
-	organizations, err := services.GetOrganizations(ctx)
+	organizations, keys, err := services.GetOrganizations(ctx)
 	if err != nil {
 		//log.Print(err)
 		http.Error(w, err.Error(), 500)
@@ -34,6 +30,7 @@ func GetOrganizations(w http.ResponseWriter,r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(organizations)
+	json.NewEncoder(w).Encode(keys)
 }
 
 func AddOrganization(w http.ResponseWriter,r *http.Request) {
@@ -65,11 +62,11 @@ func AddStudentToOrganization(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	studentKey := dat["studentKey"].(datastore.Key);
+	studentKey := dat["studentKey"].(*datastore.Key);
 
 	user := context.Get(r, "user")
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	orgKey := strings.TrimSpace(mapClaims["org"].(datastore.Key))
+	orgKey := mapClaims["org"].(*datastore.Key)
 
 	_, err := services.AddStudentToOrganization(ctx, orgKey, studentKey)
 	if err != nil {
@@ -89,11 +86,11 @@ func RemoveStudentFromOrganization(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	studentKey := dat["studentKey"].(datastore.Key);
+	studentKey := dat["studentKey"].(*datastore.Key);
 
 	user := context.Get(r, "user")
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	orgKey := strings.TrimSpace(mapClaims["org"].(datastore.Key))
+	orgKey := mapClaims["org"].(*datastore.Key)
 
 	_, err := services.RemoveStudentFromOrganization(ctx, orgKey, studentKey)
 	if err != nil {
@@ -113,12 +110,12 @@ func MoveStudentInOrganization(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	studentKey :=  dat["studentKey"].(datastore.Key);
-	position :=  dat["position"].(datastore.Key);
+	studentKey :=  dat["studentKey"].(*datastore.Key);
+	position :=  dat["position"].(int);
 
 	user := context.Get(r, "user")
         mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-        orgKey := strings.TrimSpace(mapClaims["org"].(datastore.Key))
+        orgKey := mapClaims["org"].(*datastore.Key)
 
 	_, err := services.MoveStudentInOrganization(ctx, orgKey, studentKey, position)
 	if err != nil {

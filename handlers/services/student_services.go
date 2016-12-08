@@ -10,6 +10,7 @@ import (
 	"os"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/storage/v1"
+	"strconv"
 )
 
 func GetStudents(ctx context.Context) ([]models.Student, error) {
@@ -25,7 +26,7 @@ func GetStudents(ctx context.Context) ([]models.Student, error) {
 	return students, nil
 }
 
-func GetStudent(ctx context.Context, studentKey datastore.Key) (models.Student, error) {
+func GetStudent(ctx context.Context, studentKey *datastore.Key) (models.Student, error) {
 	//studentKey := datastore.NewKey(ctx, "Student", "", _id, nil)
 	var student models.Student
 	err := datastore.Get(ctx, studentKey, &student)
@@ -35,7 +36,7 @@ func GetStudent(ctx context.Context, studentKey datastore.Key) (models.Student, 
 	return student, nil
 }
 
-func NewStudent(ctx context.Context, student models.Student, file io.Reader) (int, error) {
+func NewStudent(ctx context.Context, student models.Student) (int, error) {
 
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
 	student.Active = true
@@ -45,6 +46,11 @@ func NewStudent(ctx context.Context, student models.Student, file io.Reader) (in
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
+	file, err := os.Open("public/sample.pdf")
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	defer file.Close()
 	resumeURL, err := addResume(ctx,key.IntID(), file)
 	if err != nil {
 		return http.StatusInternalServerError, err
@@ -70,11 +76,11 @@ func addResume(ctx context.Context, studentId int64, file io.Reader) (string,err
 
 	client, err := google.DefaultClient(ctx, storage.DevstorageFullControlScope)
 	if err != nil {
-		return err
+		return "", err
 	}
 	service, err := storage.New(client)
 	if err != nil {
-		return nil,err
+		return "",err
 	}
 
 	//Access Bucket and see if it exists
@@ -85,17 +91,17 @@ func addResume(ctx context.Context, studentId int64, file io.Reader) (string,err
 		if res, err := service.Buckets.Insert(projectID, &storage.Bucket{Name: bucketName}).Do(); err == nil {
 			log.Printf("Created bucket %v at location %v\n\n", res.Name, res.SelfLink)
 		} else {
-			return err
+			return "", err
 		}
 	}
 
 	//Insert new resume copy
-	object := &storage.Object{Name: studentId + ".pdf"}
+	object := &storage.Object{Name: strconv.FormatInt(studentId, 10) + ".pdf"}
 	res, err := service.Objects.Insert(bucketName, object).Media(file).Do()
 	if err == nil {
 		log.Printf("Created object %v at location %v\n\n", res.Name, res.SelfLink)
 	} else {
-		return err
+		return "", err
 	}
 
 	return res.MediaLink, nil

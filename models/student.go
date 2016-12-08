@@ -4,23 +4,23 @@ type Student struct {
 	FirstName string    		`json:"firstName"`
 	LastName string     		`json:"lastName"`
 	Email string	    		`json:"email"`
-	Details map[string]interface{}
-	//University string   `json:"university"`
-	//Major string 	    `json:"major"`
+	University string   		`json:"university"`
+	Major string 	    		`json:"major"`
 	GradYear string     		`json:"gradYear"`
-	//WorkStatus string   `json:"workStatus"`
-	//HomeState string    `json:"homeState"`
-	//Gender string       `json:"gender"`
-	Skills []Skill	    		`json:"languages"`
-	//Github string       `json:"githubUrl"`
-	//Linkin string       `json:"linkedinUrl"`
-	//PersonalSite string `json:"personalWebiteUrl"`
-	//Interests []string  `json:"interestedIn"`
-	//EmailIntrest string 	`json:"interestedInEmail"`
-	Grade map[string]int		`json:"r1Grade"`
+	WorkStatus string   		`json:"workStatus"`
+	Gender string       		`json:"gender"`
+	Skills []Skill	    		`json:"skills"`
+	Github string       		`json:"githubUrl"`
+	Linkin string       		`json:"linkedinUrl"`
+	PersonalSite string 		`json:"personalWebiteUrl"`
+	Interests []string  		`json:"interests"`
+	Resume string	    		`json:"resume"`
+	Grade int			`json:"grade"`
 	Status string	    		`json:"status"`
 	Active bool	    		`json:"active"`
-	Resume string	    		`json:"resume"`
+	//Details map[string]interface{}	`json:"details"`
+	//EmailIntrest string 	`json:"interestedInEmail"`
+	//HomeState string    `json:"homeState"`
 }
 
 type Skill struct {

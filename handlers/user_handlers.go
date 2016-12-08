@@ -3,16 +3,12 @@ package handlers
 import (
 	"net/http"
 	"google.golang.org/appengine"
-	"github.com/gorilla/mux"
 	"encoding/json"
 	"Xtern-Matching/handlers/services"
 	"Xtern-Matching/models"
 	"log"
-	"errors"	
-	"strconv"
 	"github.com/gorilla/context"
 	"github.com/dgrijalva/jwt-go"
-	"strings"
 	"google.golang.org/appengine/datastore"
 )
 
@@ -44,7 +40,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 
 	user := context.Get(r, "user")
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	org := mapClaims["org"].(datastore.Key)
+	org := mapClaims["org"].(*datastore.Key)
 
 	users, err := services.GetUsers(ctx, org)
 	if err != nil {
@@ -60,7 +56,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	userKey := context.Get(r, "userKey").(datastore.Key)
+	userKey := context.Get(r, "userKey").(*datastore.Key)
 	user, err := services.GetUser(ctx, userKey)
 	if err != nil {
 		log.Println(err.Error())
@@ -87,7 +83,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	user.Name = dat["name"].(string)
 	user.Email = dat["email"].(string)
 	user.Password = dat["password"].(string)
-	responseStatus, err := services.Register(ctx, dat["key"].(datastore.Key), user)
+	responseStatus, err := services.Register(ctx, dat["key"].(*datastore.Key), user)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -109,7 +105,7 @@ func EditUser(w http.ResponseWriter, r *http.Request){
 	email := dat["email"].(string)
 	password := dat["password"].(string)
 
-	userKey := context.Get(r, "userKey").(datastore.Key)
+	userKey := context.Get(r, "userKey").(*datastore.Key)
 	err := services.EditUser(ctx, userKey, name, email, password)
 	if err != nil {
 		log.Println(err.Error())
@@ -122,7 +118,7 @@ func EditUser(w http.ResponseWriter, r *http.Request){
 func DeleteUser(w http.ResponseWriter, r *http.Request){
 	ctx := appengine.NewContext(r)
 
-	userKey := context.Get(r, "userKey").(datastore.Key)
+	userKey := context.Get(r, "userKey").(*datastore.Key)
 	err := services.DeleteUser(ctx, userKey)
 	if err != nil {
 		log.Println(err.Error())

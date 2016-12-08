@@ -42,7 +42,7 @@ func Login(ctx context.Context, email string, password string) ([]byte, error) {
 	return []byte(""), errors.New("Wrong Password")
 }
 
-func Register(ctx context.Context, organizationKey datastore.Key, user models.User) (int,error) {
+func Register(ctx context.Context, organizationKey *datastore.Key, user models.User) (int,error) {
 	count, err := datastore.NewQuery("User").Ancestor(organizationKey).Count(ctx)
 	if err != nil {
 		return http.StatusInternalServerError, err
@@ -64,7 +64,7 @@ func Register(ctx context.Context, organizationKey datastore.Key, user models.Us
 	}
 }
 
-func GetUsers(ctx context.Context, org datastore.Key) ([]models.User, error){
+func GetUsers(ctx context.Context, org *datastore.Key) ([]models.User, error){
 	query := datastore.NewQuery("User").Project("Name", "Email")
 	if org != nil {
 		query = query.Ancestor(org)
@@ -78,7 +78,7 @@ func GetUsers(ctx context.Context, org datastore.Key) ([]models.User, error){
 	return users, err
 }
 
-func GetUser(ctx context.Context, userKey datastore.Key) (models.User, error){
+func GetUser(ctx context.Context, userKey *datastore.Key) (models.User, error){
 	//userKey := datastore.NewKey(ctx, "User", "", _id, nil)
 	var user models.User
 	err := datastore.Get(ctx, userKey, &user)
@@ -89,12 +89,12 @@ func GetUser(ctx context.Context, userKey datastore.Key) (models.User, error){
 	return user, err
 }
 
-func EditUser(ctx context.Context, userKey datastore.Key, name string, email string, password string) error {
+func EditUser(ctx context.Context, userKey *datastore.Key, name string, email string, password string) error {
 	//userKey := datastore.NewKey(ctx, "User", "", user.Id, nil)
 	var user models.User
 	err := datastore.Get(ctx, userKey, &user)
 	if err != nil {
-		return models.User{}, err
+		return err
 	}
 	user.Name = name
 	user.Email = email
@@ -110,7 +110,7 @@ func EditUser(ctx context.Context, userKey datastore.Key, name string, email str
 	return nil
 }
 
-func DeleteUser(ctx context.Context, userKey datastore.Key) error {
+func DeleteUser(ctx context.Context, userKey *datastore.Key) error {
 	//userKey := datastore.NewKey(ctx, "User", "", id, nil)
 	err := datastore.Delete(ctx, userKey)
 	return err

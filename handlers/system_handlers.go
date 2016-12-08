@@ -3,10 +3,12 @@ package handlers
 import (
 	"net/http"
 	"google.golang.org/appengine"
-	"google.golang.org/appengine/log"
 	"Xtern-Matching/handlers/services"
 	"Xtern-Matching/models"
 	"google.golang.org/appengine/datastore"
+	"os"
+	"encoding/json"
+	"google.golang.org/appengine/log"
 )
 
 func StartUp(w http.ResponseWriter, r *http.Request) {
@@ -17,45 +19,62 @@ func StartUp(w http.ResponseWriter, r *http.Request) {
 func WarmUp(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
+	//Temporary
+	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS","environments/development/cloudstore-dev.json")
+
+	//Seed Database
+	type Seeds struct {
+		Organizations []map[string]string 	`json:"organizations"`
+		Users         []map[string]string       `json:"users"`
+		Students      []models.Student          `json:"students"`
+	}
+	var seeds Seeds
+
+	seedFile, err := os.Open("environments/development/seed.json")
+	if err != nil {
+		log.Errorf(ctx, "Error: Problem reading seed")
+		return
+	}
+	defer seedFile.Close()
+	jsonParser := json.NewDecoder(seedFile)
+	if err = jsonParser.Decode(&seeds); err != nil {
+		log.Errorf(ctx, "Error: Problem decoding seed file")
+		return
+	}
+
 	query := datastore.NewQuery("User")
 	count, _ := query.Count(ctx)
 	if count == 0 {
-		//TODO change to load from yml
-		//Seed Database
-		var users [4]models.User
-		users[0] = models.User{
-			Name: "Austin Niccum",
-			Email: "xniccum@gmail.com",
-			Password: "admin1",
-			Organization: "Techpoint",
-			Role: "Admin"}
-		users[1] = models.User{
-			Name: "Steven Doolan",
-			Email: "srdoolan3@gmail.com",
-			Password: "admin1",
-			Organization: "Techpoint",
-			Role: "Admin"}
-		users[2] = models.User{
-			Name: "Davis Nygren",
-			Email: "DavisNygren@gmail.com",
-			Password: "admin1",
-			Organization: "Techpoint",
-			Role: "Admin"}
-		users[3] = models.User{
-			Name: "Alex Crowley",
-			Email: "acrow94@gmail.com",
-			Password: "admin1",
-			Organization: "Techpoint",
-			Role: "Admin"}
-		for _, user := range users {
-			_, err := services.Register(ctx,user)
+		orgs := map[string]*datastore.Key{}
+		for _, org := range seeds.Organizations {
+			key, err := services.NewOrganization(ctx, org["name"], org["kind"])
 			if err != nil {
-				log.Debugf(ctx, "Error in Seeding")
+				log.Errorf(ctx, "Problem seeding organization: " + err.Error())
+				return
+			}
+			orgs[org["name"]] = key
+		}
+		for _, userMap := range seeds.Users {
+			var user models.User
+			user.Name = userMap["name"]
+			user.Email = userMap["email"]
+			user.Password = userMap["password"]
+			if _, err = services.Register(ctx, orgs[userMap["org"]], user); err != nil {
+				log.Errorf(ctx, "Error: Problem seeding user")
 				return
 			}
 		}
-
 	}
-
-	log.Infof(ctx, "warmup done")
+	query = datastore.NewQuery("Student")
+	count, _ = query.Count(ctx)
+	if count == 0 {
+		for _, student := range seeds.Students {
+			//TODO make seed details correctly
+			if _, err = services.NewStudent(ctx, student); err != nil {
+				log.Errorf(ctx, "Problem seeding students: "+err.Error())
+				return
+			}
+		}
+	}
+	log.Infof(ctx, "Warmup Done")
 }

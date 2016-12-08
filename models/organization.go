@@ -1,42 +1,51 @@
 package models
 
 import (
-	"github.com/emirpasic/gods/lists/arraylist"
 	"google.golang.org/appengine/datastore"
 	"github.com/pkg/errors"
 )
 
 type Organization struct {
-	Name string 		`json:"name"`
-	Kind string		`json:"type"`
-	Students arraylist.List `json:"students"`
+	Name string 		  `json:"name"`
+	Kind string		  `json:"kind"`
+	Students []*datastore.Key `json:"students"`
 }
 
 func NewOrganization(name string, kind string) Organization {
-	return Organization{Name: name, Kind: kind, Students: arraylist.New()}
+	students := make([]*datastore.Key,0)
+	return Organization{Name: name, Kind: kind, Students: students}
 }
 
-func (org *Organization) AddStudent(studentKey datastore.Key) bool {
-	if !org.Students.Contains(studentKey) {
-		org.Students.Add(studentKey)
-		return true
+func (org *Organization) AddStudent(studentKey *datastore.Key) bool {
+	for _, key := range org.Students {
+		if key.Equal(studentKey) {
+			return false
+		}
+	}
+	org.Students = append(org.Students,studentKey)
+	return true
+}
+
+func (org *Organization) RemoveStudent(studentKey *datastore.Key) bool {
+	for i, key := range org.Students {
+		if key.Equal(studentKey) {
+			org.Students = append(org.Students[:i], org.Students[i+1:]...)
+			return true
+		}
 	}
 	return false
 }
 
-func (org *Organization) RemoveStudent(studentKey datastore.Key) {
-	org.Students.Remove(studentKey)
-}
-
-func (org *Organization) MoveStudent(studentKey datastore.Key, pos int) error {
-	if !org.Students.Contains(studentKey) {
-		return errors.New("Organization does not currently have student in list")
+func (org *Organization) MoveStudent(studentKey *datastore.Key, pos int) error {
+	if org.RemoveStudent(studentKey) {
+		for i := range org.Students {
+			if pos == i {
+				leftStudents := append(org.Students[:i], studentKey)
+				org.Students = append(leftStudents, org.Students[i:]...)
+				return nil
+			}
+		}
 	}
-	position, _ := org.Students.Find(func(index int, key datastore.Key) {
-		return key == studentKey
-	})
-	org.Students.Remove(position)
-	org.Students.Insert(pos,studentKey)
-	return nil
+	return errors.New("Organization does not currently have student in list")
 }
 

@@ -19,17 +19,17 @@ func GetComments(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	studentKey := dat["studentKey"].(datastore.Key)
+	studentKey := dat["studentKey"].(*datastore.Key)
 	user := context.Get(r, "user")
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	org := mapClaims["org"].(datastore.Key)
+	org := mapClaims["org"].(*datastore.Key)
 	comments, err := services.GetComments(ctx, studentKey, org)
 	if err != nil {
 		//log.Print(err)
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(comments)
 }
 
 func AddComment(w http.ResponseWriter,r *http.Request) {
@@ -41,11 +41,11 @@ func AddComment(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	studentKey := dat["studentKey"].(datastore.Key)
+	studentKey := dat["studentKey"].(*datastore.Key)
 	message := dat["message"].(string)
 	user := context.Get(r, "user")
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	author := mapClaims["key"].(datastore.Key)
+	author := mapClaims["key"].(*datastore.Key)
 	status, err := services.AddComment(ctx, studentKey, message, author)
 	if err != nil {
 		//log.Print(err)
@@ -65,7 +65,7 @@ func EditComment(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	studentKey := dat["studentKey"].(datastore.Key)
+	studentKey := dat["studentKey"].(*datastore.Key)
 	message := dat["message"].(string)
 	status, err := services.EditComment(ctx, studentKey, message)
 	if err != nil {
@@ -86,11 +86,11 @@ func DeleteComment(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	commentKey := dat["key"].(datastore.Key)
+	commentKey := dat["key"].(*datastore.Key)
 
 	_, err := services.DeleteComment(ctx, commentKey)
 	if err != nil {
-		http.Error(w, err, 500)
+		http.Error(w, err.Error(), 500)
 		return
 	}
 

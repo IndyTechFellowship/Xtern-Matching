@@ -8,30 +8,31 @@ import (
 	"log"
 )
 
-func NewOrganization(ctx context.Context,name string, kind string) (int,error) {
+func NewOrganization(ctx context.Context,name string, kind string) (*datastore.Key, error) {
 	key := datastore.NewIncompleteKey(ctx, "Organization", nil)
 	org := models.NewOrganization(name, kind)
-	if _, err := datastore.Put(ctx, key, &org); err != nil {
-		return http.StatusInternalServerError, err
+	key, err := datastore.Put(ctx, key, &org)
+	if err != nil {
+		return nil, err
 	}
-	return http.StatusAccepted, nil
+	return key, nil
 }
 
-func GetOrganizations(ctx context.Context) ([]models.Organization,error) {
+func GetOrganizations(ctx context.Context) ([]models.Organization,[]*datastore.Key,error) {
 	q := datastore.NewQuery("Organization")
 	log.Printf("%v",q)
 
 	var orgs []models.Organization
 	keys, err := q.GetAll(ctx, &orgs)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	log.Printf("%v", keys)
-	return orgs, nil
+	return orgs, keys, nil
 }
 
-func AddStudentToOrganization(ctx context.Context, orgKey datastore.Key, studentKey datastore.Key) (int64,error)  {
+func AddStudentToOrganization(ctx context.Context, orgKey *datastore.Key, studentKey *datastore.Key) (int64,error)  {
 	//orgKey := datastore.NewKey(ctx, "Company", "", companyId, nil)
 	var org models.Organization
 	if err := datastore.Get(ctx, orgKey, &org); err != nil {
@@ -46,7 +47,7 @@ func AddStudentToOrganization(ctx context.Context, orgKey datastore.Key, student
 	return orgKey.IntID(), nil
 }
 
-func RemoveStudentFromOrganization(ctx context.Context, orgKey datastore.Key, studentKey datastore.Key) (int64,error)  {
+func RemoveStudentFromOrganization(ctx context.Context, orgKey *datastore.Key, studentKey *datastore.Key) (int64,error)  {
 	//orgKey := datastore.NewKey(ctx, "Company", "", companyId, nil)
 	var org models.Organization
 	if err := datastore.Get(ctx, orgKey, &org); err != nil {
@@ -61,7 +62,7 @@ func RemoveStudentFromOrganization(ctx context.Context, orgKey datastore.Key, st
 	return orgKey.IntID(), nil
 }
 
-func MoveStudentInOrganization(ctx context.Context, orgKey datastore.Key, studentKey datastore.Key, pos int) (int64,error)  {
+func MoveStudentInOrganization(ctx context.Context, orgKey *datastore.Key, studentKey *datastore.Key, pos int) (int64,error)  {
 	//orgKey := datastore.NewKey(ctx, "Company", "", companyId, nil)
 	var org models.Organization
 	if err := datastore.Get(ctx, orgKey, &org); err != nil {
