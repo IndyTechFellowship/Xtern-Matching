@@ -1,0 +1,130 @@
+<div>
+    <div class="ui container">
+        <div class="ui centered internally celled grid">
+            <div class="row">
+
+                <div class="eleven wide column">
+                    <div class="ui fluid">
+                        <div class="ui left floated"><h1>{{studentData.firstName}} {{studentData.lastName}}</h1></div>
+                    </div>
+                    <div class="ui fluid card blue">
+                        <div class="content">
+
+                            <div class="ui left floated"><strong>{{studentData.university}}</strong></div>
+                            <div class="ui right floated"><em>{{studentData.major}}</em></div>
+                            <br/>
+                            <div class="ui left floated">{{studentData.gradYear}}</div>
+                            <div class="ui right floated"><strong>{{studentData.workStatus}}</strong> &nbsp; - &nbsp; {{studentData.homeState}}</div>
+                            <br/>
+                            <div class="left floated"><a href="mailto:{{studentData.email}}" target="_top">{{studentData.email}}</a></div>
+                            <div class="ui right floated">{{studentData.gender}}</div>
+                        </div>
+                    </div>
+                    <a ng-if="studentData.githubUrl" class="ui purple label" href="{{studentData.githubUrl}}" target="_blank">
+                        <i class="github square icon"></i>GitHub
+                    </a>
+                    <a ng-if="studentData.linkedinUrl" class="ui blue label" href="{{studentData.linkedinUrl}}" target="_blank">
+                        <i class="linkedin square icon"></i>LinkedIn
+                    </a>
+                    <a ng-if="studentData.personalWebiteUrl" class="ui green label" href="{{studentData.personalWebiteUrl}}">
+                        <i class="idea icon"></i>Personal Website
+                    </a>
+                    <div class="ui message">
+                        <div class="ui raised segment">
+                            <a class="ui teal ribbon label">Languages</a>
+                            <tech-labels></tech-labels>
+
+                            <a class="ui teal ribbon label">Interesed In:</a>
+                            <ul>
+                                <li class="ui blue label" ng-repeat="position in studentData.interestedIn">{{position}}</li>
+                            </ul>
+                        </div>
+                        <div class="ui raised segment">
+                            <a class="ui teal ribbon label">Resume</a>
+                            <div id="example1" style="border:1px  solid black; overflow-x: hidden; overflow-y: auto; height: 880px; width: 675px;"></div>
+                        </div>
+
+                        <div class="ui raised segment">
+                            <a class="ui teal ribbon label">My ideal intership includes:</a>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan mi ut faucibus convallis. In a sapien nulla. In hac habitasse platea dictumst. Morbi malesuada diam id enim efficitur, eu ultricies purus malesuada. Quisque pellentesque felis dolor, at luctus turpis faucibus non. Nunc cursus mi non massa fringilla, eget sollicitudin nisl faucibus. </p>
+                        </div>
+
+                        <div class="ui raised segment">
+                            <a class="ui teal ribbon label">Anything else I'd like you to know:</a>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan mi ut faucibus convallis. </p>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="five wide column">
+
+                    <div ng-if="isCompany" ng-click="addStudentToCompany(studentData._id)" class="ui button right floated fluid blue"><i class="add user icon">Recruit</i></div>
+                    <br/>
+                    <div ng-if="!isCompany" id="statusAndGrade">
+                        <div class="ui header">Status and Grade</div>
+                        <div class="ui fluid selection dropdown">
+                            <input name="status" type="hidden" value="0">
+                            <div class="text">{{studentData.status}}</div><i class="dropdown icon"></i>
+                            <div class="menu transition hidden">
+                                <div data-value="{{option}}" class="item" ng-repeat="option in statusOptions" ng-click="selectStatus(option)">
+                                    {{option}}
+                                </div>
+                            </div>
+                        </div>
+                        <!--             <div class="ui fluid selection dropdown">
+                                      <input type="hidden" name="grade" ng-model="studentData.r1Grade">
+                                      <i class="dropdown icon"></i>
+                                      <div class="default text">Grade</div>
+                                      <div class="menu">
+                                        <div class="item" data-value="4">A</div>
+                                        <div class="item" data-value="3">B</div>
+                                        <div class="item" data-value="2">C</div>
+                                        <div class="item" data-value="1">D</div>
+                                        <div class="item" data-value="0">F</div>
+                                      </div>
+                                    </div> -->
+                        <div class="ui fluid selection dropdown">
+                            <input name="grade" type="hidden" value="0">
+                            <div class="text">{{studentData.r1Grade.text}}</div><i class="dropdown icon"></i>
+                            <div class="menu transition hidden">
+                                <div data-value="{{option}}" class="item" ng-repeat="option in r1GradeOptions" ng-click="selectR1Grade(option)">
+                                    {{option.text}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="ui header">
+                            Comments
+                        </div>
+                        <div class="ui fluid card">
+                            <div class="ui form">
+                                <div class="field">
+                                    <textarea placeholder="Enter a new comment" ng-model="comment.text"></textarea>
+                                </div>
+                            </div>
+                            <button class="ui bottom attached teal button" ng-click="addComment()">Post Comment</button>
+                        </div>
+
+                        <div class="ui fluid cards" id="commentCards">
+                            <student-profile-comment class="blurring dimmable ui fluid card" ng-repeat="comment in studentData.comments track by $index"></student-profile-comment>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="node_modules/pdfjs-dist/build/pdf.js">
+
+<script src="public/js/pdfobject.js"></script>
+<style>
+    #the-canvas { height: 700px; }
+    .pdfobject { border: 1px solid #666; }
+</style>
+<link rel="stylesheet" type="text/css" href="public/css/studentProfile.css">

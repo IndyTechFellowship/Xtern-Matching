@@ -8,39 +8,6 @@
                 <div class="five wide column">
                     <div ng-click="addStudentToCompany(studentData._id)" class="ui button right floated fluid blue"><i class="add user icon">Recruit</i></div>
                     <br/>
-                    <div id="statusAndGrade">
-                        <div class="ui header">Status and Grade</div>
-                        <div class="ui fluid selection dropdown">
-                            <input name="status" type="hidden" value="0">
-                            <div class="text">{{studentData.status}}</div><i class="dropdown icon"></i>
-                            <div class="menu transition hidden">
-                                <div data-value="{{option}}" class="item" ng-repeat="option in statusOptions" ng-click="selectStatus(option)">
-                                    {{option}}
-                                </div>
-                            </div>
-                        </div>
-                        <!--             <div class="ui fluid selection dropdown">
-                                      <input type="hidden" name="grade" ng-model="studentData.r1Grade">
-                                      <i class="dropdown icon"></i>
-                                      <div class="default text">Grade</div>
-                                      <div class="menu">
-                                        <div class="item" data-value="4">A</div>
-                                        <div class="item" data-value="3">B</div>
-                                        <div class="item" data-value="2">C</div>
-                                        <div class="item" data-value="1">D</div>
-                                        <div class="item" data-value="0">F</div>
-                                      </div>
-                                    </div> -->
-                        <div class="ui fluid selection dropdown">
-                            <input name="grade" type="hidden" value="0">
-                            <div class="text">{{studentData.r1Grade.text}}</div><i class="dropdown icon"></i>
-                            <div class="menu transition hidden">
-                                <div data-value="{{option}}" class="item" ng-repeat="option in r1GradeOptions" ng-click="selectR1Grade(option)">
-                                    {{option.text}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div>
                         <div class="ui header">
                             Comments
