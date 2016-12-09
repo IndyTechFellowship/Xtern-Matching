@@ -5,7 +5,6 @@ import (
 	"Xtern-Matching/models"
 	"net/http"
 	"google.golang.org/appengine/datastore"
-	"log"
 )
 
 func NewOrganization(ctx context.Context,name string, kind string) (*datastore.Key, error) {
@@ -18,17 +17,22 @@ func NewOrganization(ctx context.Context,name string, kind string) (*datastore.K
 	return key, nil
 }
 
+func GetOrganization(ctx context.Context, orgKey *datastore.Key) (models.Organization, error) {
+	var org models.Organization
+	err := datastore.Get(ctx, orgKey, &org)
+	if err != nil {
+		return models.Organization{}, err
+	}
+	return org, nil
+}
+
 func GetOrganizations(ctx context.Context) ([]models.Organization,[]*datastore.Key,error) {
 	q := datastore.NewQuery("Organization")
-	log.Printf("%v",q)
-
 	var orgs []models.Organization
 	keys, err := q.GetAll(ctx, &orgs)
 	if err != nil {
 		return nil, nil, err
 	}
-
-	log.Printf("%v", keys)
 	return orgs, keys, nil
 }
 

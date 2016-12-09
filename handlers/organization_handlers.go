@@ -9,17 +9,11 @@ import (
 	"log"
 	"github.com/gorilla/context"
 	"google.golang.org/appengine/datastore"
+	"Xtern-Matching/models"
 )
 
 func GetOrganizations(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
-
-	var dat map[string]interface{}
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&dat); err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
 
 	organizations, keys, err := services.GetOrganizations(ctx)
 	if err != nil {
@@ -27,10 +21,14 @@ func GetOrganizations(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
+	type Response struct {
+		Keys []*datastore.Key			`json:"keys"`
+		Organizations []models.Organization	`json:"organizations"`
+	}
+	response := Response{Keys: keys, Organizations: organizations}
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(organizations)
-	json.NewEncoder(w).Encode(keys)
+	json.NewEncoder(w).Encode(response)
 }
 
 func AddOrganization(w http.ResponseWriter,r *http.Request) {
@@ -127,22 +125,20 @@ func MoveStudentInOrganization(w http.ResponseWriter,r *http.Request) {
 
 }
 
-//func GetCurrentOrganization(w http.ResponseWriter,r *http.Request) {
+//func GetOrganization(w http.ResponseWriter,r *http.Request) {
 //	ctx := appengine.NewContext(r)
+//
 //	user := context.Get(r, "user")
 //	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+//	org := mapClaims["org"].(*datastore.Key)
 //
-//	orgKey := strings.TrimSpace(mapClaims["org"].(datastore.Key))
-//
-//	org, err := services.GetOrganization(ctx, orgKey)
+//	org, err := services.GetOrganization(ctx, org)
 //	if err != nil {
-//		log.Print("ERROR GETTING COMPANY")
 //		log.Print(err)
 //		http.Error(w, err.Error(), 500)
 //		return
 //	}
 //	w.Header().Add("Access-Control-Allow-Origin", "*")
 //	w.Header().Set("Content-Type", "application/json")
-//	w.WriteHeader(http.StatusOK)
 //	json.NewEncoder(w).Encode(org)
 //}

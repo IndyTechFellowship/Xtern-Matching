@@ -13,16 +13,22 @@ import (
 
 func GetStudents(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
-	students, err := services.GetStudents(ctx)
+	students, keys, err := services.GetStudents(ctx)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
+	type Response struct {
+		Keys []*datastore.Key		`json:"keys"`
+		Students []models.Student	`json:"students"`
+	}
+	response := Response{Keys: keys, Students: students}
+
 
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(students)
+	json.NewEncoder(w).Encode(response)
 }
 
 func GetStudent(w http.ResponseWriter,r *http.Request) {

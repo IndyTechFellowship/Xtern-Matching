@@ -22,14 +22,34 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := services.Login(ctx, dat["email"].(string), dat["password"].(string))
+	tokenString, err := services.Login(ctx, dat["email"].(string), dat["password"].(string))
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	token, err := jwt.Parse(string(tokenString), func(token *jwt.Token) (interface{}, error) {
+		return []byte("My Secret"), nil
+	});
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	orgKey, err := datastore.DecodeKey(token.Claims.(jwt.MapClaims)["org"].(string))
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	org, err := services.GetOrganization(ctx,orgKey)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
 	dat = make(map[string]interface{})
-	dat["token"] = string(token)
+	dat["token"] = string(tokenString)
+	dat["organizationName"] = org.Name
+
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(dat)

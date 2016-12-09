@@ -282,17 +282,15 @@ angular.module('Xtern')
         //Table Click
         $scope.rowClick = function (id) {
             $state.go(PATH + '.profile', {_id: id});
-        }
+        };
 
         var run = function(data){
             generateChartAndStatus(STARTCHARTSANDSTATS);
             setTableHeaders(TABLEHEADERS);            
             generateFilterObjects(STARTFILTERS);
-            
             dataLoad(data);
 
             //DOM
-            
             $('.ui.accordion').accordion();
         };
 

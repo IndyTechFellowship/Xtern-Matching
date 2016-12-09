@@ -5,28 +5,27 @@ import (
 	"net/http"
 	"google.golang.org/appengine/datastore"
 	"golang.org/x/net/context"
-	"log"
 )
 
-func GetComments(ctx context.Context, studentKey *datastore.Key, organizationKey *datastore.Key) ([]models.Comment, error) {
+func GetComments(ctx context.Context, studentKey *datastore.Key, organizationKey *datastore.Key) ([]models.Comment,[]*datastore.Key,error) {
 	q := datastore.NewQuery("Comment").Ancestor(studentKey)
-	log.Printf("%v",q)
 	var allComments []models.Comment
-	keys, err := q.GetAll(ctx, &allComments)
+	commentKeys, err := q.GetAll(ctx, &allComments)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	log.Printf("%v",keys)
 
 	//TODO optimize
+	var keys []*datastore.Key
 	comments := make([]models.Comment, 0)
-	for _, comment := range allComments {
+	for index, comment := range allComments {
 		if comment.Author.Parent().Equal(organizationKey) {
 			comments = append(comments, comment)
+			keys = append(keys, commentKeys[index])
 		}
 	}
 
-	return comments, nil
+	return comments, keys, nil
 }
 
 func AddComment(ctx context.Context, studentKey *datastore.Key, message string, author *datastore.Key) (int, error) {

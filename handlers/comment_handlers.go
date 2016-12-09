@@ -8,6 +8,7 @@ import (
 	"google.golang.org/appengine/datastore"
 	"github.com/gorilla/context"
 	"github.com/dgrijalva/jwt-go"
+	"Xtern-Matching/models"
 )
 
 func GetComments(w http.ResponseWriter,r *http.Request) {
@@ -23,13 +24,19 @@ func GetComments(w http.ResponseWriter,r *http.Request) {
 	user := context.Get(r, "user")
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
 	org := mapClaims["org"].(*datastore.Key)
-	comments, err := services.GetComments(ctx, studentKey, org)
+	comments, keys, err := services.GetComments(ctx, studentKey, org)
 	if err != nil {
 		//log.Print(err)
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	json.NewEncoder(w).Encode(comments)
+	type Response struct {
+		Keys []*datastore.Key		`json:"keys"`
+		Comments []models.Comment	`json:"comments"`
+	}
+	response := Response{Keys: keys, Comments: comments}
+
+	json.NewEncoder(w).Encode(response)
 }
 
 func AddComment(w http.ResponseWriter,r *http.Request) {

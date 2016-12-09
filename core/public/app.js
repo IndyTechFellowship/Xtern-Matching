@@ -63,7 +63,8 @@
                         return isLoggedInCompany($q);
                     }]
                 }
-            }).state('company.recruting', {
+            })
+            .state('company.recruting', {
                 url: "/recruting",
                 templateUrl: "public/company/partials/company.recruting.html",
                 //resolve: { authenticate: authenticate }

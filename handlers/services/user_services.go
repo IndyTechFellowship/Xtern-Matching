@@ -25,12 +25,9 @@ func Login(ctx context.Context, email string, password string) ([]byte, error) {
 		token := jwt.NewWithClaims(jwt.SigningMethodHS512,jwt.MapClaims {
 			"iat": time.Now().Unix(),
 			"exp": time.Now().Add(time.Hour * time.Duration(24)).Unix(),
-			//TODO: encode
-			"org": accountKey.Parent(),
-			"key": accountKey,
+			"org": accountKey.Parent().Encode(),
+			"key": accountKey.Encode(),
 		})
-
-
 
 		//TODO: Don't hardcode this here and in company_handlers.go
 		tokenString, err := token.SignedString([]byte("My Secret"))
@@ -56,7 +53,7 @@ func Register(ctx context.Context, organizationKey *datastore.Key, user models.U
 		}
 		user.Password = string(pass)
 
-		key := datastore.NewIncompleteKey(ctx, "User", nil)
+		key := datastore.NewIncompleteKey(ctx, "User", organizationKey)
 		if _, err := datastore.Put(ctx, key, &user); err != nil {
 			return http.StatusInternalServerError, err
 		}
