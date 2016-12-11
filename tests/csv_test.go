@@ -1,9 +1,15 @@
 package tests
 
-import "testing"
+import (
+	"Xtern-Matching/handlers/services"
+	"os"
+	"testing"
+
+	"google.golang.org/appengine/aetest"
+)
 
 func TestStudentExport(t *testing.T) { //&aetest.Options{StronglyConsistentDatastore: true}
-	/*ctx, done, err := aetest.NewContext()
+	ctx, done, err := aetest.NewContext()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -14,5 +20,8 @@ func TestStudentExport(t *testing.T) { //&aetest.Options{StronglyConsistentDatas
 	if err != nil {
 		t.Fatal(err)
 	}
-	println(export)*/
+	f, err := os.Create("export.csv")
+	f.WriteString(export)
+	f.Sync()
+	//	println(export)
 }

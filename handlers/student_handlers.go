@@ -1,17 +1,18 @@
 package handlers
 
 import (
-	"net/http"
-	"google.golang.org/appengine"
-	"encoding/json"
-	"github.com/gorilla/mux"
-	"strconv"
-	"Xtern-Matching/models"
 	"Xtern-Matching/handlers/services"
+	"Xtern-Matching/models"
+	"encoding/json"
 	"log"
+	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
+	"google.golang.org/appengine"
 )
 
-func GetStudent(w http.ResponseWriter,r *http.Request) {
+func GetStudent(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
 	if id, ok := mux.Vars(r)["Id"]; ok {
@@ -33,7 +34,7 @@ func GetStudent(w http.ResponseWriter,r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
 }
 
-func GetStudents(w http.ResponseWriter,r *http.Request) {
+func GetStudents(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 	students, err := services.GetStudents(ctx)
 	if err != nil {
@@ -47,7 +48,20 @@ func GetStudents(w http.ResponseWriter,r *http.Request) {
 	json.NewEncoder(w).Encode(students)
 }
 
-func GetStudentsFromIds(w http.ResponseWriter,r *http.Request) {
+func ExportStudents(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+	students, err := services.ExportStudents(ctx)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "text/csv")
+	json.NewEncoder(w).Encode(students)
+}
+
+func GetStudentsFromIds(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 	type intIds struct {
 		Id []int64 `json:"_ids"`
@@ -67,15 +81,11 @@ func GetStudentsFromIds(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 
-
-
 	// var _ids []int64
 	// for i := 0; i<len(string_ids); i++ {
 	// 	id, _ := strconv.ParseInt(string_ids[i], 10, 64)
 	// 	_ids[i] = id
 	// }
-
-	
 
 	students, err := services.GetStudentsFromIds(ctx, _ids.Id)
 	if err != nil {
@@ -88,7 +98,7 @@ func GetStudentsFromIds(w http.ResponseWriter,r *http.Request) {
 	json.NewEncoder(w).Encode(students)
 }
 
-func PostStudent(w http.ResponseWriter,r *http.Request) {
+func PostStudent(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
 	var students []models.Student
@@ -111,7 +121,7 @@ func PostStudent(w http.ResponseWriter,r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func AddComment(w http.ResponseWriter,r *http.Request) {
+func AddComment(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
 	var dat map[string]interface{}
@@ -121,7 +131,7 @@ func AddComment(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 	newComment := models.Comment{Author: dat["author_name"].(string), Group: dat["group_name"].(string), Text: dat["text"].(string)}
-	studentId :=  int64(dat["id"].(float64))
+	studentId := int64(dat["id"].(float64))
 	student, err := services.GetStudent(ctx, studentId)
 	if err != nil {
 		log.Print(err)
@@ -140,7 +150,7 @@ func AddComment(w http.ResponseWriter,r *http.Request) {
 	json.NewEncoder(w).Encode(student)
 }
 
-func DeleteComment(w http.ResponseWriter,r *http.Request) {
+func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
 	var dat map[string]interface{}
@@ -150,7 +160,7 @@ func DeleteComment(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 	commentToDelete := models.Comment{Author: dat["author_name"].(string), Group: dat["group_name"].(string), Text: dat["text"].(string)}
-	studentId :=  int64(dat["id"].(float64))
+	studentId := int64(dat["id"].(float64))
 	student, err := services.GetStudent(ctx, studentId)
 	if err != nil {
 		log.Print(err)
@@ -171,17 +181,18 @@ func DeleteComment(w http.ResponseWriter,r *http.Request) {
 
 //8 MB file limit
 const MAX_MEMORY = 8 * 1024 * 1024
-func PostPDF(w http.ResponseWriter,r *http.Request){
+
+func PostPDF(w http.ResponseWriter, r *http.Request) {
 
 	//Get context and storage service
 	ctx := appengine.NewContext(r)
-	
+
 	//Make sure pdf is less than 8 MB
 	if err := r.ParseMultipartForm(MAX_MEMORY); err != nil {
 		http.Error(w, err.Error(), http.StatusForbidden)
 		return
 	}
-	
+
 	//Fetch file from formdata
 	file, _, err := r.FormFile("file")
 	if err != nil {
@@ -189,9 +200,9 @@ func PostPDF(w http.ResponseWriter,r *http.Request){
 		return
 	}
 	defer file.Close()
-	
+
 	if id, ok := mux.Vars(r)["Id"]; ok {
-		num_id, _ := strconv.ParseInt(id,10,64)
+		num_id, _ := strconv.ParseInt(id, 10, 64)
 		err := services.UpdateResume(ctx, num_id, file)
 		if err != nil {
 			http.Error(w, err.Error(), 500)

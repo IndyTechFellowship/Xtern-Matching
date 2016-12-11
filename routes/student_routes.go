@@ -1,11 +1,13 @@
 package routes
 
 import (
-	"github.com/gorilla/mux"
 	"Xtern-Matching/handlers"
+
+	"github.com/gorilla/mux"
 )
 
 func GetStudentRoutes(router *mux.Router) *mux.Router {
+	router.HandleFunc("/student/export", handlers.ExportStudents).Methods("GET").Name("ExportStudents")
 	router.HandleFunc("/student/{Id}", handlers.GetStudent).Methods("GET").Name("GetStudent")
 	router.HandleFunc("/student", handlers.GetStudents).Methods("GET").Name("GetStudents")
 	router.HandleFunc("/student/resume/{Id}", handlers.PostPDF).Methods("POST").Name("CreatePDF")
