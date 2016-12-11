@@ -27,7 +27,7 @@
                 }
             })
             .state('techpoint.profile', {
-                url: "/profile/:_id",
+                url: "/profile/:key",
                 templateUrl: "public/modules/student_profile/partials/studentProfile.html",
                 controller: 'StudentProfileCtrl',
                 resolve: {
@@ -63,7 +63,8 @@
                         return isLoggedInCompany($q);
                     }]
                 }
-            }).state('company.recruting', {
+            })
+            .state('company.recruting', {
                 url: "/recruting",
                 templateUrl: "public/company/partials/company.recruting.html",
                 //resolve: { authenticate: authenticate }
@@ -75,7 +76,7 @@
                 }
             })
             .state('company.profile', {
-                url: "/profile/:_id",
+                url: "/profile/:key",
                 templateUrl: "public/modules/student_profile/partials/studentProfile.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'StudentProfileCtrl',
@@ -150,12 +151,13 @@ var removeDataColors = function (data) {
 
 // There should be a better way to do this, but I am blanking now -- maybe filter
 // Corrects data formatting
-var rowClass = function (data) {
+var rowClass = function (data, key) {
     data.name = data.firstName + " " + data.lastName;
     //data.gradeLabel = data.r1Grade.text;
     //data.gradeValue = data.r1Grade.value;
-    data.namelink = '<a ui-sref="profile/' + data._id + '">' + data.name + "</a>";
-    data.gradeLabel = data.r1Grade.value;
+    data.namelink = '<a ui-sref="profile/' + key + '">' + data.name + "</a>";
+    data.gradeLabel = data.grade;
+    data.key = key;
     removeDataColors(data);
 
     //console.log(data);
@@ -169,7 +171,7 @@ var removedDuplicates = function (arr) {
 };
 
 var cleanStudents = function (student) {
-    student.interestedIn = removedDuplicates(student.interestedIn);
+    //student.interestedIn = removedDuplicates(student.interestedIn);
     //student.languages = removedDuplicates(student.interestedIn);
     return student;
 };

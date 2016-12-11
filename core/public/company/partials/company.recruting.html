@@ -33,10 +33,10 @@
                 <td style="text-align:center;">{{row.gradYear}}</td>
                 <td>{{row.summary}}</td>
                 <td>
-                    <button class="ui icon small button" ng-click="viewRecruit(row._id)">
+                    <button class="ui icon small button" ng-click="viewRecruit(row.key)">
                         <i class="external icon"></i>
                     </button>
-                    <button class="negative ui icon small button" ng-click="removeRecruit(row._id)">
+                    <button class="negative ui icon small button" ng-click="removeRecruit(row.key)">
                         <i class="remove user icon"></i>
                     </button>
                 </td>

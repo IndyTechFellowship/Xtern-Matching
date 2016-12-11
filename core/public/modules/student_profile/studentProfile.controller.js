@@ -4,10 +4,11 @@ angular.module('Xtern')
 
     $scope.comment = {};
     $scope.studentData = null;
+    $scope.isCompany = getToken('isCompany');
 
-    ProfileService.getStudentDataForId($stateParams._id, function(data)
-    {
+    ProfileService.getStudentData($stateParams.key, function(data) {
         $scope.studentData = data;
+        $scope.studentKey = $stateParams.key;
         //PDFObject.embed(data.resume, "#example1");
         //https://gist.github.com/fcingolani/3300351
         PDFJS.disableWorker = true;
@@ -33,7 +34,6 @@ angular.module('Xtern')
             for(var num = 1; num <= pdfDoc.numPages; num++)
                 pdfDoc.getPage(num).then(renderPage);
         }
-
         PDFJS.getDocument(data.resume).then(renderPages);
     });
 
@@ -48,26 +48,7 @@ angular.module('Xtern')
         'Rejected (Stage 3)'
     ];
 
-    $scope.r1GradeOptions = [
-        {
-            "text":"A",
-            "value":4
-        },{
-            "text":"B+",
-            "value":3.5
-        },{
-            "text":"B",
-            "value":3
-        },{
-            "text":"B-",
-            "value":2.8
-        },{
-            "text":"C",
-            "value":2
-        },{
-            "text":"D",
-            "value":1
-        }];
+    $scope.r1GradeOptions = [1,2,3,4,5,6,7,8,9,10];
 
     $('.ui.sticky').sticky({
         context: '#example1'
@@ -87,11 +68,9 @@ angular.module('Xtern')
 
     $scope.addComment = function(){
         // TODO: fix/update this for new data format
-        var author_name = "controller test author";
-        var group_name = "controller test group";
         var text = "controller test text bla bla bla. bla bla bla.";
 
-        ProfileService.addCommentToStudent($scope.studentData._id, author_name, group_name, text, function (data) {
+        ProfileService.addCommentToStudent(text, function (data) {
             // console.log(data);
         });
 
@@ -118,10 +97,9 @@ angular.module('Xtern')
         }
     };
 
-    $scope.addStudent = function (_id) {
+    $scope.addStudent = function (key) {
         console.log("add student:");
-        console.log(_id);
-        CompanyService.addStudentToWishList(_id, function(data) {
+        CompanyService.addStudentToWishList(key, function(data) {
             // $scope.recruitmentList.push($scope.studentData);
             console.log("Student added");
         });

@@ -24,7 +24,8 @@ function removeToken(token){
 }
 
 var isLoggedInTechPoint = function ($q) {
-    var role = getToken("role");
+    //TODO change this to type
+    var role = getToken("organization");
     if (!role) {
         var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
         $q.reject(errorObject);
@@ -33,15 +34,15 @@ var isLoggedInTechPoint = function ($q) {
     else if(role =="admin"){
         return;
     }
-    else if (role == "TechPoint") {
+    else if (role == "Techpoint") {
         return;
-    }
-    else if(role == "Company"){
-        var errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
-        return $q.reject(errorObject);
     }
     else if(role == "Instructor"){
         var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' }
+        return $q.reject(errorObject);
+    }
+    else if(role == "Salesforce"){
+        var errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);
     }
     else{
@@ -77,7 +78,8 @@ var isLoggedInInstructor = function ($q) {
 };
 
 var isLoggedInCompany = function ($q) {
-    var role = getToken("role");
+    //TODO change this to kind
+    var role = getToken("organization");
     if (!role) {
         var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);
@@ -86,16 +88,16 @@ var isLoggedInCompany = function ($q) {
     else if(role =="admin"){
         return;
     }
-    else if (role == "TechPoint") {
+    else if (role == "Techpoint") {
         var errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
         return $q.reject(errorObject);
-    }
-    else if(role == "Company"){
-        return;
     }
     else if(role == "Instructor"){
         var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' };
         return $q.reject(errorObject);
+    }
+    else if(role == "Salesforce"){
+        return;
     }
     else{
         var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
@@ -104,7 +106,7 @@ var isLoggedInCompany = function ($q) {
 };
 
 var isLoggedIn = function ($q, code) {
-    var role = getToken("role");
+    var role = getToken("organization");
     if (!role) {
         return;
     }

@@ -9,15 +9,7 @@ import (
 	//"github.com/gorilla/context"
 )
 
-//func AppEngineContextGrab(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-//	ctx := appengine.NewContext(r)
-//	context.Set(r,"ctx",ctx)
-//	next(rw, r)
-//	context.Clear(r)
-//}
-
 func GetAuthenticationRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/auth/login", handlers.Login).Methods("POST").Name("Login")
-	router.HandleFunc("/auth/logout", handlers.Logout).Methods("POST").Name("Logout")
 	return router
 }

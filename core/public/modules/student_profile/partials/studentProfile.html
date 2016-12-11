@@ -32,7 +32,6 @@
                     </div>
                     <div class="ui fluid card blue">
                         <div class="content">
-
                             <div class="ui left floated"><strong>{{studentData.university}}</strong></div>
                             <div class="ui right floated"><em>{{studentData.major}}</em></div>
                             <br/>
@@ -43,13 +42,13 @@
                             <div class="ui right floated">{{studentData.gender}}</div>
                         </div>
                     </div>
-                    <a class="ui purple label" href="https://github.com/Doolan" target="_blank">
+                    <a ng-if="studentData.githubUrl" class="ui purple label" href="{{studentData.githubUrl}}" target="_blank">
                         <i class="github square icon"></i>GitHub
                     </a>
-                    <a class="ui blue label" href="https://www.linkedin.com/" target="_blank">
+                    <a ng-if="studentData.linkedinUrl" class="ui blue label" href="{{studentData.linkedinUrl}}" target="_blank">
                         <i class="linkedin square icon"></i>LinkedIn
                     </a>
-                    <a class="ui green label" href="{{studentData.personalWebsiteUrl}}" target="_blank">
+                    <a ng-if="studentData.personalWebiteUrl" class="ui green label" href="{{studentData.personalWebiteUrl}}" target="_blank">
                         <i class="idea icon"></i>Personal Website
                     </a>
                     <div class="ui message">
@@ -77,18 +76,9 @@
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan mi ut faucibus convallis. </p>
                         </div>
                     </div>
-
-
-
                 </div>
                 <div class="five wide column">
-
-<!-- <<<<<<< HEAD
-                    <div ng-if="isCompany" class="ui button right floated fluid blue" ng-click="addStudent(studentData._id)"><i class="add user icon">Recruit</i></div>
-                    <br/>
-======= -->
-                    <div ng-if="isCompany" ng-click="addStudentToCompany(studentData._id)" class="ui button right floated fluid blue"><i class="add user icon">Recruit</i></div>
-<!-- >>>>>>> fdb644ab5ede72a63934ccdfac0ca28e1832f9e4 -->
+                    <div ng-if="isCompany" ng-click="addStudentToCompany(studentKey)" class="ui button right floated fluid blue"><i class="add user icon">Recruit</i></div>
                     <br/>
                     <div id="statusAndGrade">
                         <div class="ui header">Status and Grade</div>
@@ -115,10 +105,10 @@
                                     </div> -->
                         <div class="ui fluid selection dropdown">
                             <input name="grade" type="hidden" value="0">
-                            <div class="text">{{studentData.r1Grade.text}}</div><i class="dropdown icon"></i>
+                            <div class="text">{{studentData.grade}}</div><i class="dropdown icon"></i>
                             <div class="menu transition hidden">
                                 <div data-value="{{option}}" class="item" ng-repeat="option in r1GradeOptions" ng-click="selectR1Grade(option)">
-                                    {{option.text}}
+                                    {{option}}
                                 </div>
                             </div>
                         </div>
@@ -141,8 +131,6 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
     </div>
