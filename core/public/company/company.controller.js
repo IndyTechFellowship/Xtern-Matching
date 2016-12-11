@@ -1,14 +1,14 @@
 angular.module('Xtern')
     .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'AuthService','CompanyService', 'ProfileService', function ($scope, $rootScope, $state, AuthService, CompanyService, ProfileService) {
         var self = this;
-        $scope.loggedIn = !!getToken("role");
+        $scope.loggedIn = !!getToken("organization");
         // CompanyService.getCurrentCompany(function(company) {
         $scope.companyData = getToken("organization");
         // });
 
         $rootScope.$on('$stateChangeStart',
             function (event, toState, toParams, fromState, fromParams, options) {
-                $scope.loggedIn = !!getToken("role");
+                $scope.loggedIn = !!getToken("organization");
                 $scope.companyData = getToken("organization");
                 if (toState.name == "company.profile") {
                     $('#profile').show();
@@ -36,25 +36,23 @@ angular.module('Xtern')
         };
     }])
     .controller('CompanyRecruiting', ['$scope', '$state', 'ProfileService', 'CompanyService', function ($scope, $state, ProfileService, CompanyService) {
-        var self = this;
         $scope.recruitmentList = [];
 
         $scope.companyData = getToken("organization");
-            ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
-                $scope.recruitmentList = data;
-            });
+        CompanyService.getOrganizationStudents(function(data) {
+            $scope.recruitmentList = data;
+        });
 
         $scope.sortableOptions = {
             containment: '#table-container',
             containerPositioning: 'relative'
         };
 
-        $scope.removeRecruit = function (_id) {
-            console.log("remove recruit:");
-            console.log(_id);
-            CompanyService.removeStudentFromWishList(_id, function(data) {
+        $scope.removeRecruit = function (key) {
+            console.log("remove recruit: "+key);
+            CompanyService.removeStudentFromWishList(key, function(data) {
                 for (var i = $scope.recruitmentList.length - 1; i >= 0; i--) {
-                    if ($scope.recruitmentList[i]._id == _id) {
+                    if ($scope.recruitmentList[i].key == key) {
                         $scope.recruitmentList.splice(i, 1);
                     }
                 }
@@ -62,23 +60,21 @@ angular.module('Xtern')
 
         };
 
-        $scope.viewRecruit = function (_id) {
-            $state.go('company.profile', { _id: _id });
+        $scope.viewRecruit = function (key) {
+            $state.go('company.profile', { key: key });
         };
 
-        $scope.addStudent = function (_id) {
+        $scope.addStudent = function (key) {
             console.log("add student:");
-            console.log(_id);
+            console.log(key);
         };
 
         $scope.dragControlListeners = {
             orderChanged: function(obj) {
-
-                CompanyService.switchStudentsInWishList($scope.recruitmentList[obj.source.index]._id, $scope.recruitmentList[obj.dest.index]._id, function(data) {
-                    console.log("order changed: ");
-                    console.log(data);
+                console.log(obj.source.index+' '+obj.dest.index);
+                CompanyService.switchStudentsInWishList($scope.recruitmentList[obj.source.index].key, obj.dest.index, function(data) {
+                    console.log("order changed: "+data);
                 });
             }
         };
-
     }]);

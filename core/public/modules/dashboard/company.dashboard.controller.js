@@ -126,5 +126,6 @@ angular.module('Xtern')
             }];
         $scope.DATA = null;
         $scope.PATH = 'company';
+        $scope.isCompany = true;
 
     }]);

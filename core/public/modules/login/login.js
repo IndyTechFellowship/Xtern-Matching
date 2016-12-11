@@ -24,6 +24,7 @@ function removeToken(token){
 }
 
 var isLoggedInTechPoint = function ($q) {
+    //TODO change this to type
     var role = getToken("organization");
     if (!role) {
         var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
@@ -33,15 +34,14 @@ var isLoggedInTechPoint = function ($q) {
     else if(role =="admin"){
         return;
     }
-    else if (role == "TechPoint") {
-        console.log("Here");
+    else if (role == "Techpoint") {
         return;
     }
     else if(role == "Instructor"){
         var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' }
         return $q.reject(errorObject);
     }
-    else if(role == "Company"){
+    else if(role == "Salesforce"){
         var errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);
     }
@@ -78,7 +78,8 @@ var isLoggedInInstructor = function ($q) {
 };
 
 var isLoggedInCompany = function ($q) {
-    var role = getToken("role");
+    //TODO change this to kind
+    var role = getToken("organization");
     if (!role) {
         var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);
@@ -87,7 +88,7 @@ var isLoggedInCompany = function ($q) {
     else if(role =="admin"){
         return;
     }
-    else if (role == "TechPoint") {
+    else if (role == "Techpoint") {
         var errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
         return $q.reject(errorObject);
     }
@@ -95,7 +96,7 @@ var isLoggedInCompany = function ($q) {
         var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' };
         return $q.reject(errorObject);
     }
-    else if(role == "Company"){
+    else if(role == "Salesforce"){
         return;
     }
     else{

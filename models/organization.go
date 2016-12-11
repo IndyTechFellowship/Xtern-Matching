@@ -2,7 +2,7 @@ package models
 
 import (
 	"google.golang.org/appengine/datastore"
-	"github.com/pkg/errors"
+	"log"
 )
 
 type Organization struct {
@@ -26,26 +26,42 @@ func (org *Organization) AddStudent(studentKey *datastore.Key) bool {
 	return true
 }
 
-func (org *Organization) RemoveStudent(studentKey *datastore.Key) bool {
+func (org *Organization) ContainStudent(studentKey *datastore.Key) int {
+	for i, key := range org.Students {
+		if key.Equal(studentKey) {
+			return i
+		}
+	}
+	return -1
+}
+
+func (org *Organization) RemoveStudent(studentKey *datastore.Key) {
 	for i, key := range org.Students {
 		if key.Equal(studentKey) {
 			org.Students = append(org.Students[:i], org.Students[i+1:]...)
-			return true
+			return
 		}
 	}
-	return false
 }
 
-func (org *Organization) MoveStudent(studentKey *datastore.Key, pos int) error {
-	if org.RemoveStudent(studentKey) {
-		for i := range org.Students {
-			if pos == i {
-				leftStudents := append(org.Students[:i], studentKey)
-				org.Students = append(leftStudents, org.Students[i:]...)
-				return nil
-			}
+func (org *Organization) MoveStudent(studentKey *datastore.Key, pos int) {
+	students := make([]*datastore.Key,len(org.Students))
+	i := 0
+	j := 0
+	for i < len(org.Students) && j < len(students) {
+		if pos == j {
+			log.Printf("Posisiton=%v", i)
+			students[j] = studentKey
+			j++
+		} else if org.Students[i].Equal(studentKey) {
+			log.Printf("Remove=%v", i)
+			i++
+		} else {
+			students[j] = org.Students[i]
+			i++
+			j++
 		}
 	}
-	return errors.New("Organization does not currently have student in list")
+	org.Students = students
 }
 

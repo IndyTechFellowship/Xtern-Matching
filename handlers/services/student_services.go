@@ -13,13 +13,17 @@ import (
 	"strconv"
 )
 
-func GetStudents(ctx context.Context) ([]models.Student,[]*datastore.Key,error) {
+func GetStudents(ctx context.Context, parent *datastore.Key) ([]models.Student,[]*datastore.Key,error) {
 	q := datastore.NewQuery("Student")
+	if parent != nil {
+		q = datastore.NewQuery("Student").Ancestor(parent)
+	}
 	var students []models.Student
 	keys, err := q.GetAll(ctx, &students)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	return students, keys, nil
 }
 

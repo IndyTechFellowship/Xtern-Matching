@@ -7,13 +7,13 @@ import (
 	"Xtern-Matching/models"
 	"Xtern-Matching/handlers/services"
 	"log"
-	"github.com/gorilla/context"
 	"google.golang.org/appengine/datastore"
+	"github.com/gorilla/mux"
 )
 
 func GetStudents(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
-	students, keys, err := services.GetStudents(ctx)
+	students, keys, err := services.GetStudents(ctx, nil)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
@@ -34,8 +34,14 @@ func GetStudents(w http.ResponseWriter,r *http.Request) {
 func GetStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	studentKey := context.Get(r, "studentKey")
-	student, err := services.GetStudent(ctx, studentKey.(*datastore.Key))
+	studentKey, err := datastore.DecodeKey(mux.Vars(r)["studentKey"])
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	student, err := services.GetStudent(ctx, studentKey)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)

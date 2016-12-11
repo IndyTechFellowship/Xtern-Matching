@@ -1,7 +1,4 @@
-/**
- * Created by Steven on 3/28/2016.
- */
- (function (){
+(function (){
     var app = angular.module('DataManager',[]);
 	//var host = "http://xtern-matching.appspot.com/"
 	//var host = "http://xtern-matching-143216.appspot.com/" //DEV Server
@@ -14,7 +11,6 @@
         self.commentKeys = null;
 
         self.getStudentData = function(key, callback){
-            // console.log(id);
             if(!self.profile || self.studentKey != key) {
                 $http({
                     method: 'GET',
@@ -39,7 +35,6 @@
         };
 
         self.getCommentData = function(callback) {
-            // console.log(id);
             if(self.studentKey != key) {
                 $http({
                     method: 'GET',
@@ -64,32 +59,6 @@
                 console.log('error occured: Called before student');
             }
         };
-
-        // self.getStudentDataForIds = function(ids, callback){
-        //     console.log("get student data for ids:");
-        //     console.log(ids);
-        //     // console.log(id);
-        //         $http({
-        //             method: 'POST',
-        //             url: "http://localhost:8080/student/getstudents",
-        //             data: {
-        //                 "_ids": ids
-        //             },
-        //             headers: {
-        //                 'Content-Type': "application/json",
-        //                 'Accept': "application/json",
-        //                 'Authorization': 'bearer ' + getToken('auth')
-        //             }
-        //         }).then(function (data) {
-        //             console.log('get multiple students data:');
-        //             console.log(data.data);
-        //             callback(data.data);
-        //         }, function errorCallback(response) {
-        //             console.log('error occured: ');
-        //             console.log(response);
-        //             callback('', 'err');
-        //         });
-        // };
 
         self.addCommentToStudent = function(text, callback){
             $http({
@@ -132,17 +101,16 @@
             });
         };
 
-    }]).service('OrganizationService', ['$http', function ($http){
+    }]).service('CompanyService', ['$http', function ($http){
         var self = this;
         self.organization = null;
         self.organizationKey = null;
 
         self.getOrganizationData = function(key, callback){
-            // console.log(id);
-            if(!self.organization || self.organizationKey !== id) {
+            if(!self.organization || self.organizationKey !== key) {
                 $http({
                     method: 'GET',
-                    url: host + "organization/" + id,
+                    url: host + "organization/" + key,
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
@@ -160,20 +128,40 @@
                     callback('', 'err');
                 });
             } else {
-                 callback(self.company);
+                 callback(self.organization);
             }
         };
 
-        self.addStudentToWishList = function (studentId, callback) {
+        self.getOrganizationStudents = function (callback) {
+            $http({
+                method: 'GET',
+                url: host + "organization/students",
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                }
+            }).then(function (data) {
+                //self.organization = data.data;
+                //self.organizationKey = key;
+                var students = data.data.students;
+                for(var i = 0; i < students.length; i++) {
+                    students[i].key = data.data.keys[i]
+                }
+                console.log(students);
+                callback(students);
+            }, function errorCallback(response) {
+                console.log('Company Services: error occured: ' + response);
+                callback('', 'err');
+            });
+        };
+
+        self.addStudentToWishList = function (studentKey, callback) {
             $http({
                 method: 'POST',
-                // TODO: replace this id when company login is done
-                url: host + "company/addStudent",
-                // url: "http://localhost:8080/company/" + id,
+                url: host + "organization/addStudent",
                 data: {
-                    // "id": 5066549580791808,
-                    "token": getToken('auth'),
-                    "studentId": studentId
+                    "studentKey": studentKey
                 },
                 headers: {
                     'Content-Type': "application/json",
@@ -189,14 +177,12 @@
             });
         };
 
-        self.removeStudentFromWishList = function (studentId, callback) {
+        self.removeStudentFromWishList = function (studentKey, callback) {
             $http({
                 method: 'POST',
-                // TODO: replace this id when company login is done
-                url: host + "company/removeStudent",
+                url: host + "organization/removeStudent",
                 data: {
-                    // "id": 5066549580791808,
-                    "studentId": studentId
+                    "studentKey": studentKey
                 },
                 headers: {
                     'Content-Type': "application/json",
@@ -212,15 +198,13 @@
             });
         };
 
-        self.switchStudentsInWishList = function (student1Id, student2Id, callback) {
+        self.switchStudentsInWishList = function (studentKey, pos, callback) {
             $http({
-                method: 'POST',
-                // TODO: replace this id when company login is done
-                url: host + "company/switchStudents",
+                method: 'PUT',
+                url: host + "organization/moveStudent",
                 data: {
-                    "id": 5066549580791808,
-                    "student1Id": student1Id,
-                    "student2Id": student2Id
+                    "studentKey": studentKey,
+                    "position": pos
                 },
                 headers: {
                     'Content-Type': "application/json",
@@ -256,7 +240,6 @@
                 callback(self.studentSummaryData, self.studentKeys);
             }, function errorCallback(response) {
                 console.log('error occured: '+response);
-                console.log('Here: '+getToken('auth'));
                 callback('','err');
             });
         };
@@ -304,24 +287,25 @@
         //         callback('', response);
         //     });
         // };
-
         self.logout = function (callback) {
-            $http({
-                method: 'POST',
-                url: host + "auth/logout",
-                data: {},
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json",
-                    'Authorization': 'bearer '+getToken('auth')
-                }
-            }).then(function () {
-                logout()
-                callback();
-            }, function errorCallback(response) {
-                // console.log('error occured: '+response);
-                callback('err')
-            });
+            // $http({
+            //     method: 'POST',
+            //     url: host + "auth/logout",
+            //     data: {},
+            //     headers: {
+            //         'Content-Type': "application/json",
+            //         'Accept': "application/json",
+            //         'Authorization': 'bearer '+getToken('auth')
+            //     }
+            // }).then(function () {
+            //     logout();
+            //     callback();
+            // }, function errorCallback(response) {
+            //     // console.log('error occured: '+response);
+            //     callback('err')
+            // });
+            logout();
+            callback();
         };
 
     }]).service('ResumeService',['$http', function ($http) {
@@ -341,7 +325,6 @@
 				console.log("Upload successful")
             }).error(function(response) {
                 console.log('error occured: '+response);
-                console.log('Here: '+getToken('auth'));
             });
         };
     }]);

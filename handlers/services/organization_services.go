@@ -51,19 +51,19 @@ func AddStudentToOrganization(ctx context.Context, orgKey *datastore.Key, studen
 	return orgKey.IntID(), nil
 }
 
-func RemoveStudentFromOrganization(ctx context.Context, orgKey *datastore.Key, studentKey *datastore.Key) (int64,error)  {
+func RemoveStudentFromOrganization(ctx context.Context, orgKey *datastore.Key, studentKey *datastore.Key) error  {
 	//orgKey := datastore.NewKey(ctx, "Company", "", companyId, nil)
 	var org models.Organization
 	if err := datastore.Get(ctx, orgKey, &org); err != nil {
-		return http.StatusInternalServerError, err
+		return err
 	}
 
 	org.RemoveStudent(studentKey)
 
 	if _, err := datastore.Put(ctx, orgKey, &org); err != nil {
-		return http.StatusInternalServerError, err
+		return err
 	}
-	return orgKey.IntID(), nil
+	return nil
 }
 
 func MoveStudentInOrganization(ctx context.Context, orgKey *datastore.Key, studentKey *datastore.Key, pos int) (int64,error)  {

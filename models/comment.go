@@ -4,6 +4,7 @@ import "google.golang.org/appengine/datastore"
 
 type Comment struct {
 	Message string		`json:"message"`
-	Author *datastore.Key	`json:"Author"`
+	AuthorName string 	`json:"authorName"`
+	Author *datastore.Key	`json:"author"`
 }
 

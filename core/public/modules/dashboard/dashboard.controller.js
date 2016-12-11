@@ -18,13 +18,19 @@ angular.module('Xtern')
         //         dataLoad(newVal);
         // }, true);
 
-        var dataLoad = function (data) {
-            $scope.summaryData = $.map(data, function (person) {
-                return rowClass(person)
-            });
-            $scope.rawData = $.map(data, function (person) {
-                return rowClass(person)
-            });
+        var dataLoad = function (data, keys) {
+            // $scope.summaryData = $.map(data, function (person) {
+            //     return rowClass(person)
+            // });
+            // $scope.rawData = $.map(data, function (person) {
+            //     return rowClass(person)
+            // });
+            let students = [];
+            for(var i = 0; i < data.length; i++) {
+                students[i] = rowClass(data[i],keys[i]);
+            }
+            $scope.summaryData = students;
+            $scope.rawData = students;
             loadFilters();
             initCharts();
             $scope.personsCount = $scope.summaryData.length;
@@ -280,15 +286,15 @@ angular.module('Xtern')
 
         //DataLoad
         //Table Click
-        $scope.rowClick = function (id) {
-            $state.go(PATH + '.profile', {_id: id});
+        $scope.rowClick = function (key) {
+            $state.go(PATH + '.profile', {key: key});
         };
 
-        var run = function(data){
+        var run = function(data, keys){
             generateChartAndStatus(STARTCHARTSANDSTATS);
             setTableHeaders(TABLEHEADERS);            
             generateFilterObjects(STARTFILTERS);
-            dataLoad(data);
+            dataLoad(data, keys);
 
             //DOM
             $('.ui.accordion').accordion();
@@ -296,9 +302,10 @@ angular.module('Xtern')
 
 
 
-        TechPointDashboardService.queryUserSummaryData(function (data) {
+        TechPointDashboardService.queryUserSummaryData(function (data, keys) {
             $scope.DATA = data;
-            run(data);
+            //$scope.KEYS = keys;
+            run(data,keys);
         });
 
     }]);

@@ -9,6 +9,8 @@ import (
 	"github.com/gorilla/context"
 	"github.com/dgrijalva/jwt-go"
 	"Xtern-Matching/models"
+	"github.com/gorilla/mux"
+	"log"
 )
 
 func GetComments(w http.ResponseWriter,r *http.Request) {
@@ -20,7 +22,12 @@ func GetComments(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	studentKey := dat["studentKey"].(*datastore.Key)
+	studentKey, err := datastore.DecodeKey(dat["studentKey"].(string))
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
 	user := context.Get(r, "user")
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
 	org := mapClaims["org"].(*datastore.Key)
@@ -48,11 +55,27 @@ func AddComment(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	studentKey := dat["studentKey"].(*datastore.Key)
-	message := dat["message"].(string)
+
+	studentKey, err := datastore.DecodeKey(dat["studentKey"].(string))
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	message :=  dat["message"].(string)
 	user := context.Get(r, "user")
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	author := mapClaims["key"].(*datastore.Key)
+	author, err := datastore.DecodeKey(mapClaims["key"].(string))
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
 	status, err := services.AddComment(ctx, studentKey, message, author)
 	if err != nil {
 		//log.Print(err)
@@ -72,9 +95,14 @@ func EditComment(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	studentKey := dat["studentKey"].(*datastore.Key)
+	commentKey, err := datastore.DecodeKey(mux.Vars(r)["commentKey"])
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
 	message := dat["message"].(string)
-	status, err := services.EditComment(ctx, studentKey, message)
+	status, err := services.EditComment(ctx, commentKey, message)
 	if err != nil {
 		//log.Print(err)
 		http.Error(w, err.Error(), 500)
@@ -93,9 +121,14 @@ func DeleteComment(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	commentKey := dat["key"].(*datastore.Key)
+	commentKey, err := datastore.DecodeKey(mux.Vars(r)["commentKey"])
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
 
-	_, err := services.DeleteComment(ctx, commentKey)
+	_, err = services.DeleteComment(ctx, commentKey)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return

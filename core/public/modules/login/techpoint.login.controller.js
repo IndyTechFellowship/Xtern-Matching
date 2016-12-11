@@ -1,6 +1,5 @@
 angular.module('Xtern')
     .controller('TechpointLogin',['$scope','$state','AuthService','TechPointDashboardService', function($scope, $state, AuthService) {
-        console.log("Begin");
         var formConfig = function() {
             $('#techpointLogin').form({
                 fields: {
@@ -56,9 +55,9 @@ angular.module('Xtern')
                     );
                 } else {
                     console.log('Login Success '+org);
+                    setToken(false,'isCompany');
                     $scope.isCompany = false;
                     $state.go('techpoint.dashboard');
-                    console.log('After');
                     // AuthService.renderTokens(function(token, err) {
                     //     if (err) {
                     //         console.log('Render Token unsuccessful', err);

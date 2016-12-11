@@ -18,9 +18,9 @@ type Student struct {
 	Grade int			`json:"grade"`
 	Status string	    		`json:"status"`
 	Active bool	    		`json:"active"`
+	HomeState string    `json:"homeState"`
 	//Details map[string]interface{}	`json:"details"`
 	//EmailIntrest string 	`json:"interestedInEmail"`
-	//HomeState string    `json:"homeState"`
 }
 
 type Skill struct {
