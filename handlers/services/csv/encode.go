@@ -1,4 +1,4 @@
-package services
+package csv
 
 /*
   Source from https://github.com/jweir/csv
@@ -73,7 +73,6 @@ func Marshal(i interface{}) ([]byte, error) {
 
 	el := data.Index(0)
 	enc, err := newEncoder(el)
-
 	if err != nil {
 		return []byte{}, err
 	}
@@ -126,10 +125,6 @@ func (enc *encoder) encodeAll(data reflect.Value) error {
 			return err
 		}
 		err = enc.Write(row)
-		//enc.buffer.Truncate(enc.buffer.Len() - 1)
-		enc.Flush()
-		enc.buffer.WriteByte(',')
-		enc.Flush()
 		if err != nil {
 			return err
 		}
@@ -181,11 +176,12 @@ func (enc *encoder) encodeCol(fv reflect.Value, st reflect.StructTag) string {
 		return encodeInterface(fv, st)
 	case reflect.Struct:
 		return encodeInterface(fv, st)
+	// Support for slices, just adds a newline separator in entry
 	case reflect.Slice:
-		//s := reflect.ValueOf(fv)
 		var out string = ""
 		for i := 0; i < fv.Len(); i++ {
-			out += strings.TrimPrefix(strings.TrimSuffix(fmt.Sprint(fv.Index(i)), "}"), "{") + "\n"
+			out += enc.encodeCol(fv.Index(i), st) + "\n"
+			//out += strings.TrimPrefix(strings.TrimSuffix(fmt.Sprint(fv.Index(i)), "}"), "{") + "\n"
 		}
 		return strings.TrimSuffix(out, "\n")
 	default:

@@ -34,6 +34,14 @@ type Grade struct {
 	Value string `json:"value"`
 }
 
+func (skill Skill) MarshalCSV() ([]byte, error) {
+	return []byte(skill.Name + ": " + skill.Category), nil
+}
+
+func (grade Grade) MarshalCSV() ([]byte, error) {
+	return []byte(grade.Value + ": " + grade.Text), nil
+}
+
 type Comment struct {
 	Author string `json:"author"`
 	Group  string `json:"group"`

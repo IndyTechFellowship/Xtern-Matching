@@ -10,6 +10,8 @@ import (
 	"reflect"
 	"strconv"
 
+	"Xtern-Matching/handlers/services/csv"
+
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2/google"
 	storage "google.golang.org/api/storage/v1"
@@ -62,6 +64,18 @@ func GetStudents(ctx context.Context) ([]models.Student, error) {
 		students[i].Id = keys[i].IntID()
 	}
 	return students, nil
+}
+
+func ExportStudents(ctx context.Context) ([]byte, error) {
+	students, err := GetStudents(ctx)
+	if err != nil {
+		return nil, err
+	}
+	output, err := csv.Marshal(students)
+	if err != nil {
+		return nil, err
+	}
+	return output, nil
 }
 
 func GetStudentsFromIds(ctx context.Context, _ids []int64) ([]models.Student, error) {

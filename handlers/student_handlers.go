@@ -58,7 +58,7 @@ func ExportStudents(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "text/csv")
-	json.NewEncoder(w).Encode(students)
+	w.Write(students)
 }
 
 func GetStudentsFromIds(w http.ResponseWriter, r *http.Request) {
