@@ -1,7 +1,5 @@
 (function (){
     var app = angular.module('DataManager',[]);
-	//var host = "http://xtern-matching.appspot.com/"
-	//var host = "http://xtern-matching-143216.appspot.com/" //DEV Server
 	var host = "http://localhost:8080/";
     app.service('ProfileService', ['$http', function ($http){
         var self = this;
@@ -99,7 +97,8 @@
             });
         };
 
-    }]).service('CompanyService', ['$http', function ($http){
+    }])
+        .service('CompanyService', ['$http', function ($http){
         var self = this;
         self.organization = null;
         self.organizationKey = null;
@@ -214,7 +213,8 @@
             });
         };
 
-    }]).service('TechPointDashboardService',['$http', function ($http) {
+    }])
+        .service('TechPointDashboardService',['$http', function ($http) {
         var self = this;
         self.studentSummaryData = null;
         self.studentKeys = null;
@@ -238,153 +238,152 @@
                 callback('','err');
             });
         };
-    }]).service('AccountControlService',['$http', function ($http){
-        var self = this;
-        self.userData = null;
-        self.getUsers = function(role, company, callback){
-            var route = "admin/getusers/"+role+"/"+company;
-            $http({
-                method: 'GET',
-                url: host + route,
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json",
-                    'Authorization': 'bearer '+getToken('auth')
-                }
-            }).then(function (data) {
-                callback(data.data);
-            }, function errorCallback(response) {
-                console.log('error occured: ', response);
-                console.log('Here: '+getToken('auth'));
-                callback('','err')
-            });
-        };
+    }])
+        .service('AccountControlService',['$http', function ($http){
+            var self = this;
+            self.userData = null;
+            self.getUsers = function(callback) {
+                var route = "user";
+                $http({
+                    method: 'GET',
+                    url: host + route,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer '+getToken('auth')
+                    }
+                }).then(function (data) {
+                    console.log(data);
+                    callback(data.data.users,data.data.keys);
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                    callback('','err')
+                });
+            };
+            self.addUser = function(user, callback){
+                var route = "user";
+                $http({
+                    method: 'POST',
+                    url: host + route,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    },
+                    data: user
+                }).then(function (data) {
+                    //success
+                    callback(data);
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                    // console.log('Here: ' + getToken('auth'));
+                    callback('', 'err')
+                });
+            };
+            self.updateUser = function(key, callback){
+                var route = "user/"+key;
+                $http({
+                    method: 'PUT',
+                    url: host + route,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    },
+                    data: user
+                }).then(function (data) {
+                    //success
+                    callback(data);
+                }, function errorCallback(response) {
+                    console.log('error occured: ' ,  response);
+                    console.log('Here: ' + getToken('auth'));
+                    callback('', 'err')
+                });
+            };
+            self.deleteUser = function (key, callback) {
+                var route = "user/" + key;
+                $http({
+                    method: 'DELETE',
+                    url: host + route,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    callback(data);
+                }, function errorCallback(response) {
+                    console.log('error occured: ' ,  response);
+                    callback('', 'err')
+                });
+            };
+    }])
+        .service('AuthService',['$http', function ($http) {
+            var self = this;
+            self.userKey = null;
 
-        self.addUser = function(user, callback){
-            var route = "admin/register" //??
-            $http({
-                method: 'POST',
-                url: host + route,
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json",
-                    'Authorization': 'bearer ' + getToken('auth')
-                },
-                data: user
-            }).then(function (data) {
-                //success
-                callback(data);
-            }, function errorCallback(response) {
-                console.log('error occured: ', response);
-                // console.log('Here: ' + getToken('auth'));
-                callback('', 'err')
-            });
-        };
-        self.updateUser = function(user, callback){
-            var route = "admin" //??
-            $http({
-                method: 'PUT',
-                url: host + route,
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json",
-                    'Authorization': 'bearer ' + getToken('auth')
-                },
-                data: user
-            }).then(function (data) {
-                //success
-                callback(data);
-            }, function errorCallback(response) {
-                console.log('error occured: ' ,  response);
-                console.log('Here: ' + getToken('auth'));
-                callback('', 'err')
-            });
-        };
+            self.login = function(email,password,callback) {
+                $http({
+                    method: 'POST',
+                    url: host + "auth/login",
+                    data: {
+                        "email": email,
+                        "password": password
+                    },
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json"
+                    }
+                }).then(function (data) {
+                   // setToken(data.data.token);
+                   setToken(data.data['token'], "auth");
+                   setToken(data.data.organizationName, "organization");
+                   callback(data.data['token'],data.data.organizationName);
+                }, function errorCallback(response) {
+                    console.log('error occured: ' + response);
+                    callback('','','err');
+                });
+            };
 
-        self.deleteUser = function (id, callback) {
-            var route = "/admin/" + id;
-            $http({
-                method: 'DELETE',
-                url: host + route,
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json",
-                    'Authorization': 'bearer ' + getToken('auth')
-                }
-            }).then(function (data) {
-                //success
-                callback(data);
-            }, function errorCallback(response) {
-                console.log('error occured: ' ,  response);
-                console.log('Here: ' + getToken('auth'));
-                callback('', 'err')
-            });
-        };
-    }]).service('AuthService',['$http', function ($http) {
-        var self = this;
-        self.userKey = null;
-        
-        self.login = function(email,password,callback) {
-            $http({
-                method: 'POST',
-                url: host + "auth/login",
-                data: {
-                    "email": email,
-                    "password": password
-                },
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json"
-                }
-            }).then(function (data) {
-               // setToken(data.data.token);
-               setToken(data.data['token'], "auth");
-               setToken(data.data.organizationName, "organization");
-               callback(data.data['token'],data.data.organizationName);
-            }, function errorCallback(response) {
-                console.log('error occured: ' + response);
-                callback('','','err');
-            });
-        };
+            // self.renderTokens = function (callback) {
+            //     $http({
+            //         method: 'GET',
+            //         url: host + "admin/getUser",
+            //         headers: {
+            //             'Content-Type': "application/json",
+            //             'Accept': "application/json",
+            //             'Authorization': 'bearer ' + getToken('auth')
+            //         }
+            //     }).then(function (data) {
+            //         setToken(data.data.organization, "organization");
+            //         callback(data);
+            //     }, function errorCallback(response) {
+            //         callback('', response);
+            //     });
+            // };
+            self.logout = function (callback) {
+                // $http({
+                //     method: 'POST',
+                //     url: host + "auth/logout",
+                //     data: {},
+                //     headers: {
+                //         'Content-Type': "application/json",
+                //         'Accept': "application/json",
+                //         'Authorization': 'bearer '+getToken('auth')
+                //     }
+                // }).then(function () {
+                //     logout();
+                //     callback();
+                // }, function errorCallback(response) {
+                //     // console.log('error occured: '+response);
+                //     callback('err')
+                // });
+                logout();
+                callback();
+            };
 
-        // self.renderTokens = function (callback) {
-        //     $http({
-        //         method: 'GET',
-        //         url: host + "admin/getUser",
-        //         headers: {
-        //             'Content-Type': "application/json",
-        //             'Accept': "application/json",
-        //             'Authorization': 'bearer ' + getToken('auth')
-        //         }
-        //     }).then(function (data) {
-        //         setToken(data.data.organization, "organization");
-        //         callback(data);
-        //     }, function errorCallback(response) {
-        //         callback('', response);
-        //     });
-        // };
-        self.logout = function (callback) {
-            // $http({
-            //     method: 'POST',
-            //     url: host + "auth/logout",
-            //     data: {},
-            //     headers: {
-            //         'Content-Type': "application/json",
-            //         'Accept': "application/json",
-            //         'Authorization': 'bearer '+getToken('auth')
-            //     }
-            // }).then(function () {
-            //     logout();
-            //     callback();
-            // }, function errorCallback(response) {
-            //     // console.log('error occured: '+response);
-            //     callback('err')
-            // });
-            logout();
-            callback();
-        };
-
-    }]).service('ResumeService',['$http', function ($http) {
+    }])
+        .service('ResumeService',['$http', function ($http) {
         var self = this;
         
 		self.uploadResume = function(id){

@@ -61,18 +61,18 @@ func Register(ctx context.Context, organizationKey *datastore.Key, user models.U
 	}
 }
 
-func GetUsers(ctx context.Context, org *datastore.Key) ([]models.User, error){
+func GetUsers(ctx context.Context, org *datastore.Key) ([]models.User, []*datastore.Key, error){
 	query := datastore.NewQuery("User").Project("Name", "Email")
 	if org != nil {
 		query = query.Ancestor(org)
 	}
 
 	var users []models.User
-	_, err := query.GetAll(ctx, &users)
+	keys, err := query.GetAll(ctx, &users)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return users, err
+	return users, keys, nil
 }
 
 func GetUser(ctx context.Context, userKey *datastore.Key) (models.User, error){

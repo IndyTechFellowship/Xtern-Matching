@@ -30,8 +30,14 @@ func GetComments(w http.ResponseWriter,r *http.Request) {
 	}
 	user := context.Get(r, "user")
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	org := mapClaims["org"].(*datastore.Key)
-	comments, keys, err := services.GetComments(ctx, studentKey, org)
+	orgKey, err := datastore.DecodeKey(mapClaims["org"].(string))
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	comments, keys, err := services.GetComments(ctx, studentKey, orgKey)
 	if err != nil {
 		//log.Print(err)
 		http.Error(w, err.Error(), 500)

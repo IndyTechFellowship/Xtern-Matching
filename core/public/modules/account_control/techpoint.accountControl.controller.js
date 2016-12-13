@@ -23,6 +23,7 @@ angular.module('Xtern')
                 },
                 selectedUsers: $scope.techPointUsers,
                 refresh: function () {
+                    console.log('2');
                     console.log('refreshed');
                     swapActiveArray($scope.selectedGroup.active);
                 }
@@ -37,8 +38,7 @@ angular.module('Xtern')
             $scope.companyListAbbr = $scope.companyList.filter(function(item){
                 return !(item == 'TechPoint' || item == 'Instructor');
             });
-            
-        }
+        };
 
         $scope.sort = function (header, event) {
             var prop = header.sortPropertyName;
@@ -50,29 +50,26 @@ angular.module('Xtern')
             $scope.techPointUsers.sort(sortFunc);
         };
 
-
         var resetUserForm = function (user) {
             //$('#accountModalform').form('clear')
             if (user) {
                 var nameArr = user.name.split(' ', 2);
                 console.log(user);
-                $scope.UserFormData._id = user._id;
+                $scope.UserFormData.key = user.key;
                 $scope.UserFormData.firstName = nameArr[0];
                 $scope.UserFormData.lastName = nameArr[1];
                 $scope.UserFormData.email = user.email;
                 $scope.UserFormData.password = user.password;
-                $scope.UserFormData.role = user.role;
-                $scope.UserFormData.organization = user.organization;
+                //$scope.UserFormData.organization = 'ININ';
                 $scope.UserFormData.newUser = false;
             }
             else {
-                $scope.UserFormData._id = null;
+                $scope.UserFormData.key = null;
                 $scope.UserFormData.firstName = '';
                 $scope.UserFormData.lastName = '';
                 $scope.UserFormData.email = '';
                 $scope.UserFormData.password = '';
-                $scope.UserFormData.role = 'TechPoint';
-                $scope.UserFormData.organization = 'ININ';
+                //$scope.UserFormData.organization = 'ININ';
                 $scope.UserFormData.newUser = true;
             }
         };
@@ -82,38 +79,43 @@ angular.module('Xtern')
             $('#accountsModal').modal('show');
             resetUserForm(user);
             $('#accountModalform .error.message').empty();
-        }
+        };
 
 
         var refreshCompany = function (company) {
-            AccountControlService.getUsers('Company', company, function (data) {
-                $scope.companyUsers.length = 0; //We want to keep array refrences but replace all of the elements 
-                data.forEach(function (user) {
-                    $scope.companyUsers.push(user);
-                });
+            AccountControlService.getUsers(function (users,keys) {
+                $scope.companyUsers.length = 0; //We want to keep array refrences but replace all of the elements
+                for(var i = 0; i < keys.length ; i++) {
+                    users[i] = keys[i];
+                    $scope.companyUsers.push(users[i]);
+                }
             });
         };
 
-        var refreshAccounts = function (group, company, array) {
-            AccountControlService.getUsers(group, company, function (data) {
-                array.length = 0; //We want to keep array refrences but replace all of the elements 
-                data.forEach(function (user) {
-                    array.push(user);
-                });
+        var refreshAccounts = function (array) {
+            AccountControlService.getUsers(function (users,keys) {
+                array.length = 0; //We want to keep array refrences but replace all of the elements
+                for(var i = 0; i < keys.length ; i++) {
+                    users[i] = keys[i];
+                    array.push(users[i]);
+                }
             });
-        }
+        };
 
         var swapActiveArray = function (group) {
             if (group == 'TechPoint') {
+                console.log('3.a');
                 $scope.selectedGroup.selectedUsers = $scope.techPointUsers;
-                refreshAccounts(group, group, $scope.techPointUsers);
+                refreshAccounts($scope.techPointUsers);
             } else if (group == 'Instructor') {
+                console.log('3.b');
                 $scope.selectedGroup.selectedUsers = $scope.techPointUsers;
-                refreshAccounts(group, group, $scope.techPointUsers);
+                refreshAccounts($scope.techPointUsers);
             }
             else if (group == 'Company') {
+                console.log('3.c');
                 $scope.selectedGroup.selectedUsers = $scope.companyUsers;
-                refreshAccounts(group, $scope.selectedGroup.activeCompany, $scope.companyUsers);
+                refreshAccounts($scope.companyUsers);
             } else {
                 //ran out of cases
                 $scope.selectedUsers.length = 0;
@@ -133,10 +135,10 @@ angular.module('Xtern')
                 });
             }
             $('#accountsModal').modal('hide');
-        }
+        };
 
         $scope.deleteUser = function (user) {
-            AccountControlService.deleteUser(user._id, function () {
+            AccountControlService.deleteUser(user.key, function () {
                 $scope.selectedGroup.refresh();
             });
         };
@@ -203,7 +205,7 @@ angular.module('Xtern')
                     },
                     keyboardShortcuts: false
                 });
-        }
+        };
 
         var modalConfig = function () {
             $('#accountsModal').modal({
@@ -216,15 +218,15 @@ angular.module('Xtern')
                     return $('#accountModalform').form('is valid');
                 }
             });
-        }
+        };
         var setup = function () {
             declarePageVars();
             formConfig();
             modalConfig();
             $scope.selectedGroup.refresh();
-        }
+        };
 
-        $rootScope.$on('$viewContentLoaded', function (evt) {
+        $scope.$on('$viewContentLoaded', function (evt) {
             setup();
         });
     }]);

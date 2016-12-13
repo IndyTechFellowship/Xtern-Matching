@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/context"
 	"github.com/dgrijalva/jwt-go"
 	"google.golang.org/appengine/datastore"
+	"github.com/gorilla/mux"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -58,25 +59,44 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
+
 	user := context.Get(r, "user")
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	org := mapClaims["org"].(*datastore.Key)
-
-	users, err := services.GetUsers(ctx, org)
+	orgKey, err := datastore.DecodeKey(mapClaims["org"].(string))
 	if err != nil {
 		log.Println(err.Error())
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), 500)
 		return
 	}
 
+	users, keys, err := services.GetUsers(ctx, orgKey)
+	if err != nil {
+		log.Println("ERROR: " + err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	type Response struct {
+		Keys []*datastore.Key		`json:"keys"`
+		Users []models.User		`json:"users"`
+	}
+	response := Response{Keys: keys, Users: users}
+	log.Printf("%v\n", response)
+
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(response)
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	userKey := context.Get(r, "userKey").(*datastore.Key)
+	userKey, err := datastore.DecodeKey(mux.Vars(r)["userKey"])
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
 	user, err := services.GetUser(ctx, userKey)
 	if err != nil {
 		log.Println(err.Error())
@@ -125,10 +145,16 @@ func EditUser(w http.ResponseWriter, r *http.Request){
 	email := dat["email"].(string)
 	password := dat["password"].(string)
 
-	userKey := context.Get(r, "userKey").(*datastore.Key)
-	err := services.EditUser(ctx, userKey, name, email, password)
+	userKey, err := datastore.DecodeKey(mux.Vars(r)["userKey"])
 	if err != nil {
 		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	err = services.EditUser(ctx, userKey, name, email, password)
+	if err != nil {
+		log.Println("ERROR: " + err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -138,8 +164,13 @@ func EditUser(w http.ResponseWriter, r *http.Request){
 func DeleteUser(w http.ResponseWriter, r *http.Request){
 	ctx := appengine.NewContext(r)
 
-	userKey := context.Get(r, "userKey").(*datastore.Key)
-	err := services.DeleteUser(ctx, userKey)
+	userKey, err := datastore.DecodeKey(mux.Vars(r)["userKey"])
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	err = services.DeleteUser(ctx, userKey)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
