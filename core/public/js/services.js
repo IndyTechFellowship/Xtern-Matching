@@ -26,7 +26,7 @@
                     self.profile = cleanStudents(data.data);
                     callback(self.profile);
                 }, function errorCallback(response) {
-                    console.log('error occured: ' + response);
+                    console.log('error occured: ', response);
                     callback('', 'err');
                 });
             } else {
@@ -54,8 +54,7 @@
                     console.log(data.data);
                     callback(data.data);
                 }, function errorCallback(response) {
-                    console.log('error occured: ');
-                    console.log(response);
+                    console.log('error occured: ', response);
                     callback('', 'err');
                 });
         };
@@ -79,8 +78,7 @@
             }).then(function (data) {
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ' );
-                console.log(response);
+                console.log('error occured: ', response);
                 callback('', 'err');
             });
         };
@@ -104,8 +102,7 @@
             }).then(function (data) {
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ' );
-                console.log(response);
+                console.log('error occured: ', response);
                 callback('', 'err');
             });
         };
@@ -130,8 +127,7 @@
                     self.company = data.data;
                     callback(self.company);
                 }, function errorCallback(response) {
-                    console.log('Company Services: error occured: ' + response);
-                    console.log(response);
+                    console.log('Company Services: error occured: ',  response);
                     callback('', 'err');
                 });
             } else {
@@ -158,8 +154,7 @@
             }).then(function (data) {
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ' );
-                console.log(response);
+                console.log('error occured: ', response );
                 callback('', 'err');
             });
         };
@@ -181,8 +176,7 @@
             }).then(function (data) {
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ');
-                console.log(response);
+                console.log('error occured: ', response);
                 callback('', 'err');
             });
         };
@@ -205,8 +199,7 @@
             }).then(function (data) {
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ');
-                console.log(response);
+                console.log('error occured: ', response);
                 callback('', 'err');
             });
         };
@@ -228,7 +221,7 @@
                 self.userSummaryData = data.data;
                 callback(self.userSummaryData);
             }, function errorCallback(response) {
-                console.log('error occured: '+response);
+                console.log('error occured: ', response);
                 console.log('Here: '+getToken('auth'));
                 callback('','err');
             });
@@ -249,7 +242,7 @@
             }).then(function (data) {
                 callback(data.data);
             }, function errorCallback(response) {
-                console.log('error occured: '+response);
+                console.log('error occured: ', response);
                 console.log('Here: '+getToken('auth'));
                 callback('','err')
             });
@@ -290,7 +283,7 @@
                 //success
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ' + response);
+                console.log('error occured: ' ,  response);
                 console.log('Here: ' + getToken('auth'));
                 callback('', 'err')
             });
@@ -310,7 +303,7 @@
                 //success
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ' + response);
+                console.log('error occured: ' ,  response);
                 console.log('Here: ' + getToken('auth'));
                 callback('', 'err')
             });
@@ -336,7 +329,7 @@
                setToken(data.data['token'], "auth");
                 callback(data.data['token']);
             }, function errorCallback(response) {
-                console.log('error occured: '+response);
+                console.log('error occured: ', response);
                 callback('','err');
             });
         };
@@ -355,7 +348,7 @@
                 setToken(data.data.organization, "organization");
                 callback(data);
             }, function errorCallback(response) {
-                callback('', response);
+                callback('error occured', response);
             });
         };
 
@@ -394,7 +387,7 @@
             .success(function () {
 				console.log("Upload successful")
             }).error(function(response) {
-                console.log('error occured: '+response);
+                console.log('error occured: ', response);
                 console.log('Here: '+getToken('auth'));
             });
         };
