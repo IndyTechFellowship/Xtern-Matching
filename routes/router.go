@@ -17,10 +17,6 @@ func NewRouter() *mux.Router {
 	})
 	router := mux.NewRouter().StrictSlash(true)
 
-	router.PathPrefix("/_ah").Handler(negroni.New(
-		negroni.Wrap(GetSystemRoutes(mux.NewRouter().StrictSlash(true))),
-	))
-
 	router.PathPrefix("/auth").Handler(negroni.New(
 		negroni.Wrap(GetAuthenticationRoutes(mux.NewRouter().StrictSlash(true))),
 	))

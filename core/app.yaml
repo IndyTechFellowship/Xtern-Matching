@@ -2,9 +2,6 @@ runtime: go
 api_version: go1
 threadsafe: true
 
-inbound_services:
-- warmup
-
 handlers:
 - url: /
   static_files: index.html
@@ -21,16 +18,9 @@ handlers:
 - url: /node_modules
   static_dir: node_modules
 
-- url: /_ah/warmup
-  script: _go_app
-  login: admin
-
-- url: /_ah/start
-  script: _go_app
-  login: admin
-
 - url: .*
   script: _go_app
 
 env_variables:
   XTERN_ENVIRONMENT: 'production'
+  GOOGLE_APPLICATION_CREDENTIALS: 'environments/production/cloudstore.json'
