@@ -12,7 +12,7 @@ func GetCompanyRoutes() *mux.Router {
 	router.HandleFunc("/company/removeStudent", handlers.RemoveStudent).Methods("POST").Name("RemoveStudent")
 	router.HandleFunc("/company/switchStudents", handlers.SwitchStudents).Methods("POST").Name("SwitchStudents")
 	// router.HandleFunc("/company/getCurrentCompany", handlers.GetCurrentCompany).Methods("GET").Name("GetCurrentCompany") //broken?
-	router.HandleFunc("/company/getCurrentCompany", handlers.GetCurrentCompany).Methods("GET").Name("GetCurrentCompany") //use this one
+	router.HandleFunc("/company/getCurrentCompany/{Id}", handlers.GetCurrentCompany).Methods("GET").Name("GetCurrentCompany") //use this one
 	router.HandleFunc("/company", handlers.PostCompany).Methods("POST").Name("PostCompany")
 	return router
 }
