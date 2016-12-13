@@ -62,7 +62,7 @@ angular.module('Xtern')
         AuthService.login(fields.email, fields.password, function (token, err) {
             if (err) {
                 $('#companyLogin .ui.error.message').html(
-                    '<ui class="list"><li>Invalid Username or Passord</li></ui>'
+                    '<ui class="list"><li>Invalid Username or Password</li></ui>'
                 ).show();
                 $('#companyLogin .ui.button').removeClass("disabled");
             } else {
