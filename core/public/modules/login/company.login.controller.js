@@ -44,9 +44,10 @@ angular.module('Xtern')
                 if(event)
                     event.preventDefault();
                 authenticate(fields);
+                return false;
             },
             onFailure: function (formErrors, fields) {
-                return '';
+                return false;
             }
         });
     };
