@@ -26,6 +26,16 @@
                     }]
                 }
             })
+            .state('techpoint.accounts',{
+                url:"/accounts",
+                templateUrl: "public/modules/account_control/partials/accounts.html",
+                controller: 'TechPointAccountCtrl',
+                resolve: {
+                    security: ['$q', function($q){
+                       return isLoggedInTechPoint($q);
+                    }]
+                }
+            })
             .state('techpoint.profile', {
                 url: "/profile/:key",
                 templateUrl: "public/modules/student_profile/partials/studentProfile.html",
