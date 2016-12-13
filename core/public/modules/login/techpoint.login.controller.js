@@ -48,12 +48,13 @@ angular.module('Xtern')
             $('#techpointLogin').form('validate form');
         };
         var authenticate = function(fields) {
+            $('#techpointLogin .ui.button').addClass("disabled");
             AuthService.login(fields.email, fields.password, function(token, err) {
                 if (err) {
-                    console.log('Login unsuccessful');
                     $('#techpointLogin .ui.error.message').html(
                         '<ui class="list"><li>Invalid Username or Password</li></ui>'
-                    );
+                    ).show();
+                    $('#techpointLogin .ui.button').removeClass("disabled");
                 } else {
                     AuthService.renderTokens(function(token, err) {
                         if (err) {
@@ -61,12 +62,13 @@ angular.module('Xtern')
                             $('#techpointLogin .ui.error.message').html(
                                 '<ui class="list"><li>A server error occured</li></ui>'
                             ).show();
+                            $('#techpointLogin .ui.button').removeClass("disabled");
                         } else {
-                            // console.log('Login Success');
+                            $('#techpointLogin .ui.button').removeClass("disabled");
                             $scope.isCompany = false;
                             $state.go('techpoint.dashboard');
                         }
-                    });
+                    });                    
                 }
             });
         };
