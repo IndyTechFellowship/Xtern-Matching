@@ -13,36 +13,46 @@
             .state('techpoint', {
                 url: "/techpoint",
                 abstract: true,
-                templateUrl: "public/partials/techpoint/techpoint.html",
-                controller: 'TechPointMain',
+                templateUrl: "public/techpoint/partials/techpoint.html",
+                controller: 'TechPointMain'
             })
             .state('techpoint.dashboard', {
                 url: "/dashboard",
-                templateUrl: "public/partials/techpoint/techpoint.missionControl.html",
+                templateUrl: "public/modules/dashboard/partials/techpoint.missionControl.html",
                 controller: 'TechPointDashboardCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInTechPoint();
+                       return isLoggedInTechPoint($q);
+                    }]
+                }
+            })
+            .state('techpoint.accounts',{
+                url:"/accounts",
+                templateUrl: "public/modules/account_control/partials/accounts.html",
+                controller: 'TechPointAccountCtrl',
+                resolve: {
+                    security: ['$q', function($q){
+                       return isLoggedInTechPoint($q);
                     }]
                 }
             })
             .state('techpoint.profile', {
                 url: "/profile/:_id",
-                templateUrl: "public/partials/studentProfile.html",
+                templateUrl: "public/modules/student_profile/partials/studentProfile.html",
                 controller: 'StudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInTechPoint();
+                       return isLoggedInTechPoint($q);
                     }]
                 }
             })
             .state('techpoint.login', {
                 url: "/login",
-                templateUrl: "public/partials/techpoint/techpoint.login.html",
+                templateUrl: "public/modules/login/partials/techpoint.login.html",
                 controller: 'TechpointLogin',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedIn();
+                        return isLoggedIn($q,'ALREADY_AUTHENTICATED_TECHPOINT');
                     }]
                 }
             })
@@ -50,54 +60,50 @@
             .state('company', {
                 url: "/company",
                 abstract: true,
-                templateUrl: "public/partials/company/company.html",
-                controller: 'CompanyMain',
+                templateUrl: "public/company/partials/company.html",
+                controller: 'CompanyMain'
             })
             .state('company.dashboard', {
                 url: "/dashboard",
-                templateUrl: "public/partials/company/company.missionControl.html",
+                templateUrl: "public/modules/dashboard/partials/company.missionControl.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'CompanyDashboardCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInCompany();
+                        return isLoggedInCompany($q);
                     }]
                 }
             }).state('company.recruting', {
                 url: "/recruting",
-                templateUrl: "public/partials/company/company.recruting.html",
+                templateUrl: "public/company/partials/company.recruting.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'CompanyRecruiting',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInCompany();
+                        return isLoggedInCompany($q);
                     }]
                 }
             })
             .state('company.profile', {
                 url: "/profile/:_id",
-                templateUrl: "public/partials/studentProfile.html",
+                templateUrl: "public/modules/student_profile/partials/studentProfile.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'StudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInCompany();
+                        return isLoggedInCompany($q);
                     }]
                 }
             })
             .state('company.login', {
                 url: "/login",
-                templateUrl: "public/partials/company/company.login.html",
+                templateUrl: "public/modules/login/partials/company.login.html",
                 controller: 'CompanyLogin',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedIn();
+                        return isLoggedIn($q,'ALREADY_AUTHENTICATED_COMPANY');
                     }]
                 }
-            })
-            .state('student-profile', {
-                url: "/student-profile",
-                templateUrl: "public/partials/studentProfile.html"
             });
     });
     app.run(function ($state, $rootScope) {
@@ -159,6 +165,7 @@ var rowClass = function (data) {
     //data.gradeLabel = data.r1Grade.text;
     //data.gradeValue = data.r1Grade.value;
     data.namelink = '<a ui-sref="profile/' + data._id + '">' + data.name + "</a>";
+    data.gradeLabel = data.r1Grade.value;
     removeDataColors(data);
 
     //console.log(data);
