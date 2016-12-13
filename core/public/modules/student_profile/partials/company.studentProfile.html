@@ -2,15 +2,21 @@
     <div class="ui container" ng-cloak>
         <div class="ui centered internally celled grid">
             <div class="row">
-            <div class="eleven wide column">
-                <student-data-page></student-data-page>
-            </div>
+                <div class="eleven wide column">
+                    <student-data-page></student-data-page>
+                </div>
                 <div class="five wide column">
-                    <div ng-click="addStudentToCompany(studentData._id)" class="ui button right floated fluid blue"><i class="add user icon">Recruit</i></div>
-                    <br/>
+                    <div class="vertical-half-spacer"></div>
+
                     <div>
                         <div class="ui header">
-                            Comments
+                            Recruting:
+                        </div>
+                        <div ng-click="addStudentToCompany(studentData._id)" class="ui icon basic button fluid blue">
+                            <i class="add user icon"></i> Recruit
+                        </div>
+                        <div class="ui header">
+                            Comments:
                         </div>
                         <div class="ui fluid card">
                             <div class="ui form">
@@ -20,7 +26,7 @@
                             </div>
                             <button class="ui bottom attached teal button" ng-click="addComment()">Post Comment</button>
                         </div>
-
+                        
                         <div class="ui fluid cards" id="commentCards">
                             <student-profile-comment class="blurring dimmable ui fluid card" ng-repeat="comment in studentData.comments track by $index"></student-profile-comment>
                         </div>
@@ -50,7 +56,12 @@
 
 <script src="public/js/pdfobject.js"></script>
 <style>
-    #the-canvas { height: 700px; }
-    .pdfobject { border: 1px solid #666; }
+    #the-canvas {
+        height: 700px;
+    }
+    
+    .pdfobject {
+        border: 1px solid #666;
+    }
 </style>
 <link rel="stylesheet" type="text/css" href="public/css/studentProfile.css">
