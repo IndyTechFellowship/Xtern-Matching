@@ -2,18 +2,17 @@ package tests
 
 import (
 	//"os"
-	"testing"
-	"google.golang.org/appengine/aetest"
 	"Xtern-Matching/handlers/services"
-	"net/http"
 	"Xtern-Matching/models"
-	"google.golang.org/appengine/datastore"
-	"time"
+	"net/http"
 	"reflect"
-	"golang.org/x/net/context"
-	"github.com/stretchr/testify/assert"
-)
+	"testing"
+	"time"
 
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/aetest"
+	"google.golang.org/appengine/datastore"
+)
 
 func createStudent(ctx context.Context) (models.Student, error) {
 	var student models.Student
@@ -26,20 +25,20 @@ func createStudent(ctx context.Context) (models.Student, error) {
 	student.WorkStatus = "US Citizen"
 	student.HomeState = "West Virginia"
 	student.Gender = "female"
-	student.Skills = []models.Skill{ {Name: "SQL",Category:"Database"}, {Name: "HTML",Category:"Frontend"}}
+	student.Skills = []models.Skill{{Name: "SQL", Category: "Database"}, {Name: "HTML", Category: "Frontend"}}
 	student.Github = "https://github.com/xniccum"
 	student.Linkin = ""
 	student.PersonalSite = ""
-	student.Interests = []string{"Product Management","Software Engineer- Middle-tier Dev."}
+	student.Interests = []string{"Product Management", "Software Engineer- Middle-tier Dev."}
 	student.EmailIntrest = "false"
-	student.R1Grade = models.Grade{Text: "C",Value: "8"}
+	student.R1Grade = models.Grade{Text: "C", Value: "8"}
 	student.Status = "Stage 1 Approved"
 	student.Comments = []models.Comment{}
 	student.Resume = "public/data_mocks/sample.pdf"
 	student.Active = true
 
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
-	key, err := datastore.Put(ctx, key, &student);
+	key, err := datastore.Put(ctx, key, &student)
 	if err != nil {
 		return models.Student{}, err
 	}
@@ -66,16 +65,15 @@ func TestPost(t *testing.T) {
 	student.WorkStatus = "US Citizen"
 	student.HomeState = "West Virginia"
 	student.Gender = "female"
-	student.Skills = []models.Skill{ {Name: "SQL",Category:"Database"}, {Name: "HTML",Category:"Frontend"}}
+	student.Skills = []models.Skill{{Name: "SQL", Category: "Database"}, {Name: "HTML", Category: "Frontend"}}
 	student.Github = "https://github.com/xniccum"
 	student.Linkin = ""
 	student.PersonalSite = ""
-	student.Interests = []string{"Product Management","Software Engineer- Middle-tier Dev."}
+	student.Interests = []string{"Product Management", "Software Engineer- Middle-tier Dev."}
 	student.EmailIntrest = "false"
-	student.R1Grade = models.Grade{ Text: "C",Value: "8"}
+	student.R1Grade = models.Grade{Text: "C", Value: "8"}
 	student.Status = "Stage 1 Approved"
 	student.Comments = []models.Comment{}
-
 
 	// Basic input
 	_, err = services.NewStudent(ctx, student)
@@ -109,13 +107,13 @@ func TestGet(t *testing.T) {
 	student.WorkStatus = "US Citizen"
 	student.HomeState = "West Virginia"
 	student.Gender = "female"
-	student.Skills = []models.Skill{ {Name: "SQL",Category:"Database"}, {Name: "HTML",Category:"Frontend"}}
+	student.Skills = []models.Skill{{Name: "SQL", Category: "Database"}, {Name: "HTML", Category: "Frontend"}}
 	student.Github = "https://github.com/xniccum"
 	student.Linkin = ""
 	student.PersonalSite = ""
-	student.Interests = []string{"Product Management","Software Engineer- Middle-tier Dev."}
+	student.Interests = []string{"Product Management", "Software Engineer- Middle-tier Dev."}
 	student.EmailIntrest = "false"
-	student.R1Grade = models.Grade{Text: "C",Value: "8"}
+	student.R1Grade = models.Grade{Text: "C", Value: "8"}
 	student.Status = "Stage 1 Approved"
 	student.Comments = []models.Comment{}
 
@@ -123,7 +121,6 @@ func TestGet(t *testing.T) {
 	if _, err := datastore.Put(ctx, key, &student); err != nil {
 		t.Fatal(err)
 	}
-
 
 	student.FirstName = "Lee"
 	student.LastName = "Robinson"
