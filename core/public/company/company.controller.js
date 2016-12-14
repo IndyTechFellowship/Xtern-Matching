@@ -2,9 +2,14 @@ angular.module('Xtern')
     .controller('CompanyMain', ['$scope', '$rootScope', '$state', 'AuthService','CompanyService', 'ProfileService', function ($scope, $rootScope, $state, AuthService, CompanyService, ProfileService) {
         var self = this;
         $scope.loggedIn = !!getToken("role");
-        // CompanyService.getCurrentCompany(function(company) {
-        $scope.companyData = getToken("organization");
-        // });
+
+        CompanyService.getCompanyDataForId(getToken("organization"), function(company) {
+        	$scope.companyData = company;
+            console.log("company data in recruiting controller:", $scope.companyData);
+            ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
+            	$scope.recruitmentList = data;
+            });
+        });
 
         $rootScope.$on('$stateChangeStart',
             function (event, toState, toParams, fromState, fromParams, options) {
@@ -39,10 +44,17 @@ angular.module('Xtern')
         var self = this;
         $scope.recruitmentList = [];
 
-        $scope.companyData = getToken("organization");
+        CompanyService.getCompanyDataForId(getToken("organization"), function(company) {
+        	$scope.companyData = company;
+            console.log("company data in recruiting controller:", $scope.companyData);
             ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
-                $scope.recruitmentList = data;
+            	$scope.recruitmentList = data;
             });
+        });
+
+        ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
+            $scope.recruitmentList = data;
+        });
 
         $scope.sortableOptions = {
             containment: '#table-container',
@@ -59,7 +71,6 @@ angular.module('Xtern')
                     }
                 }
             });
-
         };
 
         $scope.viewRecruit = function (_id) {
@@ -80,5 +91,4 @@ angular.module('Xtern')
                 });
             }
         };
-
     }]);
