@@ -1,5 +1,5 @@
 angular.module('Xtern')
-    .controller('TechPointStudentProfileCtrl', function($scope, $location, ProfileService, $stateParams) {
+    .controller('TechPointStudentProfileCtrl', function($scope, $rootScope, $location, ProfileService, $stateParams) {
     $('.ui.dropdown').dropdown();//activites semantic dropdowns
 
     $scope.comment = {};

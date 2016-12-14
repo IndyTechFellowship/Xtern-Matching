@@ -1,8 +1,22 @@
 angular.module('Xtern')
-    .controller('CompanyStudentProfileCtrl', function($scope, $location, ProfileService, CompanyService, $stateParams) {
+    .controller('CompanyStudentProfileCtrl', function($scope, $rootScope, $location, ProfileService, CompanyService, $stateParams) {
     $('.ui.dropdown').dropdown();//activites semantic dropdowns
 
     $scope.comment = {};
+    $scope.isStudentApplicant = false;
+
+    var isStudentApplicant = function(studentId) {
+        return ($scope.companyData.studentIds.indexOf(parseInt(studentId)) != -1);
+    };
+
+    CompanyService.getCompanyDataForId(getToken("organization"), function(company) {
+        $scope.companyData = company;
+        $scope.isStudentApplicant = isStudentApplicant($stateParams._id);
+    });
+
+    $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
+        $scope.isStudentApplicant = isStudentApplicant($stateParams._id);
+    });
 
     $('.ui.sticky').sticky({
         context: '#example1'
@@ -12,14 +26,6 @@ angular.module('Xtern')
         $('.ui.dropdown').dropdown();
     });
 
-    // $scope.selectStatus = function(option) {
-    //     $scope.studentData.status = option;
-    // };
-
-    // $scope.selectR1Grade = function(option) {
-    //     $scope.studentData.r1Grade = option;
-    // };
-
     $scope.addComment = function(){
         // TODO: fix/update this for new data format
         var author_name = "controller test author";
@@ -27,7 +33,6 @@ angular.module('Xtern')
         var text = "controller test text bla bla bla. bla bla bla.";
 
         ProfileService.addCommentToStudent($scope.studentData._id, author_name, group_name, text, function (data) {
-            // console.log(data);
         });
 
         $scope.comment.author = 'test user'; //temporary
@@ -42,7 +47,6 @@ angular.module('Xtern')
         var text = "controller test text bla bla bla. bla bla bla.";
 
         ProfileService.removeCommentFromStudent($scope.studentData._id, author_name, group_name, text, function (data) {
-            // console.log(data);git
         });
 
         // TODO: fix/update this for new data format
@@ -54,12 +58,16 @@ angular.module('Xtern')
     };
 
     $scope.addStudent = function (_id) {
-        console.log("add student:");
-        console.log(_id);
+        $scope.isStudentApplicant=true;
         CompanyService.addStudentToWishList(_id, function(data) {
-            // $scope.recruitmentList.push($scope.studentData);
-            console.log("Student added");
+            toastr.success('Added Applicant', 'Student added to your Recruitment List');
         });
+    };
 
+    $scope.removeStudent = function (_id) {
+        $scope.isStudentApplicant=false;
+        CompanyService.removeStudentFromWishList(_id, function(data) {
+            toastr.error('Removed Applicant', 'Student removed to your Recruitment List');
+        });
     };
 });

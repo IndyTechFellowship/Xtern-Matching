@@ -1,5 +1,5 @@
 (function () {
-    var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable", "DataManager", "ngSanitize"]);//ngSanitize
+    var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable", "DataManager", "ngSanitize", "ngAnimate"]);//ngSanitize
 
     app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
         // $locationProvider.html5Mode(true);
@@ -105,6 +105,8 @@
                     }]
                 }
             });
+            
+            toastr.options.timeOut = 750;
     });
     app.run(function ($state, $rootScope) {
         $rootScope.$on('$stateChangeError', function (evt, toState, toParams, fromState, fromParams, error) {
