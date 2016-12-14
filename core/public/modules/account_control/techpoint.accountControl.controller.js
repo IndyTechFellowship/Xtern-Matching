@@ -19,7 +19,8 @@ angular.module('Xtern')
                     swapActiveArray(group);
                 },
                 changeCompany: function () {
-                    refreshCompany($scope.selectedGroup.activeCompany);
+                   // refreshCompany($scope.selectedGroup.activeCompany);
+                   swapActiveArray('Company');
                 },
                 selectedUsers: $scope.techPointUsers,
                 refresh: function () {
@@ -78,16 +79,6 @@ angular.module('Xtern')
             resetUserForm(user);
             $('#accountModalform .error.message').empty();
         }
-
-
-        var refreshCompany = function (company) {
-            AccountControlService.getUsers('Company', company, function (data) {
-                $scope.companyUsers.length = 0; //We want to keep array refrences but replace all of the elements 
-                data.forEach(function (user) {
-                    $scope.companyUsers.push(user);
-                });
-            });
-        };
 
         var refreshAccounts = function (group, company, array) {
             AccountControlService.getUsers(group, company, function (data) {
