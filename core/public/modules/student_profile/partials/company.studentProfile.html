@@ -10,11 +10,20 @@
 
                     <div>
                         <div class="ui header">
-                            Recruting:
+                            Recruiting:
                         </div>
-                        <div ng-click="addStudentToCompany(studentData._id)" class="ui icon basic button fluid blue">
-                            <i class="add user icon"></i> Recruit
+
+                        <div ng-switch on="!isStudentApplicant">
+                            <div ng-switch-when="true" ng-click="addStudent(studentData._id)" class="ui icon basic button fluid blue animate-switch">
+                                <i class="add user icon"></i> Recruit
+                            </div>
+
+                            <div ng-switch-when="false" ng-click="removeStudent(studentData._id)" class="ui icon basic button fluid red animate-switch">
+                                <i class="add user icon"></i> Remove
+                            </div>
                         </div>
+
+
                         <div class="ui header">
                             Comments:
                         </div>

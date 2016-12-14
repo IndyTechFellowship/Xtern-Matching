@@ -1,5 +1,5 @@
 angular.module('Xtern')
-    .controller('StudentDataPageCtrl', function($scope, $location, ProfileService, $stateParams) {
+    .controller('StudentDataPageCtrl', function($rootScope, $scope, $location, ProfileService, $stateParams) {
     $('.ui.dropdown').dropdown();//activites semantic dropdowns
 
     $scope.studentData = null;
