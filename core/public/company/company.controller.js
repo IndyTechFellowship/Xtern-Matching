@@ -3,13 +3,29 @@ angular.module('Xtern')
         var self = this;
         $scope.loggedIn = !!getToken("role");
         // CompanyService.getCurrentCompany(function(company) {
-        $scope.companyData = getToken("organization");
+        // $scope.companyData = getToken("organization"); //huh?
         // });
+
+        isLoggedInCompany = function() {
+            return getToken('auth') !== null;
+
+        };
+        // });
+
+        $scope.loggedIn = isLoggedInCompany();
+        $scope.isCompany = true;
+
+        CompanyService.getCurrentCompany(function(company) {
+            $scope.companyData = company;
+        });
+
+
+
 
         $rootScope.$on('$stateChangeStart',
             function (event, toState, toParams, fromState, fromParams, options) {
                 $scope.loggedIn = !!getToken("role");
-                $scope.companyData = getToken("organization");
+                // $scope.companyData = getToken("organization");
                 if (toState.name == "company.profile") {
                     $('#profile').show();
                 }
@@ -39,10 +55,19 @@ angular.module('Xtern')
         var self = this;
         $scope.recruitmentList = [];
 
-        $scope.companyData = getToken("organization");
+        CompanyService.getCurrentCompany(function(company) {
+            $scope.companyData = company;
+            console.log("company data in recruiting controller:");
+            console.log($scope.companyData);
             ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
-                $scope.recruitmentList = data;
+            	$scope.recruitmentList = data;
             });
+        });
+
+        // $scope.companyData = getToken("organization");
+        //     ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
+        //         $scope.recruitmentList = data;
+        //     });
 
         $scope.sortableOptions = {
             containment: '#table-container',
