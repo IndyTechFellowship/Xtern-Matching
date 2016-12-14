@@ -110,12 +110,37 @@
     }]).service('CompanyService', ['$http', function ($http){
         var self = this;
         self.company = null;
-        self.getCompanyDataForId = function(id, callback){
+        // self.getCompanyDataForId = function(id, callback){
+        //     // console.log(id);
+        //     if(!self.company || self.company._id !== id) {
+        //         $http({
+        //             method: 'GET',
+        //             url: host + "company/" + id,
+        //             headers: {
+        //                 'Content-Type': "application/json",
+        //                 'Accept': "application/json",
+        //                 'Authorization': 'bearer ' + getToken('auth')
+        //             }
+        //         }).then(function (data) {
+        //             console.log('get company data:');
+        //             console.log(data.data);
+        //             self.company = data.data;
+        //             callback(self.company);
+        //         }, function errorCallback(response) {
+        //             console.log('Company Services: error occured: ',  response);
+        //             callback('', 'err');
+        //         });
+        //     } else {
+        //          callback(self.company);
+        //     }
+        // };
+
+        self.getCurrentCompany = function(callback){
             // console.log(id);
-            if(!self.company || self.company._id !== id) {
+            if(!self.company) {
                 $http({
-                    method: 'GET',
-                    url: host + "company/" + id,
+                    method: 'POST',
+                    url: host + "company/getCurrentCompanyByName",
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",

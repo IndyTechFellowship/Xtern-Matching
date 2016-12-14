@@ -3,12 +3,19 @@ angular.module('Xtern')
         var self = this;
         $scope.loggedIn = !!getToken("role");
 
-        CompanyService.getCompanyDataForId(getToken("organization"), function(company) {
-        	$scope.companyData = company;
-            console.log("company data in recruiting controller:", $scope.companyData);
-            ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
-            	$scope.recruitmentList = data;
-            });
+        // CompanyService.getCompanyDataForId(getToken("organization"), function(company) {
+        // 	$scope.companyData = company;
+        //     console.log("company data in recruiting controller:", $scope.companyData);
+        //     ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
+        //     	$scope.recruitmentList = data;
+        //     });
+        // });
+        CompanyService.getCurrentCompany(function(company) {
+             $scope.companyData = company;
+                console.log("company data in recruiting controller:", $scope.companyData);
+                ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
+                 $scope.recruitmentList = data;
+                });
         });
 
         $rootScope.$on('$stateChangeStart',
@@ -44,16 +51,20 @@ angular.module('Xtern')
         var self = this;
         $scope.recruitmentList = [];
 
-        CompanyService.getCompanyDataForId(getToken("organization"), function(company) {
-        	$scope.companyData = company;
-            console.log("company data in recruiting controller:", $scope.companyData);
-            ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
-            	$scope.recruitmentList = data;
-            });
-        });
+        // CompanyService.getCompanyDataForId(getToken("organization"), function(company) {
+        // 	$scope.companyData = company;
+        //     console.log("company data in recruiting controller:", $scope.companyData);
+        //     ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
+        //     	$scope.recruitmentList = data;
+        //     });
+        // });
 
-        ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
-            $scope.recruitmentList = data;
+        CompanyService.getCurrentCompany(function(company) {
+             $scope.companyData = company;
+                console.log("company data in recruiting controller:", $scope.companyData);
+                ProfileService.getStudentDataForIds($scope.companyData.studentIds, function(data) {
+                 $scope.recruitmentList = data;
+                });
         });
 
         $scope.sortableOptions = {
