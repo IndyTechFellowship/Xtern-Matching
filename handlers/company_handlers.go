@@ -59,27 +59,60 @@ func AddStudent(w http.ResponseWriter,r *http.Request) {
 	}
 	studentId :=  int64(dat["studentId"].(float64));
 
-	// Get the company id from the token org and call the service with it
+
+		// new company name code ///////////////////////
 	user := context.Get(r, "user")
-    token, err := user.(*jwt.Token)
+    token, _ := user.(*jwt.Token)
+
     if token.Valid {
         mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
         org := strings.TrimSpace(mapClaims["org"].(string))
-		company_num_id, er1 := strconv.ParseInt(org, 10, 64)
-		if er1 != nil {
-			log.Print("ERROR PARSING STRING TO INT64")
-			log.Print(er1)
-		}
-		_, err := services.AddStudentIdToCompanyList(ctx, company_num_id, studentId)
+		_, companyKey, err := services.GetCompanyByName(ctx, org)
 		if err != nil {
+			log.Print("ERROR GETTING COMPANY")
 			log.Print(err)
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		w.WriteHeader(http.StatusOK)
-    } else {
-        fmt.Println(err)
+			var company models.Company
+
+			if err := datastore.Get(ctx, companyKey, &company); err != nil {
+				fmt.Println("ERROR IN ADD STUDENT")
+				return
+			}
+
+			company.StudentIds = append(company.StudentIds, studentId);
+			// company.StudentIds = company.StudentIds.remove(studentId);
+
+			if _, err := datastore.Put(ctx, companyKey, &company); err != nil {
+				fmt.Println("ERROR IN ADD STUDENT")
+				return
+			}
+			return
     }
+    ///////////////////////////////////////////////
+
+	// // Get the company id from the token org and call the service with it
+	// user := context.Get(r, "user")
+ //    token, err := user.(*jwt.Token)
+ //    if token.Valid {
+ //        mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+ //        org := strings.TrimSpace(mapClaims["org"].(string))
+	// 	company_num_id, er1 := strconv.ParseInt(org, 10, 64)
+	// 	if er1 != nil {
+	// 		log.Print("ERROR PARSING STRING TO INT64")
+	// 		log.Print(er1)
+	// 	}
+	// 	_, err := services.AddStudentIdToCompanyList(ctx, company_num_id, studentId)
+	// 	if err != nil {
+	// 		log.Print(err)
+	// 		http.Error(w, err.Error(), 500)
+	// 		return
+	// 	}
+	// 	w.WriteHeader(http.StatusOK)
+ //    } else {
+ //        fmt.Println(err)
+ //    }
 }
 
 func RemoveStudent(w http.ResponseWriter,r *http.Request) {
@@ -94,27 +127,64 @@ func RemoveStudent(w http.ResponseWriter,r *http.Request) {
 	}
 	studentId :=  int64(dat["studentId"].(float64));
 
-	// Get the company id from the token org and call the service with it
+
+
+	// new company name code ///////////////////////
 	user := context.Get(r, "user")
-    token, err := user.(*jwt.Token)
+    token, _ := user.(*jwt.Token)
+
     if token.Valid {
         mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
         org := strings.TrimSpace(mapClaims["org"].(string))
-		company_num_id, er1 := strconv.ParseInt(org, 10, 64)
-		if er1 != nil {
-			log.Print("ERROR PARSING STRING TO INT64")
-			log.Print(er1)
-		}
-		_, err := services.RemoveStudentIdFromCompanyList(ctx, company_num_id, studentId)
+		_, companyKey, err := services.GetCompanyByName(ctx, org)
 		if err != nil {
+			log.Print("ERROR GETTING COMPANY")
 			log.Print(err)
 			http.Error(w, err.Error(), 500)
 			return
 		}
-	w.WriteHeader(http.StatusOK)
-    } else {
-        fmt.Println(err)
+			var company models.Company
+
+			if err := datastore.Get(ctx, companyKey, &company); err != nil {
+				fmt.Println("ERROR IN REMOVE STUDENT")
+				return
+			}
+
+			company.StudentIds = removeId(company.StudentIds, studentId);
+			// company.StudentIds = company.StudentIds.remove(studentId);
+
+			if _, err := datastore.Put(ctx, companyKey, &company); err != nil {
+				fmt.Println("ERROR IN REMOVE STUDENT")
+				return
+			}
+			return
     }
+    ///////////////////////////////////////////////
+
+
+
+
+	// // Get the company id from the token org and call the service with it
+	// user := context.Get(r, "user")
+ //    token, err := user.(*jwt.Token)
+ //    if token.Valid {
+ //        mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+ //        org := strings.TrimSpace(mapClaims["org"].(string))
+	// 	company_num_id, er1 := strconv.ParseInt(org, 10, 64)
+	// 	if er1 != nil {
+	// 		log.Print("ERROR PARSING STRING TO INT64")
+	// 		log.Print(er1)
+	// 	}
+	// 	_, err := services.RemoveStudentIdFromCompanyList(ctx, company_num_id, studentId)
+	// 	if err != nil {
+	// 		log.Print(err)
+	// 		http.Error(w, err.Error(), 500)
+	// 		return
+	// 	}
+	// w.WriteHeader(http.StatusOK)
+ //    } else {
+ //        fmt.Println(err)
+ //    }
 }
 
 func SwitchStudents(w http.ResponseWriter,r *http.Request) {
@@ -137,7 +207,6 @@ func SwitchStudents(w http.ResponseWriter,r *http.Request) {
 	user := context.Get(r, "user")
     token, _ := user.(*jwt.Token)
 
-
     if token.Valid {
         mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
         org := strings.TrimSpace(mapClaims["org"].(string))
@@ -150,17 +219,12 @@ func SwitchStudents(w http.ResponseWriter,r *http.Request) {
 		}
 		if err := datastore.Get(ctx, companyKey, &company); err != nil {
 			company = models.Company{}
-
 			if contains(company.StudentIds, student1Id) && contains(company.StudentIds, student2Id) {
 				company.StudentIds = switchElements(company.StudentIds, student1Id, student2Id);
 			}
-
 			if _, err := datastore.Put(ctx, companyKey, &company); err != nil {
 				return
 			}
-
-
-
 		}
     }
     ///////////////////////////////////////////////

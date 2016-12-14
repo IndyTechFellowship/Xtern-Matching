@@ -63,9 +63,12 @@ func RemoveStudentIdFromCompanyList(ctx context.Context,companyId int64, student
 		return http.StatusInternalServerError, err
 	}
 
-	company.Id = companyId
+
+	// company.Id = companyId
 	company.StudentIds = removeId(company.StudentIds, studentId);
 	// company.StudentIds = company.StudentIds.remove(studentId);
+
+
 
 	if _, err := datastore.Put(ctx, companyKey, &company); err != nil {
 		return http.StatusInternalServerError, err
@@ -129,6 +132,7 @@ func GetCompanyByName(ctx context.Context,name string) (models.Company,*datastor
 		if err := datastore.Get(ctx, companyKey, &company); err != nil {
 			return models.Company{}, companyKey, err
 		}
+		return company, companyKey, err
 	}
 	k := datastore.NewKey(ctx, "Company", "", 0, nil)
 	return company,k,nil;
