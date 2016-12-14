@@ -37,7 +37,7 @@ func GetComments(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 
-	comments, keys, err := services.GetComments(ctx, studentKey, orgKey)
+	comments, keys, err := services.GetComments(ctx, studentKey ,orgKey)
 	if err != nil {
 		//log.Print(err)
 		http.Error(w, err.Error(), 500)
@@ -82,7 +82,7 @@ func AddComment(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	status, err := services.AddComment(ctx, studentKey, message, author)
+	status, err := services.AddComment(ctx, studentKey, message, mapClaims["name"].(string),author)
 	if err != nil {
 		//log.Print(err)
 		http.Error(w, err.Error(), 500)

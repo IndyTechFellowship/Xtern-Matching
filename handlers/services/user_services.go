@@ -27,6 +27,7 @@ func Login(ctx context.Context, email string, password string) ([]byte, error) {
 			"exp": time.Now().Add(time.Hour * time.Duration(24)).Unix(),
 			"org": accountKey.Parent().Encode(),
 			"key": accountKey.Encode(),
+			"name": account.Name,
 		})
 
 		//TODO: Don't hardcode this here and in company_handlers.go

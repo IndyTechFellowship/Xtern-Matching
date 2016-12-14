@@ -58,7 +58,7 @@ func GetOrganizationStudents(w http.ResponseWriter,r *http.Request) {
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
 	orgKey, err := datastore.DecodeKey(mapClaims["org"].(string))
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("ERROR1: "+err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -66,7 +66,7 @@ func GetOrganizationStudents(w http.ResponseWriter,r *http.Request) {
 
 	org, err := services.GetOrganization(ctx,orgKey)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("ERROR2: "+err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -75,7 +75,7 @@ func GetOrganizationStudents(w http.ResponseWriter,r *http.Request) {
 	for _, key := range org.Students {
 		student, err := services.GetStudent(ctx, key)
 		if err != nil {
-			log.Println(err.Error())
+			log.Println("ERROR3: "+err.Error())
 			http.Error(w, err.Error(), 500)
 			return
 		}

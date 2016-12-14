@@ -47,12 +47,13 @@ angular.module('Xtern')
             $('#techpointLogin').form('validate form');
         };
         var authenticate = function(fields) {
+            $('#techpointLogin .ui.button').addClass("disabled");
             AuthService.login(fields.email, fields.password, function(token, org, err) {
                 if (err) {
-                    console.log('Login unsuccessful');
                     $('#techpointLogin .ui.error.message').html(
                         '<ui class="list"><li>Invalid Username or Password</li></ui>'
-                    );
+                    ).show();
+                    $('#techpointLogin .ui.button').removeClass("disabled");
                 } else {
                     console.log('Login Success '+org);
                     setToken(false,'isCompany');
@@ -70,6 +71,7 @@ angular.module('Xtern')
                     //         $state.go('techpoint.dashboard');
                     //     }
                     // });
+
                 }
             });
         };

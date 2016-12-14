@@ -2,9 +2,6 @@ runtime: go
 api_version: go1
 threadsafe: true
 
-inbound_services:
-- warmup
-
 handlers:
 - url: /
   static_files: index.html
@@ -36,4 +33,5 @@ handlers:
   script: _go_app
 
 env_variables:
-  XTERN_ENVIRONMENT: 'development'
+  XTERN_ENVIRONMENT: 'production'
+  GOOGLE_APPLICATION_CREDENTIALS: 'environments/production/cloudstore.json'

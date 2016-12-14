@@ -58,16 +58,18 @@ angular.module('Xtern')
         $('#companyLogin').form('validate form');
     };
     var authenticate = function (fields) {
+        $('#companyLogin .ui.button').addClass("disabled");
         AuthService.login(fields.email, fields.password, function (token, org, err) {
             if (err) {
-                console.log('Login unsuccessful');
                 $('#companyLogin .ui.error.message').html(
-                    '<ui class="list"><li>Invalid Username or Passord</li></ui>'
-                );
+                    '<ui class="list"><li>Invalid Username or Password</li></ui>'
+                ).show();
+                $('#companyLogin .ui.button').removeClass("disabled");
             } else {
                 console.log('Login Success '+org);
                 setToken(true,'isCompany');
                 $scope.isCompany = true;
+                $('#companyLogin .ui.button').removeClass("disabled");
                 $state.go('company.dashboard');
             }
         });
