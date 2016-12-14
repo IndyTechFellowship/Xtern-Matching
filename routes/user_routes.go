@@ -5,8 +5,8 @@ import (
 	"Xtern-Matching/handlers"
 )
 
-func GetAdminRoutes(router *mux.Router) *mux.Router {
-	router.HandleFunc("/user", handlers.GetUsers).Methods("GET").Name("GetUsers")
+func GetUserRoutes(router *mux.Router) *mux.Router {
+	router.HandleFunc("/user/org/{orgKey}", handlers.GetUsers).Methods("GET").Name("GetUsers")
 	router.HandleFunc("/user/{userKey}", handlers.GetUser).Methods("GET").Name("GetUser")
 	router.HandleFunc("/user", handlers.AddUser).Methods("POST").Name("AddUser")
 	router.HandleFunc("/user/{userKey}", handlers.EditUser).Methods("PUT").Name("EditUser")

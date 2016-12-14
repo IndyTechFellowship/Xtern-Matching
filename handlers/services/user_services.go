@@ -40,7 +40,7 @@ func Login(ctx context.Context, email string, password string) ([]byte, error) {
 }
 
 func Register(ctx context.Context, organizationKey *datastore.Key, user models.User) (int,error) {
-	count, err := datastore.NewQuery("User").Ancestor(organizationKey).Count(ctx)
+	count, err := datastore.NewQuery("User").Ancestor(organizationKey).Filter("Email =", user.Email).Count(ctx)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	} else if count != 0 {

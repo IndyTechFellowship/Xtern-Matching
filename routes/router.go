@@ -38,7 +38,7 @@ func NewRouter() *mux.Router {
 	))
 	router.PathPrefix("/user").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
-		negroni.Wrap(GetAdminRoutes(mux.NewRouter().StrictSlash(true))),
+		negroni.Wrap(GetUserRoutes(mux.NewRouter().StrictSlash(true))),
 	))
 
 	return router

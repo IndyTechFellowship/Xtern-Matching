@@ -27,7 +27,7 @@ func GetOrganization(ctx context.Context, orgKey *datastore.Key) (models.Organiz
 }
 
 func GetOrganizations(ctx context.Context) ([]models.Organization,[]*datastore.Key,error) {
-	q := datastore.NewQuery("Organization")
+	q := datastore.NewQuery("Organization").Project("Name")
 	var orgs []models.Organization
 	keys, err := q.GetAll(ctx, &orgs)
 	if err != nil {

@@ -242,25 +242,49 @@
         .service('AccountControlService',['$http', function ($http){
             var self = this;
             self.userData = null;
-            self.getUsers = function(callback) {
-                var route = "user";
+            self.getOrganizations = function(callback) {
+                var route = "organization";
                 $http({
                     method: 'GET',
                     url: host + route,
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
-                        'Authorization': 'bearer '+getToken('auth')
+                        'Authorization': 'bearer '+ getToken('auth')
                     }
                 }).then(function (data) {
-                    console.log(data);
-                    callback(data.data.users,data.data.keys);
+                    for(var i = 0; i < data.data.organizations.length; i++) {
+                        data.data.organizations[i].key = data.data.keys[i]
+                    }
+                    callback(data.data.organizations);
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                    callback('','err')
+                });
+            };
+            self.getUsers = function(orgKey,callback) {
+                console.log('Key: ', orgKey);
+                var route = "user/org/"+orgKey;
+                $http({
+                    method: 'GET',
+                    url: host + route,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    for(var i = 0; i < data.data.users.length; i++) {
+                        data.data.users[i].key = data.data.keys[i];
+                    }
+                    callback(data.data.users);
                 }, function errorCallback(response) {
                     console.log('error occured: ', response);
                     callback('','err')
                 });
             };
             self.addUser = function(user, callback){
+                console.log('Here: ', user);
                 var route = "user";
                 $http({
                     method: 'POST',
@@ -270,7 +294,13 @@
                         'Accept': "application/json",
                         'Authorization': 'bearer ' + getToken('auth')
                     },
-                    data: user
+                    data: {
+                        name: user.name,
+                        email: user.email,
+                        //TODO encrypt into nonplain-text
+                        password: user.password,
+                        orgKey: user.organization
+                    }
                 }).then(function (data) {
                     //success
                     callback(data);
@@ -280,8 +310,8 @@
                     callback('', 'err')
                 });
             };
-            self.updateUser = function(key, callback){
-                var route = "user/"+key;
+            self.updateUser = function(user, callback){
+                var route = "user/"+user.key;
                 $http({
                     method: 'PUT',
                     url: host + route,
@@ -290,13 +320,16 @@
                         'Accept': "application/json",
                         'Authorization': 'bearer ' + getToken('auth')
                     },
-                    data: user
+                    data: {
+                        name: user.name,
+                        email: user.email,
+                        password: user.password
+                    }
                 }).then(function (data) {
                     //success
                     callback(data);
                 }, function errorCallback(response) {
                     console.log('error occured: ' ,  response);
-                    console.log('Here: ' + getToken('auth'));
                     callback('', 'err')
                 });
             };

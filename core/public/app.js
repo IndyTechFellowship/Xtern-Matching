@@ -163,8 +163,6 @@ var removeDataColors = function (data) {
 // Corrects data formatting
 var rowClass = function (data, key) {
     data.name = data.firstName + " " + data.lastName;
-    //data.gradeLabel = data.r1Grade.text;
-    //data.gradeValue = data.r1Grade.value;
     data.namelink = '<a ui-sref="profile/' + key + '">' + data.name + "</a>";
     data.gradeLabel = data.grade;
     data.key = key;

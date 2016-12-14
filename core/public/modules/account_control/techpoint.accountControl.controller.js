@@ -7,13 +7,11 @@ angular.module('Xtern')
         $scope.companyUsers = [];
         $scope.UserFormData = {};
 
-        //TODO: REPLACE WITH BACKEND CALL
-        $scope.companyList = COMPANY_GLOBAL_LIST;
 
         var declarePageVars = function () {
             $scope.selectedGroup = {
                 active: 'TechPoint',
-                activeCompany: 'ININ',
+                activeCompany: $scope.companyList[0].key,
                 changeGroup: function (group) {
                     $scope.selectedGroup.active = group;
                     swapActiveArray(group);
@@ -23,11 +21,15 @@ angular.module('Xtern')
                 },
                 selectedUsers: $scope.techPointUsers,
                 refresh: function () {
-                    console.log('2');
                     console.log('refreshed');
                     swapActiveArray($scope.selectedGroup.active);
                 }
             };
+            $scope.companyList.forEach(function (company) {
+               if(company.name == 'Techpoint') {
+                   $scope.selectedGroup.activeCompany = company.key;
+               }
+            });
 
             $scope.tableHeaders = [
                 { title: 'Name', sortPropertyName: 'name', displayPropertyName: 'name', asc: true },
@@ -35,19 +37,9 @@ angular.module('Xtern')
             ];
 
             //Set up CompanyAbbr
-            $scope.companyListAbbr = $scope.companyList.filter(function(item){
-                return !(item == 'TechPoint' || item == 'Instructor');
+            $scope.companyListAbbr = $scope.companyList.filter(function(item) {
+                return !(item.name == 'Techpoint' || item.name == 'Instructor');
             });
-        };
-
-        $scope.sort = function (header, event) {
-            var prop = header.sortPropertyName;
-            var asc = header.asc;
-            header.asc = !header.asc;
-            var ascSort = function (a, b) { return a[prop] < b[prop] ? -1 : a[prop] > b[prop] ? 1 : 0; };
-            var descSort = function (a, b) { return ascSort(b, a); };
-            var sortFunc = asc ? ascSort : descSort;
-            $scope.techPointUsers.sort(sortFunc);
         };
 
         var resetUserForm = function (user) {
@@ -60,7 +52,7 @@ angular.module('Xtern')
                 $scope.UserFormData.lastName = nameArr[1];
                 $scope.UserFormData.email = user.email;
                 $scope.UserFormData.password = user.password;
-                //$scope.UserFormData.organization = 'ININ';
+                $scope.UserFormData.organization = $scope.companyList;
                 $scope.UserFormData.newUser = false;
             }
             else {
@@ -69,61 +61,59 @@ angular.module('Xtern')
                 $scope.UserFormData.lastName = '';
                 $scope.UserFormData.email = '';
                 $scope.UserFormData.password = '';
-                //$scope.UserFormData.organization = 'ININ';
+                $scope.UserFormData.organization = $scope.companyList[0].key;
                 $scope.UserFormData.newUser = true;
             }
         };
 
-        $scope.launchAddEditUserModal = function (user) {
-            console.log(user);
-            $('#accountsModal').modal('show');
-            resetUserForm(user);
-            $('#accountModalform .error.message').empty();
-        };
 
-
-        var refreshCompany = function (company) {
-            AccountControlService.getUsers(function (users,keys) {
+        var refreshCompany = function (organizationKey) {
+            AccountControlService.getUsers(organizationKey,function (users) {
                 $scope.companyUsers.length = 0; //We want to keep array refrences but replace all of the elements
-                for(var i = 0; i < keys.length ; i++) {
-                    users[i] = keys[i];
-                    $scope.companyUsers.push(users[i]);
-                }
-            });
-        };
-
-        var refreshAccounts = function (array) {
-            AccountControlService.getUsers(function (users,keys) {
-                array.length = 0; //We want to keep array refrences but replace all of the elements
-                for(var i = 0; i < keys.length ; i++) {
-                    users[i] = keys[i];
-                    array.push(users[i]);
-                }
+                console.log("here: ", users);
+                users.forEach(function(user) {
+                    $scope.companyUsers.push(user);
+                });
             });
         };
 
         var swapActiveArray = function (group) {
             if (group == 'TechPoint') {
-                console.log('3.a');
-                $scope.selectedGroup.selectedUsers = $scope.techPointUsers;
-                refreshAccounts($scope.techPointUsers);
+                $scope.companyList.forEach(function (company) {
+                    if(company.name == 'Techpoint') {
+                        refreshAccounts(company.key, $scope.techPointUsers);
+                    }
+                });
+                //$scope.selectedGroup.selectedUsers = $scope.techPointUsers;
             } else if (group == 'Instructor') {
-                console.log('3.b');
-                $scope.selectedGroup.selectedUsers = $scope.techPointUsers;
-                refreshAccounts($scope.techPointUsers);
+                $scope.companyList.forEach(function (company) {
+                    if(company.name == 'Techpoint') {
+                        refreshAccounts(company.key, $scope.techPointUsers);
+                    }
+                });
+                //$scope.selectedGroup.selectedUsers = $scope.techPointUsers;
             }
             else if (group == 'Company') {
-                console.log('3.c');
+                refreshAccounts($scope.selectedGroup.activeCompany, $scope.companyUsers);
                 $scope.selectedGroup.selectedUsers = $scope.companyUsers;
-                refreshAccounts($scope.companyUsers);
             } else {
                 //ran out of cases
                 $scope.selectedUsers.length = 0;
             }
         };
 
+        var refreshAccounts = function (organizationKey,array) {
+            AccountControlService.getUsers(organizationKey,function (users) {
+                array.length = 0; //We want to keep array refrences but replace all of the elements
+                users.forEach(function(user) {
+                    array.push(user);
+                });
+                $scope.selectedGroup.selectedUsers = array;
+            });
+        };
+
         var submitUser = function () {
-            console.log('pased and submitting', $scope.UserFormData);
+            console.log('passed and submitting');
             $scope.UserFormData.name = $scope.UserFormData.firstName + " " + $scope.UserFormData.lastName;
             if ($scope.UserFormData.newUser) {
                 AccountControlService.addUser($scope.UserFormData, function () {
@@ -137,10 +127,30 @@ angular.module('Xtern')
             $('#accountsModal').modal('hide');
         };
 
+        $scope.launchAddEditUserModal = function (user) {
+            $('#accountsModal').modal('show');
+            resetUserForm(user);
+            $('#accountModalform .error.message').empty();
+        };
+
+        $scope.sort = function (header, event) {
+            var prop = header.sortPropertyName;
+            var asc = header.asc;
+            header.asc = !header.asc;
+            var ascSort = function (a, b) { return a[prop] < b[prop] ? -1 : a[prop] > b[prop] ? 1 : 0; };
+            var descSort = function (a, b) { return ascSort(b, a); };
+            var sortFunc = asc ? ascSort : descSort;
+            $scope.techPointUsers.sort(sortFunc);
+        };
+
         $scope.deleteUser = function (user) {
             AccountControlService.deleteUser(user.key, function () {
                 $scope.selectedGroup.refresh();
             });
+        };
+
+        $scope.rowClick = function(row) {
+            console.log($scope.selectedGroup.selectedUsers);
         };
 
         var formConfig = function () {
@@ -206,7 +216,6 @@ angular.module('Xtern')
                     keyboardShortcuts: false
                 });
         };
-
         var modalConfig = function () {
             $('#accountsModal').modal({
                 closable: false,
@@ -219,11 +228,15 @@ angular.module('Xtern')
                 }
             });
         };
+
         var setup = function () {
-            declarePageVars();
-            formConfig();
-            modalConfig();
-            $scope.selectedGroup.refresh();
+            AccountControlService.getOrganizations(function (organizations) {
+                $scope.companyList = organizations;
+                declarePageVars();
+                formConfig();
+                modalConfig();
+                $scope.selectedGroup.refresh();
+            });
         };
 
         $scope.$on('$viewContentLoaded', function (evt) {

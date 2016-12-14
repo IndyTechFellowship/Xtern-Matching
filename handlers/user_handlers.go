@@ -7,7 +7,6 @@ import (
 	"Xtern-Matching/handlers/services"
 	"Xtern-Matching/models"
 	"log"
-	"github.com/gorilla/context"
 	"github.com/dgrijalva/jwt-go"
 	"google.golang.org/appengine/datastore"
 	"github.com/gorilla/mux"
@@ -59,16 +58,21 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-
-	user := context.Get(r, "user")
-	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	orgKey, err := datastore.DecodeKey(mapClaims["org"].(string))
-	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, err.Error(), 500)
-		return
+	var orgKey *datastore.Key
+	if val, ok := mux.Vars(r)["orgKey"]; ok {
+		log.Println("Found orgkey");
+		var err error
+		orgKey, err = datastore.DecodeKey(val)
+		if err != nil {
+			log.Println("ERROR: ")
+			http.Error(w, err.Error(), 500)
+			return
+		}
+	} else {
+		log.Println("Grabbing all");
+		orgKey = nil
 	}
-
+	log.Printf("%v\n",orgKey)
 	users, keys, err := services.GetUsers(ctx, orgKey)
 	if err != nil {
 		log.Println("ERROR: " + err.Error())
@@ -80,7 +84,6 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		Users []models.User		`json:"users"`
 	}
 	response := Response{Keys: keys, Users: users}
-	log.Printf("%v\n", response)
 
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
@@ -123,8 +126,20 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	user.Name = dat["name"].(string)
 	user.Email = dat["email"].(string)
 	user.Password = dat["password"].(string)
-	responseStatus, err := services.Register(ctx, dat["key"].(*datastore.Key), user)
+
+	orgKey, err := datastore.DecodeKey(dat["orgKey"].(string))
 	if err != nil {
+		log.Println("ERROR1");
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+
+	responseStatus, err := services.Register(ctx, orgKey, user)
+	if err != nil {
+		log.Println("ERROR2");
+		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
