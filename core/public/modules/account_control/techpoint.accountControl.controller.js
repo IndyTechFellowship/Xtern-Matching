@@ -52,28 +52,23 @@ angular.module('Xtern')
 
 
         var resetUserForm = function (user) {
-            //$('#accountModalform').form('clear')
             if (user) {
                 var nameArr = user.name.split(' ', 2);
-                console.log(user);
-                $scope.UserFormData._id = user._id;
-                $scope.UserFormData.firstName = nameArr[0];
-                $scope.UserFormData.lastName = nameArr[1];
-                $scope.UserFormData.email = user.email;
-                $scope.UserFormData.password = user.password;
-                $scope.UserFormData.role = user.role;
-                $scope.UserFormData.organization = user.organization;
                 $scope.UserFormData.newUser = false;
+                $('#accountModalform').form('set values', {
+                    firstName: nameArr[0],
+                    lastName: nameArr[1],
+                    email: user.email,
+                    password: user.password,
+                    role: user.organization,
+                    organization: user.organization, 
+                    key: 212
+                });
+                $('.two.fields.group-role').hide();
             }
             else {
-                $scope.UserFormData._id = null;
-                $scope.UserFormData.firstName = '';
-                $scope.UserFormData.lastName = '';
-                $scope.UserFormData.email = '';
-                $scope.UserFormData.password = '';
-                $scope.UserFormData.role = 'TechPoint';
-                $scope.UserFormData.organization = 'ININ';
-                $scope.UserFormData.newUser = true;
+                 $('.two.fields.group-role').show();
+                 $('#accountModalform').form('reset');                 
             }
         };
 
@@ -120,15 +115,15 @@ angular.module('Xtern')
             }
         };
 
-        var submitUser = function () {
-            console.log('pased and submitting', $scope.UserFormData);
-            $scope.UserFormData.name = $scope.UserFormData.firstName + " " + $scope.UserFormData.lastName;
-            if ($scope.UserFormData.newUser) {
-                AccountControlService.addUser($scope.UserFormData, function () {
+        var submitUser = function (fields) {
+            console.log('pased and submitting', fields);
+            fields.name = fields.firstName + " " + fields.lastName;
+            if (!fields.key) {
+                AccountControlService.addUser(fields, function (data) {
                     $scope.selectedGroup.refresh();
                 });
             } else {
-                AccountControlService.updateUser($scope.UserFormData, function () {
+                AccountControlService.updateUser(fields, function (data) {
                     $scope.selectedGroup.refresh();
                 });
             }
@@ -146,7 +141,7 @@ angular.module('Xtern')
                 .form({
                     fields: {
                         fname: {
-                            identifier: 'first-name',
+                            identifier: 'firstName',
                             rules: [
                                 {
                                     type: 'empty',
@@ -155,7 +150,7 @@ angular.module('Xtern')
                             ]
                         },
                         lname: {
-                            identifier: 'last-name',
+                            identifier: 'lastName',
                             rules: [
                                 {
                                     type: 'empty',
@@ -186,7 +181,16 @@ angular.module('Xtern')
                             ]
                         },
                         group: {
-                            identifier: 'group',
+                            identifier: 'role',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: 'Please select a group'
+                                }
+                            ]
+                        },
+                        organization: {
+                            identifier: 'organization',
                             rules: [
                                 {
                                     type: 'empty',
@@ -196,7 +200,7 @@ angular.module('Xtern')
                         },
                     },
                     onSuccess: function (event, fields) {
-                        submitUser();
+                        submitUser(fields);
                     },
                     onFailure: function (formErrors, fields) {
                         return;
