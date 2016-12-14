@@ -1,0 +1,89 @@
+<!--<div ng-controller="StudentProfileCtrl">-->
+    <!--<h1>{{ 1+1 }}</h1>-->
+<div>
+    <div class="ui container" ng-cloak>
+        <div class="ui centered internally celled grid">
+            <div class="row">
+            <div class="eleven wide column">
+                <student-data-page></student-data-page>
+            </div>
+                <div class="five wide column">
+                    <div id="statusAndGrade">
+                        <div class="ui header">Status and Grade</div>
+                        <div class="ui fluid selection dropdown">
+                            <input name="status" type="hidden" value="0">
+                            <div class="text">{{studentData.status}}</div><i class="dropdown icon"></i>
+                            <div class="menu transition hidden">
+                                <div data-value="{{option}}" class="item" ng-repeat="option in statusOptions" ng-click="selectStatus(option)">
+                                    {{option}}
+                                </div>
+                            </div>
+                        </div>
+                        <!--             <div class="ui fluid selection dropdown">
+                                      <input type="hidden" name="grade" ng-model="studentData.r1Grade">
+                                      <i class="dropdown icon"></i>
+                                      <div class="default text">Grade</div>
+                                      <div class="menu">
+                                        <div class="item" data-value="4">A</div>
+                                        <div class="item" data-value="3">B</div>
+                                        <div class="item" data-value="2">C</div>
+                                        <div class="item" data-value="1">D</div>
+                                        <div class="item" data-value="0">F</div>
+                                      </div>
+                                    </div> -->
+                        <div class="ui fluid selection dropdown">
+                            <input name="grade" type="hidden" value="0">
+                            <div class="text">{{studentData.r1Grade.text}}</div><i class="dropdown icon"></i>
+                            <div class="menu transition hidden">
+                                <div data-value="{{option}}" class="item" ng-repeat="option in r1GradeOptions" ng-click="selectR1Grade(option)">
+                                    {{option.text}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="ui header">
+                            Comments
+                        </div>
+                        <div class="ui fluid card">
+                            <div class="ui form">
+                                <div class="field">
+                                    <textarea placeholder="Enter a new comment" ng-model="comment.text"></textarea>
+                                </div>
+                            </div>
+                            <button class="ui bottom attached teal button" ng-click="addComment()">Post Comment</button>
+                        </div>
+
+                        <div class="ui fluid cards" id="commentCards">
+                            <student-profile-comment class="blurring dimmable ui fluid card" ng-repeat="comment in studentData.comments track by $index"></student-profile-comment>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Can Uncomment for testing-->
+<!-- <div class="ui container">
+    <form class="ui form" ng-controller="UploadCtrl as ctrl" enctype="multipart/form-data">
+
+        <label for="file">File:</label>
+        <input id="file" name="file" type="file"></input>
+
+        <input type="submit" ng-click="ctrl.uploadResume(4505248894812160);"></input>
+
+    </form>
+</div> -->
+<div class="vertical-spacer"></div>
+
+<script src="node_modules/pdfjs-dist/build/pdf.js">
+
+<script src="public/js/pdfobject.js"></script>
+<style>
+    #the-canvas { height: 700px; }
+    .pdfobject { border: 1px solid #666; }
+</style>
+<link rel="stylesheet" type="text/css" href="public/css/studentProfile.css">
