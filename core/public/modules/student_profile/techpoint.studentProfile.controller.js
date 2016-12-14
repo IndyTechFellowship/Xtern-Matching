@@ -35,14 +35,7 @@ angular.module('Xtern')
             "text":"D",
             "value":1
         }];
-
-    $('.ui.sticky').sticky({
-        context: '#example1'
-    });
-
-    $(function () {
-        $('.ui.dropdown').dropdown();
-    });
+   
 
     $scope.selectStatus = function(option) {
         $scope.studentData.status = option;
@@ -84,4 +77,18 @@ angular.module('Xtern')
             }
         }
     };
+
+    var TechPointStudentProfileCtrlSetup = function(){
+        $('.ui.sticky').sticky({
+            context: '#example1'
+        });
+        
+        $('.ui.dropdown').dropdown();        
+    };
+
+
+    $scope.$on('$viewContentLoaded', function (evt) {
+        TechPointStudentProfileCtrlSetup();
+    });
+
 });

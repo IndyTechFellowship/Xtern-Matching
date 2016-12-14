@@ -1,7 +1,5 @@
 angular.module('Xtern')
     .controller('StudentDataPageCtrl', function($scope, $location, ProfileService, $stateParams) {
-    $('.ui.dropdown').dropdown();//activites semantic dropdowns
-
     $scope.studentData = null;
 
     ProfileService.getStudentDataForId($stateParams._id, function(data)
@@ -36,11 +34,14 @@ angular.module('Xtern')
         PDFJS.getDocument(data.resume).then(renderPages);
     });
 
-    $('.ui.sticky').sticky({
-        context: '#example1'
-    });
-
-    $(function () {
+    var StudentDataPageCtrlSetup = function(){
         $('.ui.dropdown').dropdown();
+        $('.ui.sticky').sticky({
+            context: '#example1'
+        });
+    };
+
+     $scope.$on('$viewContentLoaded', function (evt) {
+            StudentDataPageCtrlSetup();
     });
 });

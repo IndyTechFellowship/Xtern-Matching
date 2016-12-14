@@ -19,11 +19,11 @@ angular.module('Xtern')
                     swapActiveArray(group);
                 },
                 changeCompany: function () {
-                    refreshCompany($scope.selectedGroup.activeCompany);
+                   // refreshCompany($scope.selectedGroup.activeCompany);
+                   swapActiveArray('Company');
                 },
                 selectedUsers: $scope.techPointUsers,
                 refresh: function () {
-                    console.log('refreshed');
                     swapActiveArray($scope.selectedGroup.active);
                 }
             };
@@ -52,47 +52,33 @@ angular.module('Xtern')
 
 
         var resetUserForm = function (user) {
-            //$('#accountModalform').form('clear')
             if (user) {
                 var nameArr = user.name.split(' ', 2);
-                console.log(user);
-                $scope.UserFormData._id = user._id;
-                $scope.UserFormData.firstName = nameArr[0];
-                $scope.UserFormData.lastName = nameArr[1];
-                $scope.UserFormData.email = user.email;
-                $scope.UserFormData.password = user.password;
-                $scope.UserFormData.role = user.role;
-                $scope.UserFormData.organization = user.organization;
                 $scope.UserFormData.newUser = false;
+                $('#accountModalform').form('set values', {
+                    firstName: nameArr[0],
+                    lastName: nameArr[1],
+                    email: user.email,
+                    password: user.password,
+                    role: user.organization,
+                    organization: user.organization, 
+                    key: 212
+                });
+                $('.two.fields.group-role').hide();
             }
             else {
-                $scope.UserFormData._id = null;
-                $scope.UserFormData.firstName = '';
-                $scope.UserFormData.lastName = '';
-                $scope.UserFormData.email = '';
-                $scope.UserFormData.password = '';
-                $scope.UserFormData.role = 'TechPoint';
-                $scope.UserFormData.organization = 'ININ';
-                $scope.UserFormData.newUser = true;
+                 $('.two.fields.group-role').show();
+                 $('#accountModalform').form('reset');
+                 $scope.hideCompanyDropdown();
+                 setSelectOptions();
             }
         };
 
         $scope.launchAddEditUserModal = function (user) {
-            console.log(user);
             $('#accountsModal').modal('show');
             resetUserForm(user);
             $('#accountModalform .error.message').empty();
         }
-
-
-        var refreshCompany = function (company) {
-            AccountControlService.getUsers('Company', company, function (data) {
-                $scope.companyUsers.length = 0; //We want to keep array refrences but replace all of the elements 
-                data.forEach(function (user) {
-                    $scope.companyUsers.push(user);
-                });
-            });
-        };
 
         var refreshAccounts = function (group, company, array) {
             AccountControlService.getUsers(group, company, function (data) {
@@ -120,15 +106,17 @@ angular.module('Xtern')
             }
         };
 
-        var submitUser = function () {
-            console.log('pased and submitting', $scope.UserFormData);
-            $scope.UserFormData.name = $scope.UserFormData.firstName + " " + $scope.UserFormData.lastName;
-            if ($scope.UserFormData.newUser) {
-                AccountControlService.addUser($scope.UserFormData, function () {
+        var submitUser = function (fields) {
+            fields.name = fields.firstName + " " + fields.lastName;
+            if (!fields.key) {
+                if(fields.role != 'Company'){
+                    fields.organization = fields.role;
+                };
+                AccountControlService.addUser(fields, function (data) {
                     $scope.selectedGroup.refresh();
                 });
             } else {
-                AccountControlService.updateUser($scope.UserFormData, function () {
+                AccountControlService.updateUser(fields, function (data) {
                     $scope.selectedGroup.refresh();
                 });
             }
@@ -141,12 +129,12 @@ angular.module('Xtern')
             });
         };
 
-        var formConfig = function () {
+        var accountControlFormConfig = function () {
             $('#accountModalform')
                 .form({
                     fields: {
                         fname: {
-                            identifier: 'first-name',
+                            identifier: 'firstName',
                             rules: [
                                 {
                                     type: 'empty',
@@ -155,7 +143,7 @@ angular.module('Xtern')
                             ]
                         },
                         lname: {
-                            identifier: 'last-name',
+                            identifier: 'lastName',
                             rules: [
                                 {
                                     type: 'empty',
@@ -186,7 +174,16 @@ angular.module('Xtern')
                             ]
                         },
                         group: {
-                            identifier: 'group',
+                            identifier: 'role',
+                            rules: [
+                                {
+                                    type: 'empty',
+                                    prompt: 'Please select a group'
+                                }
+                            ]
+                        },
+                        organization: {
+                            identifier: 'organization',
                             rules: [
                                 {
                                     type: 'empty',
@@ -196,16 +193,17 @@ angular.module('Xtern')
                         },
                     },
                     onSuccess: function (event, fields) {
-                        submitUser();
+                        submitUser(fields);
                     },
                     onFailure: function (formErrors, fields) {
                         return;
                     },
                     keyboardShortcuts: false
-                });
+                });            
+
         }
 
-        var modalConfig = function () {
+        var accountControlModalConfig = function () {
             $('#accountsModal').modal({
                 closable: false,
                 onDeny: function () {
@@ -216,15 +214,37 @@ angular.module('Xtern')
                     return $('#accountModalform').form('is valid');
                 }
             });
+
+
         }
         var setup = function () {
             declarePageVars();
-            formConfig();
-            modalConfig();
+            accountControlFormConfig();
+            accountControlModalConfig();
             $scope.selectedGroup.refresh();
         }
 
-        $rootScope.$on('$viewContentLoaded', function (evt) {
+        $scope.hideCompanyDropdown = function(){
+            $('#companyDropdown').hide();
+        };
+
+        $scope.showCompanyDropdown = function(){
+            $('#companyDropdown').show();
+        }
+
+        var setSelectOptions = function(){
+                $('.role.dropdown').dropdown({
+                    onChange: function(text, value) {
+                        if(value == 'Company'){
+                            $('#companyDropdown').show();
+                        }else{
+                            $('#companyDropdown').hide();
+                        }                    
+                    }
+                });
+        };
+
+        $scope.$on('$viewContentLoaded', function (evt) {
             setup();
         });
     }]);
