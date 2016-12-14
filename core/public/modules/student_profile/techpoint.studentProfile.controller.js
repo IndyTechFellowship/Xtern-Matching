@@ -15,15 +15,39 @@ angular.module('Xtern')
         'Rejected (Stage 3)'
     ];
 
+// <<<<<<< HEAD
     $scope.r1GradeOptions = [1,2,3,4,5,6,7,8,9,10];
 
-    $('.ui.sticky').sticky({
-        context: '#example1'
-    });
+//     $('.ui.sticky').sticky({
+//         context: '#example1'
+//     });
 
-    $(function () {
-        $('.ui.dropdown').dropdown();
-    });
+//     $(function () {
+//         $('.ui.dropdown').dropdown();
+//     });
+// =======
+    // $scope.r1GradeOptions = [
+    //     {
+    //         "text":"A",
+    //         "value":4
+    //     },{
+    //         "text":"B+",
+    //         "value":3.5
+    //     },{
+    //         "text":"B",
+    //         "value":3
+    //     },{
+    //         "text":"B-",
+    //         "value":2.8
+    //     },{
+    //         "text":"C",
+    //         "value":2
+    //     },{
+    //         "text":"D",
+    //         "value":1
+    //     }];
+   
+// >>>>>>> master
 
     $scope.selectStatus = function(option) {
         $scope.studentData.status = option;
@@ -60,4 +84,18 @@ angular.module('Xtern')
             }
         }
     };
+
+    var TechPointStudentProfileCtrlSetup = function(){
+        $('.ui.sticky').sticky({
+            context: '#example1'
+        });
+        
+        $('.ui.dropdown').dropdown();        
+    };
+
+
+    $scope.$on('$viewContentLoaded', function (evt) {
+        TechPointStudentProfileCtrlSetup();
+    });
+
 });

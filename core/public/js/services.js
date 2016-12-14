@@ -274,10 +274,14 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    for(var i = 0; i < data.data.users.length; i++) {
-                        data.data.users[i].key = data.data.keys[i];
+                    if(data.data && data.data.users && data.data.keys){
+                        for(var i = 0; i < data.data.users.length; i++) {
+                            data.data.users[i].key = data.data.keys[i];
+                        }
+                        callback(data.data.users);
+                    }else{
+                        callback([]);
                     }
-                    callback(data.data.users);
                 }, function errorCallback(response) {
                     console.log('error occured: ', response);
                     callback('','err')

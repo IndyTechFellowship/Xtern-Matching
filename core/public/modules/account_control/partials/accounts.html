@@ -51,37 +51,43 @@
 			<div class="two fields">
 				<div class="required field">
 					<label>First Name</label>
-					<input type="text" name="first-name" placeholder="First Name" ng-model="UserFormData.firstName">
+					<input type="text" name="firstName" placeholder="First Name" >
 				</div>
 				<div class="required field">
 					<label>Last Name</label>
-					<input type="text" name="last-name" placeholder="Last Name" ng-model="UserFormData.lastName">
+					<input type="text" name="lastName" placeholder="Last Name" >
 				</div>
 			</div>
 			<div class="required field">
 				<label>Email</label>
-				<input type="text" name="email" placeholder="Email" ng-model="UserFormData.email">
+				<input type="text" name="email" placeholder="Email" >
 			</div>
 			<div class="required field">
 				<label>Password</label>
-				<input type="text" name="password" placeholder="Password" ng-model="UserFormData.password">
+				<input type="text" name="password" placeholder="Password" >
 			</div>
-			<div class="two fields" ng-show="UserFormData.newUser">
-				<div class="required field">
+			<div class="required field hidden" hidden><input type="text" name="key" ></div>
+			<div class="two fields group-role" >
+				<div class="required field" id="roleDropdown">
 					<label>Group</label>
-					<select class="ui fluid search dropdown" name="group" ng-model="UserFormData.role" ng-change="" aria-placeholder="Select a Role">
-                    <option value="TechPoint">TechPoint</option>
-                    <option value="Instructor">Instructor</option>
-                    <option value="Company">Company</option>
-                </select>
+					<div class="ui role fluid search selection dropdown" name="role" aria-placeholder="Select a Role">
+						<input type="hidden" name="role">						
+						<i class="dropdown icon"></i>
+						<div class="default text">Select a Role</div>
+						<div class="menu">
+							<div class="item" data-value="TechPoint">TechPoint</div>
+							<div class="item" data-value="Instructor" > Instructor</div>
+							<div class="item"  data-value="Company"  >Company</div>
+						</div>
+					</div>
 				</div>
-				<div class="field" ng-class="{required: UserFormData.role == 'Company'}">
+				<div class="field" id="companyDropdown">
 					<label>Company</label>
-					<select class="ui fluid search dropdown" ng-model="UserFormData.organization" ng-change="" ng-disabled="UserFormData.role== 'Company'">
-						<option ng-repeat="item in companyList" value="{{item.key}}" on-last-repeat-drop-down>
-							{{item.name}}
-						</option>
-                	</select>
+					<select id="" class="ui fluid search dropdown" name="organization">
+                    <option ng-repeat="item in companyListAbbr" value="{{item.key}}" on-last-repeat-drop-down>
+                        {{item.name}}
+                    </option>
+                </select>
 				</div>
 			</div>
 			<div class="ui error message"></div>

@@ -1,15 +1,17 @@
 angular.module('Xtern')
     .controller('CompanyStudentProfileCtrl', function($scope, $location, ProfileService, CompanyService, $stateParams) {
-    $('.ui.dropdown').dropdown();//activites semantic dropdowns
-
+  
     $scope.comment = {};
 
-    $('.ui.sticky').sticky({
-        context: '#example1'
-    });
-
-    $(function () {
+    var CompanyStudentProfileCtrlSetup = function(){
         $('.ui.dropdown').dropdown();
+            $('.ui.sticky').sticky({
+                context: '#example1'
+            });
+    };
+
+     $scope.$on('$viewContentLoaded', function (evt) {
+            CompanyStudentProfileCtrlSetup();
     });
 
     $scope.addComment = function(){
