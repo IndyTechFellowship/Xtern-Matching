@@ -193,3 +193,90 @@ func GetCurrentCompany(w http.ResponseWriter,r *http.Request) {
     }
 	w.WriteHeader(http.StatusInternalServerError)
 }
+
+func GetCompanyByName(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	var name string
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&name); err != nil {
+		log.Print("ERROR GETTING COMPANY NAME")
+		log.Print(name)
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	company, err := services.GetCompanyByName(ctx, name)
+	if err != nil {
+		log.Print("ERROR GETTING COMPANY FROM SERVICE")
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(company)
+
+	// if name, ok := mux.Vars(r)["Name"]; ok {
+	// 	company, err := services.GetCompanyByName(ctx, name)
+	// 	if err != nil {
+	// 		log.Print("ERROR GETTING COMPANY")
+	// 		http.Error(w, err.Error(), 500)
+	// 		return
+	// 	}
+
+	// 	w.Header().Add("Access-Control-Allow-Origin", "*")
+	// 	w.Header().Set("Content-Type", "application/json")
+	// 	w.WriteHeader(http.StatusOK)
+	// 	json.NewEncoder(w).Encode(company)
+	// }
+	// w.WriteHeader(http.StatusInternalServerError)
+}
+
+func GetCurrentCompanyByName(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
+	user := context.Get(r, "user")
+    token, err := user.(*jwt.Token)
+
+    if token.Valid {
+        mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+        org := strings.TrimSpace(mapClaims["org"].(string))
+		company, err := services.GetCompanyByName(ctx, org)
+		if err != nil {
+			log.Print("ERROR GETTING COMPANY")
+			log.Print(err)
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(company)
+    } else {
+        fmt.Println(err)
+    }
+
+    //
+
+  //   if token.Valid {
+  //       mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+  //       // log.Print(mapClaims)
+  //       org := strings.TrimSpace(mapClaims["org"].(string))
+  //       // log.Print(org)
+		// // log.Print(num_id)
+		// company, err := services.GetCompanyByName(ctx, org)
+		// if err != nil {
+		// 	log.Print("ERROR GETTING COMPANY BY ORG")
+		// 	log.Print(err)
+		// 	http.Error(w, err.Error(), 500)
+		// 	return
+		// }
+		// w.Header().Add("Access-Control-Allow-Origin", "*")
+		// w.Header().Set("Content-Type", "application/json")
+		// w.WriteHeader(http.StatusOK)
+		// json.NewEncoder(w).Encode(company)
+  //   } else {
+  //       fmt.Println(err)
+  //       w.WriteHeader(http.StatusInternalServerError)
+  //   }
+
+}

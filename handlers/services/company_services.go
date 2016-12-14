@@ -109,6 +109,26 @@ func GetCompany(ctx context.Context,_id int64) (models.Company,error) {
 	return company, nil
 }
 
+func GetCompanyByName(ctx context.Context,name string) (models.Company,error) {
+	q := datastore.NewQuery("Company").Filter("Name =", name);
+	var company models.Company
+
+	t := q.Run(ctx)
+	for {
+		var c models.Company
+		_, err := t.Next(&c)
+		if err == datastore.Done {
+			break
+		}
+		if err != nil {
+			log.Printf("fetching next Company: %v", err)
+			break
+		}
+		return c, nil;
+	}
+	return company,nil;
+}
+
 func GetCompanies(ctx context.Context) ([]models.Company,error) {
 	q := datastore.NewQuery("Company")
 	log.Printf("%v",q)
