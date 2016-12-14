@@ -44,9 +44,10 @@ angular.module('Xtern')
                 if(event)
                     event.preventDefault();
                 authenticate(fields);
+                return false;
             },
             onFailure: function (formErrors, fields) {
-                return '';
+                return false;
             }
         });
     };
@@ -57,12 +58,13 @@ angular.module('Xtern')
         $('#companyLogin').form('validate form');
     };
     var authenticate = function (fields) {
+        $('#companyLogin .ui.button').addClass("disabled");
         AuthService.login(fields.email, fields.password, function (token, err) {
             if (err) {
-                console.log('Login unsuccessful');
                 $('#companyLogin .ui.error.message').html(
-                    '<ui class="list"><li>Invalid Username or Passord</li></ui>'
-                );
+                    '<ui class="list"><li>Invalid Username or Password</li></ui>'
+                ).show();
+                $('#companyLogin .ui.button').removeClass("disabled");
             } else {
                 //setToken(token, "auth");
                 AuthService.renderTokens(function (token, err) {
@@ -76,6 +78,7 @@ angular.module('Xtern')
                         $state.go('company.dashboard');
                     }
                 });
+                $('#companyLogin .ui.button').removeClass("disabled");
             }
         });
     };
