@@ -224,7 +224,7 @@ angular.module('Xtern')
             $scope.selectedGroup.refresh();
         }
 
-        $rootScope.$on('$viewContentLoaded', function (evt) {
+        $scope.$on('$viewContentLoaded', function (evt) {
             setup();
         });
     }]);
