@@ -23,7 +23,6 @@ angular.module('Xtern')
                 },
                 selectedUsers: $scope.techPointUsers,
                 refresh: function () {
-                    console.log('refreshed');
                     swapActiveArray($scope.selectedGroup.active);
                 }
             };
@@ -68,12 +67,13 @@ angular.module('Xtern')
             }
             else {
                  $('.two.fields.group-role').show();
-                 $('#accountModalform').form('reset');                 
+                 $('#accountModalform').form('reset');
+                 $scope.hideCompanyDropdown();
+                 setSelectOptions();
             }
         };
 
         $scope.launchAddEditUserModal = function (user) {
-            console.log(user);
             $('#accountsModal').modal('show');
             resetUserForm(user);
             $('#accountModalform .error.message').empty();
@@ -116,9 +116,11 @@ angular.module('Xtern')
         };
 
         var submitUser = function (fields) {
-            console.log('pased and submitting', fields);
             fields.name = fields.firstName + " " + fields.lastName;
             if (!fields.key) {
+                if(fields.role != 'Company'){
+                    fields.organization = fields.role;
+                };
                 AccountControlService.addUser(fields, function (data) {
                     $scope.selectedGroup.refresh();
                 });
@@ -136,7 +138,7 @@ angular.module('Xtern')
             });
         };
 
-        var formConfig = function () {
+        var accountControlFormConfig = function () {
             $('#accountModalform')
                 .form({
                     fields: {
@@ -206,10 +208,11 @@ angular.module('Xtern')
                         return;
                     },
                     keyboardShortcuts: false
-                });
+                });            
+
         }
 
-        var modalConfig = function () {
+        var accountControlModalConfig = function () {
             $('#accountsModal').modal({
                 closable: false,
                 onDeny: function () {
@@ -220,13 +223,35 @@ angular.module('Xtern')
                     return $('#accountModalform').form('is valid');
                 }
             });
+
+
         }
         var setup = function () {
             declarePageVars();
-            formConfig();
-            modalConfig();
+            accountControlFormConfig();
+            accountControlModalConfig();
             $scope.selectedGroup.refresh();
         }
+
+        $scope.hideCompanyDropdown = function(){
+            $('#companyDropdown').hide();
+        };
+
+        $scope.showCompanyDropdown = function(){
+            $('#companyDropdown').show();
+        }
+
+        var setSelectOptions = function(){
+                $('.role.dropdown').dropdown({
+                    onChange: function(text, value) {
+                        if(value == 'Company'){
+                            $('#companyDropdown').show();
+                        }else{
+                            $('#companyDropdown').hide();
+                        }                    
+                    }
+                });
+        };
 
         $scope.$on('$viewContentLoaded', function (evt) {
             setup();

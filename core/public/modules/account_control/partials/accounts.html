@@ -69,18 +69,23 @@
 			</div>
 			<div class="required field hidden" hidden><input type="text" name="key" ></div>
 			<div class="two fields group-role" >
-				<div class="required field">
+				<div class="required field" id="roleDropdown">
 					<label>Group</label>
-					<select class="ui fluid search dropdown" name="role" aria-placeholder="Select a Role">
-                    <option value="TechPoint">TechPoint</option>
-                    <option value="Instructor">Instructor</option>
-                    <option value="Company">Company</option>
-                </select>
+					<div class="ui role fluid search selection dropdown" name="role" aria-placeholder="Select a Role">
+						<input type="hidden" name="role">						
+						<i class="dropdown icon"></i>
+						<div class="default text">Select a Role</div>
+						<div class="menu">
+							<div class="item" data-value="TechPoint">TechPoint</div>
+							<div class="item" data-value="Instructor" > Instructor</div>
+							<div class="item"  data-value="Company"  >Company</div>
+						</div>
+					</div>
 				</div>
-				<div class="field" >
+				<div class="field" id="companyDropdown">
 					<label>Company</label>
-					<select class="ui fluid search dropdown" name="organization">
-                    <option ng-repeat="item in companyList" value="{{item}}" on-last-repeat-drop-down>
+					<select id="" class="ui fluid search dropdown" name="organization">
+                    <option ng-repeat="item in companyListAbbr" value="{{item}}" on-last-repeat-drop-down>
                         {{item}}
                     </option>
                 </select>
@@ -93,5 +98,4 @@
 		<div class="ui cancel grey basic button">Cancel</div>
 		<div class="ui approve green basic button">Save</div>
 	</div>
-
 </div>
