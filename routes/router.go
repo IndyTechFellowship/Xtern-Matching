@@ -8,29 +8,36 @@ import (
 )
 
 func NewRouter() *mux.Router {
-	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
+	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options {
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-			//return context.Get(r,"ctx")
 			return []byte("My Secret"), nil
 		},
 		SigningMethod: jwt.SigningMethodHS512,
 	})
 	router := mux.NewRouter().StrictSlash(true)
 
+	router.PathPrefix("/_ah").Handler(negroni.New(
+		negroni.Wrap(GetSystemRoutes(mux.NewRouter().StrictSlash(true))),
+	))
+
 	router.PathPrefix("/auth").Handler(negroni.New(
 		negroni.Wrap(GetAuthenticationRoutes(mux.NewRouter().StrictSlash(true))),
 	))
-	router.PathPrefix("/admin").Handler(negroni.New(
+	router.PathPrefix("/comment").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
-		negroni.Wrap(GetAdminRoutes(mux.NewRouter().StrictSlash(true))),
+		negroni.Wrap(GetCommentRoutes(mux.NewRouter().StrictSlash(true))),
+	))
+	router.PathPrefix("/organization").Handler(negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(GetOrganizationRoutes()),
 	))
 	router.PathPrefix("/student").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(GetStudentRoutes(mux.NewRouter().StrictSlash(true))),
 	))
-	router.PathPrefix("/company").Handler(negroni.New(
+	router.PathPrefix("/user").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
-		negroni.Wrap(GetCompanyRoutes()),
+		negroni.Wrap(GetUserRoutes(mux.NewRouter().StrictSlash(true))),
 	))
 
 	return router

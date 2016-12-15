@@ -2,9 +2,9 @@ angular.module('Xtern')
     .controller('StudentDataPageCtrl', function($scope, $location, ProfileService, $stateParams) {
     $scope.studentData = null;
 
-    ProfileService.getStudentDataForId($stateParams._id, function(data)
-    {
+    ProfileService.getStudentData($stateParams.key, function(data) {
         $scope.studentData = data;
+        $scope.studentData.key = $stateParams.key;
         //PDFObject.embed(data.resume, "#example1");
         //https://gist.github.com/fcingolani/3300351
         PDFJS.disableWorker = true;
@@ -30,7 +30,6 @@ angular.module('Xtern')
             for(var num = 1; num <= pdfDoc.numPages; num++)
                 pdfDoc.getPage(num).then(renderPage);
         }
-
         PDFJS.getDocument(data.resume).then(renderPages);
     });
 

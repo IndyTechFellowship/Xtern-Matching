@@ -33,10 +33,10 @@
                                     </div> -->
                         <div class="ui fluid selection dropdown">
                             <input name="grade" type="hidden" value="0">
-                            <div class="text">{{studentData.r1Grade.text}}</div><i class="dropdown icon"></i>
+                            <div class="text">{{studentData.r1Grade}}</div><i class="dropdown icon"></i>
                             <div class="menu transition hidden">
                                 <div data-value="{{option}}" class="item" ng-repeat="option in r1GradeOptions" ng-click="selectR1Grade(option)">
-                                    {{option.text}}
+                                    {{option}}
                                 </div>
                             </div>
                         </div>

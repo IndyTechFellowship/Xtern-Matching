@@ -59,26 +59,18 @@ angular.module('Xtern')
     };
     var authenticate = function (fields) {
         $('#companyLogin .ui.button').addClass("disabled");
-        AuthService.login(fields.email, fields.password, function (token, err) {
+        AuthService.login(fields.email, fields.password, function (token, org, err) {
             if (err) {
                 $('#companyLogin .ui.error.message').html(
                     '<ui class="list"><li>Invalid Username or Password</li></ui>'
                 ).show();
                 $('#companyLogin .ui.button').removeClass("disabled");
             } else {
-                //setToken(token, "auth");
-                AuthService.renderTokens(function (token, err) {
-                    if (err) {
-                        console.log('Render Token unsuccessful', err);
-                        $('#companyLogin .ui.error.message').html(
-                            '<ui class="list"><li>A server error occured</li></ui>'
-                        ).show();
-                    } else {
-                        $scope.isCompany = true;
-                        $state.go('company.dashboard');
-                    }
-                });
+                console.log('Login Success '+org);
+                setToken(true,'isCompany');
+                $scope.isCompany = true;
                 $('#companyLogin .ui.button').removeClass("disabled");
+                $state.go('company.dashboard');
             }
         });
     };

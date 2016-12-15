@@ -6,8 +6,8 @@
 	</div>
 	<div ng-show="selectedGroup.active == 'Company'">
 		<select class="ui fluid search dropdown" ng-model="selectedGroup.activeCompany" ng-change="selectedGroup.changeCompany()">
-            <option ng-repeat="item in companyListAbbr" value="{{item}}" on-last-repeat-drop-down>
-                {{item}}
+            <option ng-repeat="item in companyListAbbr" value="{{item.key}}" on-last-repeat-drop-down>
+                {{item.name}}
             </option>
         </select>
 	</div>
@@ -23,10 +23,9 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="row in selectedGroup.selectedUsers" ng-click="rowClick(row)" class="clickable">
+			<tr ng-repeat="row in selectedGroup.selectedUsers" class="clickable">
 				<td ng-repeat="header in tableHeaders">
 					<div ng-bind-html="row[header.displayPropertyName]"></div>
-					<!--{{row[header.displayPropertyName]}}-->
 				</td>
 				<td class="centered">
 					<button class="centered ui icon yellow basic button" ng-click="launchAddEditUserModal(row)">
@@ -85,8 +84,8 @@
 				<div class="field" id="companyDropdown">
 					<label>Company</label>
 					<select id="" class="ui fluid search dropdown" name="organization">
-                    <option ng-repeat="item in companyListAbbr" value="{{item}}" on-last-repeat-drop-down>
-                        {{item}}
+                    <option ng-repeat="item in companyListAbbr" value="{{item.key}}" on-last-repeat-drop-down>
+                        {{item.name}}
                     </option>
                 </select>
 				</div>

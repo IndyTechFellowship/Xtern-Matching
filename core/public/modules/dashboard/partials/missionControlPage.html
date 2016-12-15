@@ -68,7 +68,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="row in summaryData" ng-click="rowClick(row._id)" class="clickable">
+            <tr ng-repeat="row in summaryData" ng-click="rowClick(row.key)" class="clickable">
                 <td ng-repeat="header in tableHeaders" >
                     <div ng-bind-html="row[header.displayPropertyName]"></div>
                 </td>

@@ -15,27 +15,39 @@ angular.module('Xtern')
         'Rejected (Stage 3)'
     ];
 
-    $scope.r1GradeOptions = [
-        {
-            "text":"A",
-            "value":4
-        },{
-            "text":"B+",
-            "value":3.5
-        },{
-            "text":"B",
-            "value":3
-        },{
-            "text":"B-",
-            "value":2.8
-        },{
-            "text":"C",
-            "value":2
-        },{
-            "text":"D",
-            "value":1
-        }];
+// <<<<<<< HEAD
+    $scope.r1GradeOptions = [1,2,3,4,5,6,7,8,9,10];
+
+//     $('.ui.sticky').sticky({
+//         context: '#example1'
+//     });
+
+//     $(function () {
+//         $('.ui.dropdown').dropdown();
+//     });
+// =======
+    // $scope.r1GradeOptions = [
+    //     {
+    //         "text":"A",
+    //         "value":4
+    //     },{
+    //         "text":"B+",
+    //         "value":3.5
+    //     },{
+    //         "text":"B",
+    //         "value":3
+    //     },{
+    //         "text":"B-",
+    //         "value":2.8
+    //     },{
+    //         "text":"C",
+    //         "value":2
+    //     },{
+    //         "text":"D",
+    //         "value":1
+    //     }];
    
+// >>>>>>> master
 
     $scope.selectStatus = function(option) {
         $scope.studentData.status = option;
@@ -47,18 +59,13 @@ angular.module('Xtern')
 
     $scope.addComment = function(){
         // TODO: fix/update this for new data format
-        var author_name = "controller test author";
-        var group_name = "controller test group";
         var text = "controller test text bla bla bla. bla bla bla.";
 
-        ProfileService.addCommentToStudent($scope.studentData._id, author_name, group_name, text, function (data) {
-            // console.log(data);
+        ProfileService.addCommentToStudent(text, function (comment) {
+            $scope.comment.authorName = comment.author; //temporary
+            var newComment = angular.copy($scope.comment);
+            $scope.studentData.comments.push(newComment);
         });
-
-        $scope.comment.author = 'test user'; //temporary
-        $scope.comment.group = 'test users'; //temporary
-        var newComment = angular.copy($scope.comment);
-        $scope.studentData.comments.push(newComment);
     };
 
     $scope.removeComment = function(commentToRemove) {

@@ -7,20 +7,18 @@ angular.module('Xtern')
         $scope.companyUsers = [];
         $scope.UserFormData = {};
 
-        //TODO: REPLACE WITH BACKEND CALL
-        $scope.companyList = COMPANY_GLOBAL_LIST;
 
         var declarePageVars = function () {
             $scope.selectedGroup = {
                 active: 'TechPoint',
-                activeCompany: 'ININ',
+                activeCompany: $scope.companyList[0].key,
                 changeGroup: function (group) {
                     $scope.selectedGroup.active = group;
                     swapActiveArray(group);
                 },
                 changeCompany: function () {
-                   // refreshCompany($scope.selectedGroup.activeCompany);
-                   swapActiveArray('Company');
+                    // refreshCompany($scope.selectedGroup.activeCompany);
+                    swapActiveArray('Company');
                 },
                 selectedUsers: $scope.techPointUsers,
                 refresh: function () {
@@ -34,22 +32,10 @@ angular.module('Xtern')
             ];
 
             //Set up CompanyAbbr
-            $scope.companyListAbbr = $scope.companyList.filter(function(item){
-                return !(item == 'TechPoint' || item == 'Instructor');
+            $scope.companyListAbbr = $scope.companyList.filter(function (item) {
+                return !(item.name == 'Techpoint' || item.name == 'Instructor' || item.name == 'Instructors');
             });
-            
-        }
-
-        $scope.sort = function (header, event) {
-            var prop = header.sortPropertyName;
-            var asc = header.asc;
-            header.asc = !header.asc;
-            var ascSort = function (a, b) { return a[prop] < b[prop] ? -1 : a[prop] > b[prop] ? 1 : 0; };
-            var descSort = function (a, b) { return ascSort(b, a); };
-            var sortFunc = asc ? ascSort : descSort;
-            $scope.techPointUsers.sort(sortFunc);
         };
-
 
         var resetUserForm = function (user) {
             if (user) {
@@ -61,16 +47,16 @@ angular.module('Xtern')
                     email: user.email,
                     password: user.password,
                     role: user.organization,
-                    organization: user.organization, 
-                    key: 212
+                    organization: user.organization,
+                    key: user.key
                 });
                 $('.two.fields.group-role').hide();
             }
             else {
-                 $('.two.fields.group-role').show();
-                 $('#accountModalform').form('reset');
-                 $scope.hideCompanyDropdown();
-                 setSelectOptions();
+                $('.two.fields.group-role').show();
+                $('#accountModalform').form('reset');
+                $scope.hideCompanyDropdown();
+                setSelectOptions();
             }
         };
 
@@ -88,18 +74,38 @@ angular.module('Xtern')
                 });
             });
         }
+        var refreshAccounts = function (organizationKey, array) {
+            AccountControlService.getUsers(organizationKey, function (users) {
+                array.length = 0; //We want to keep array refrences but replace all of the elements
+                users.forEach(function (user) {
+                    array.push(user);
+                });
+                $scope.selectedGroup.selectedUsers = array;
+            });
+        };
+
 
         var swapActiveArray = function (group) {
             if (group == 'TechPoint') {
                 $scope.selectedGroup.selectedUsers = $scope.techPointUsers;
-                refreshAccounts(group, group, $scope.techPointUsers);
+                $scope.companyList.forEach(function (company) {
+                    if (company.name == 'Techpoint') {
+                        refreshAccounts(company.key, $scope.techPointUsers);
+                    }
+                });
             } else if (group == 'Instructor') {
-                $scope.selectedGroup.selectedUsers = $scope.techPointUsers;
-                refreshAccounts(group, group, $scope.techPointUsers);
+                $scope.selectedGroup.selectedUsers = $scope.instructorUsers;
+                $scope.companyList.forEach(function (company) {
+                    if (company.name == 'Instructor' || company.name== 'Instructors') {
+                        refreshAccounts(company.key, $scope.instructorUsers);
+                    }
+                });
             }
             else if (group == 'Company') {
                 $scope.selectedGroup.selectedUsers = $scope.companyUsers;
-                refreshAccounts(group, $scope.selectedGroup.activeCompany, $scope.companyUsers);
+                if($scope.selectedGroup.activeCompany){
+                    refreshAccounts($scope.selectedGroup.activeCompany, $scope.companyUsers);
+                }
             } else {
                 //ran out of cases
                 $scope.selectedUsers.length = 0;
@@ -107,12 +113,17 @@ angular.module('Xtern')
         };
 
         var submitUser = function (fields) {
+            //                 console.log('passed and submitting');
+            //     $scope.UserFormData.name = $scope.UserFormData.firstName + " " + $scope.UserFormData.lastName;
+            //     if ($scope.UserFormData.newUser) {
+            //         AccountControlService.addUser($scope.UserFormData, function () {
             fields.name = fields.firstName + " " + fields.lastName;
             if (!fields.key) {
-                if(fields.role != 'Company'){
+                if (fields.role != 'Company') {
                     fields.organization = fields.role;
                 };
                 AccountControlService.addUser(fields, function (data) {
+
                     $scope.selectedGroup.refresh();
                 });
             } else {
@@ -121,10 +132,26 @@ angular.module('Xtern')
                 });
             }
             $('#accountsModal').modal('hide');
-        }
+        };
+
+        $scope.launchAddEditUserModal = function (user) {
+            $('#accountsModal').modal('show');
+            resetUserForm(user);
+            $('#accountModalform .error.message').empty();
+        };
+
+        $scope.sort = function (header, event) {
+            var prop = header.sortPropertyName;
+            var asc = header.asc;
+            header.asc = !header.asc;
+            var ascSort = function (a, b) { return a[prop] < b[prop] ? -1 : a[prop] > b[prop] ? 1 : 0; };
+            var descSort = function (a, b) { return ascSort(b, a); };
+            var sortFunc = asc ? ascSort : descSort;
+            $scope.techPointUsers.sort(sortFunc);
+        };
 
         $scope.deleteUser = function (user) {
-            AccountControlService.deleteUser(user._id, function () {
+            AccountControlService.deleteUser(user.key, function () {
                 $scope.selectedGroup.refresh();
             });
         };
@@ -199,11 +226,10 @@ angular.module('Xtern')
                         return;
                     },
                     keyboardShortcuts: false
-                });            
-
-        }
-
+                });
+        };
         var accountControlModalConfig = function () {
+
             $('#accountsModal').modal({
                 closable: false,
                 onDeny: function () {
@@ -214,36 +240,37 @@ angular.module('Xtern')
                     return $('#accountModalform').form('is valid');
                 }
             });
+        };
 
-
-        }
         var setup = function () {
-            declarePageVars();
-            accountControlFormConfig();
-            accountControlModalConfig();
-            $scope.selectedGroup.refresh();
-        }
+            AccountControlService.getOrganizations(function (organizations) {
+                $scope.companyList = organizations;
+                declarePageVars();
+                accountControlFormConfig();
+                accountControlModalConfig();
+                $scope.selectedGroup.refresh();
+            });
+        };
 
-        $scope.hideCompanyDropdown = function(){
+        $scope.hideCompanyDropdown = function () {
             $('#companyDropdown').hide();
         };
 
-        $scope.showCompanyDropdown = function(){
+        $scope.showCompanyDropdown = function () {
             $('#companyDropdown').show();
         }
 
-        var setSelectOptions = function(){
-                $('.role.dropdown').dropdown({
-                    onChange: function(text, value) {
-                        if(value == 'Company'){
-                            $('#companyDropdown').show();
-                        }else{
-                            $('#companyDropdown').hide();
-                        }                    
+        var setSelectOptions = function () {
+            $('.role.dropdown').dropdown({
+                onChange: function (text, value) {
+                    if (value == 'Company') {
+                        $('#companyDropdown').show();
+                    } else {
+                        $('#companyDropdown').hide();
                     }
-                });
+                }
+            });
         };
-
         $scope.$on('$viewContentLoaded', function (evt) {
             setup();
         });
