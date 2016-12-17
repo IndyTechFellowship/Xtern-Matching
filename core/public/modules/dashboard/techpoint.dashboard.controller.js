@@ -154,8 +154,6 @@ angular.module('Xtern')
         }];
     $scope.DATA = null;
     $scope.PATH ='techpoint';
+    $scope.isCompany = false;
 
-    TechPointDashboardService.queryUserSummaryData(function (data) {
-        $scope.DATA = data;
-    });
 }]);

@@ -22,17 +22,27 @@
                 controller: 'TechPointDashboardCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInTechPoint();
+                       return isLoggedInTechPoint($q);
+                    }]
+                }
+            })
+            .state('techpoint.accounts',{
+                url:"/accounts",
+                templateUrl: "public/modules/account_control/partials/accounts.html",
+                controller: 'TechPointAccountCtrl',
+                resolve: {
+                    security: ['$q', function($q){
+                       return isLoggedInTechPoint($q);
                     }]
                 }
             })
             .state('techpoint.profile', {
-                url: "/profile/:_id",
-                templateUrl: "public/modules/student_profile/partials/studentProfile.html",
-                controller: 'StudentProfileCtrl',
+                url: "/profile/:key",
+                templateUrl: "public/modules/student_profile/partials/techpoint.studentProfile.html",
+                controller: 'TechPointStudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInTechPoint();
+                       return isLoggedInTechPoint($q);
                     }]
                 }
             })
@@ -42,7 +52,7 @@
                 controller: 'TechpointLogin',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedIn();
+                        return isLoggedIn($q,'ALREADY_AUTHENTICATED_TECHPOINT');
                     }]
                 }
             })
@@ -60,28 +70,29 @@
                 controller: 'CompanyDashboardCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInCompany();
+                        return isLoggedInCompany($q);
                     }]
                 }
-            }).state('company.recruting', {
+            })
+            .state('company.recruting', {
                 url: "/recruting",
                 templateUrl: "public/company/partials/company.recruting.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'CompanyRecruiting',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInCompany();
+                        return isLoggedInCompany($q);
                     }]
                 }
             })
             .state('company.profile', {
-                url: "/profile/:_id",
-                templateUrl: "public/modules/student_profile/partials/studentProfile.html",
+                url: "/profile/:key",
+                templateUrl: "public/modules/student_profile/partials/company.studentProfile.html",
                 //resolve: { authenticate: authenticate }
-                controller: 'StudentProfileCtrl',
+                controller: 'CompanyStudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedInCompany();
+                        return isLoggedInCompany($q);
                     }]
                 }
             })
@@ -91,7 +102,7 @@
                 controller: 'CompanyLogin',
                 resolve: {
                     security: ['$q', function ($q) {
-                        isLoggedIn();
+                        return isLoggedIn($q,'ALREADY_AUTHENTICATED_COMPANY');
                     }]
                 }
             });
@@ -150,11 +161,11 @@ var removeDataColors = function (data) {
 
 // There should be a better way to do this, but I am blanking now -- maybe filter
 // Corrects data formatting
-var rowClass = function (data) {
+var rowClass = function (data, key) {
     data.name = data.firstName + " " + data.lastName;
-    //data.gradeLabel = data.r1Grade.text;
-    //data.gradeValue = data.r1Grade.value;
-    data.namelink = '<a ui-sref="profile/' + data._id + '">' + data.name + "</a>";
+    data.namelink = '<a ui-sref="profile/' + key + '">' + data.name + "</a>";
+    data.gradeLabel = data.grade;
+    data.key = key;
     removeDataColors(data);
 
     //console.log(data);
@@ -168,7 +179,7 @@ var removedDuplicates = function (arr) {
 };
 
 var cleanStudents = function (student) {
-    student.interestedIn = removedDuplicates(student.interestedIn);
+    //student.interestedIn = removedDuplicates(student.interestedIn);
     //student.languages = removedDuplicates(student.interestedIn);
     return student;
 };

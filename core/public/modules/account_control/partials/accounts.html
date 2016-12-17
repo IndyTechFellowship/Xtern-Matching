@@ -1,0 +1,100 @@
+<div class="ui container">
+	<div class="ui secondary pointing menu">
+		<a class="item" ng-class="{active: selectedGroup.active == 'TechPoint'}" ng-click="selectedGroup.changeGroup('TechPoint')">TechPoint</a>
+		<a class="item" ng-class="{active: selectedGroup.active == 'Instructor'}" ng-click="selectedGroup.changeGroup('Instructor')">Instructor</a>
+		<a class="item" ng-class="{active: selectedGroup.active == 'Company'}" ng-click="selectedGroup.changeGroup('Company')">Company</a>
+	</div>
+	<div ng-show="selectedGroup.active == 'Company'">
+		<select class="ui fluid search dropdown" ng-model="selectedGroup.activeCompany" ng-change="selectedGroup.changeCompany()">
+            <option ng-repeat="item in companyListAbbr" value="{{item.key}}" on-last-repeat-drop-down>
+                {{item.name}}
+            </option>
+        </select>
+	</div>
+	<table class="ui table sortable">
+		<thead>
+			<tr>
+				<th ng-repeat="header in tableHeaders" ng-click="sort(header)" class="sorted seven wide computer">
+					{{header.title}}
+				</th>
+				<th class="two wide">
+					Edit/Delete
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="row in selectedGroup.selectedUsers" class="clickable">
+				<td ng-repeat="header in tableHeaders">
+					<div ng-bind-html="row[header.displayPropertyName]"></div>
+				</td>
+				<td class="centered">
+					<button class="centered ui icon yellow basic button" ng-click="launchAddEditUserModal(row)">
+                   <i class="edit icon"></i>     
+                </button>
+					<button class="centered ui icon red basic button" ng-click="deleteUser(row)">
+                   <i class="trash icon"></i>     
+                </button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<button class="ui positive right floated button" ng-click="launchAddEditUserModal()">Add User</button>
+</div>
+
+<!--Add Edit Form-->
+<div class="ui modal" id="accountsModal">
+	<div class="header" ng-show="UserFormData.newUser">Add a User</div>
+	<div class="header" ng-show="!UserFormData.newUser">Edit {{UserFormData. firstName}} {{UserFormData.lastName}}</div>
+	<div class="content">
+		<form class="ui form" id="accountModalform">
+			<div class="two fields">
+				<div class="required field">
+					<label>First Name</label>
+					<input type="text" name="firstName" placeholder="First Name" >
+				</div>
+				<div class="required field">
+					<label>Last Name</label>
+					<input type="text" name="lastName" placeholder="Last Name" >
+				</div>
+			</div>
+			<div class="required field">
+				<label>Email</label>
+				<input type="text" name="email" placeholder="Email" >
+			</div>
+			<div class="required field">
+				<label>Password</label>
+				<input type="text" name="password" placeholder="Password" >
+			</div>
+			<div class="required field hidden" hidden><input type="text" name="key" ></div>
+			<div class="two fields group-role" >
+				<div class="required field" id="roleDropdown">
+					<label>Group</label>
+					<div class="ui role fluid search selection dropdown" name="role" aria-placeholder="Select a Role">
+						<input type="hidden" name="role">						
+						<i class="dropdown icon"></i>
+						<div class="default text">Select a Role</div>
+						<div class="menu">
+							<div class="item" data-value="TechPoint">TechPoint</div>
+							<div class="item" data-value="Instructor" > Instructor</div>
+							<div class="item"  data-value="Company"  >Company</div>
+						</div>
+					</div>
+				</div>
+				<div class="field" id="companyDropdown">
+					<label>Company</label>
+					<select id="" class="ui fluid search dropdown" name="organization">
+                    <option ng-repeat="item in companyListAbbr" value="{{item.key}}" on-last-repeat-drop-down>
+                        {{item.name}}
+                    </option>
+                </select>
+				</div>
+			</div>
+			<div class="ui error message"></div>
+		</form>
+	</div>
+	<div class="actions">
+		<div class="ui cancel grey basic button">Cancel</div>
+		<div class="ui approve green basic button">Save</div>
+	</div>
+</div>

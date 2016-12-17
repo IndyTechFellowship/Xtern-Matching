@@ -1,21 +1,18 @@
-/**
- * Created by Steven on 3/28/2016.
- */
- (function (){
+(function (){
     var app = angular.module('DataManager',[]);
-	//var host = "http://xtern-matching.appspot.com/"
-	//var host = "http://xtern-matching-143216.appspot.com/" //DEV Server
 	var host = "http://localhost:8080/";
     app.service('ProfileService', ['$http', function ($http){
         var self = this;
         self.profile = null;
+        self.studentKey = null;
+        self.comments = null;
+        self.commentKeys = null;
 
-        self.getStudentDataForId = function(id, callback){
-            // console.log(id);
-            if(!self.profile || self.profile._id !== id) {
+        self.getStudentData = function(key, callback){
+            if(!self.profile || self.studentKey != key) {
                 $http({
                     method: 'GET',
-                    url: host + "student/" +id,
+                    url: host + "student/" + key,
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
@@ -24,9 +21,10 @@
                 }).then(function (data) {
                     console.log('SUCCESS: get student data', data.data);
                     self.profile = cleanStudents(data.data);
+                    self.studentKey = key;
                     callback(self.profile);
                 }, function errorCallback(response) {
-                    console.log('error occured: ' + response);
+                    console.log('error occured: ', response);
                     callback('', 'err');
                 });
             } else {
@@ -34,15 +32,13 @@
             }
         };
 
-        self.getStudentDataForIds = function(ids, callback){
-            console.log("get student data for ids:");
-            console.log(ids);
-            // console.log(id);
+        self.getCommentData = function(callback) {
+            if(self.studentKey != key) {
                 $http({
-                    method: 'POST',
-                    url: "http://localhost:8080/student/getstudents",
+                    method: 'GET',
+                    url: host + "comment",
                     data: {
-                        "_ids": ids
+                        "studentKey": self.studentKey
                     },
                     headers: {
                         'Content-Type': "application/json",
@@ -50,26 +46,25 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    console.log('get multiple students data:');
-                    console.log(data.data);
-                    callback(data.data);
+                    self.comments = data.data.comments;
+                    self.commentKeys = data.data.keys;
+                    callback(self.comments);
                 }, function errorCallback(response) {
-                    console.log('error occured: ');
-                    console.log(response);
+                    console.log('error occured: ' + response);
                     callback('', 'err');
                 });
+            } else {
+                console.log('error occured: Called before student');
+            }
         };
 
-        self.addCommentToStudent = function(student_id, author_name, group_name, text, callback){
+        self.addCommentToStudent = function(text, callback){
             $http({
                 method: 'POST',
-                // TODO: replace this when comments are redone
-                url: host + "student/addComment",
+                url: host + "comment",
                 data: {
-                    "id": student_id,
-                    "author_name": author_name,
-                    "group_name": group_name,
-                    "text": text
+                    "studentKey": self.studentKey,
+                    "message": text
                 },
                 headers: {
                     'Content-Type': "application/json",
@@ -79,23 +74,16 @@
             }).then(function (data) {
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ' );
-                console.log(response);
+                console.log('error occured: ', response);
                 callback('', 'err');
             });
         };
 
-        self.removeCommentFromStudent = function(student_id, author_name, group_name, text, callback){
+        self.removeCommentFromStudent = function(commentKey, callback){
             $http({
-                method: 'POST',
-                // TODO: replace this when comments are redone
-                url: host + "student/deleteComment",
-                data: {
-                    "id": student_id,
-                    "author_name": author_name,
-                    "group_name": group_name,
-                    "text": text
-                },
+                method: 'DELETE',
+                url: host + "comment/" + commentKey,
+                data: {},
                 headers: {
                     'Content-Type': "application/json",
                     'Accept': "application/json",
@@ -104,48 +92,22 @@
             }).then(function (data) {
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ' );
-                console.log(response);
+                console.log('error occured: ', response);
                 callback('', 'err');
             });
         };
 
-    }]).service('CompanyService', ['$http', function ($http){
+    }])
+        .service('CompanyService', ['$http', function ($http){
         var self = this;
-        self.company = null;
+        self.organization = null;
+        self.organizationKey = null;
 
-        self.getCurrentCompany = function(callback){
-            // console.log(id);
-            // if(!self.company || self.company._id !== id) {
+        self.getOrganizationData = function(key, callback){
+            if(!self.organization || self.organizationKey !== key) {
                 $http({
                     method: 'GET',
-                    url: host + "company/getCurrentCompany/0",
-                    headers: {
-                        'Content-Type': "application/json",
-                        'Accept': "application/json",
-                        'Authorization': 'bearer ' + getToken('auth')
-                    }
-                }).then(function (data) {
-                    // console.log('get current company data:');
-                    // console.log(data.data);
-                    self.company = data.data;
-                    callback(self.company);
-                }, function errorCallback(response) {
-                    console.log('error occured in Company Services: getCurrentCompany: ' + response);
-                    console.log(response);
-                    callback('', 'err');
-                });
-            // } else {
-            //      callback(self.company);
-            // }
-        };
-
-        self.getCompanyDataForId = function(id, callback){
-            // console.log(id);
-            if(!self.company || self.company._id !== id) {
-                $http({
-                    method: 'GET',
-                    url: host + "company/" + id,
+                    url: host + "organization/" + key,
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
@@ -154,28 +116,48 @@
                 }).then(function (data) {
                     console.log('get company data:');
                     console.log(data.data);
-                    self.company = data.data;
-                    callback(self.company);
+                    self.organization = data.data;
+                    self.organizationKey = key;
+                    callback(self.organization);
                 }, function errorCallback(response) {
-                    console.log('Company Services: error occured: ' + response);
-                    console.log(response);
+                    console.log('Company Services: error occured: ',  response);
                     callback('', 'err');
                 });
             } else {
-                 callback(self.company);
+                 callback(self.organization);
             }
         };
 
-        self.addStudentToWishList = function (studentId, callback) {
+        self.getOrganizationStudents = function (callback) {
+            $http({
+                method: 'GET',
+                url: host + "organization/students",
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                }
+            }).then(function (data) {
+                //self.organization = data.data;
+                //self.organizationKey = key;
+                var students = data.data.students;
+                for(var i = 0; i < students.length; i++) {
+                    students[i].key = data.data.keys[i]
+                }
+                console.log(students);
+                callback(students);
+            }, function errorCallback(response) {
+                console.log('Company Services: error occured: ' + response);
+                callback('', 'err');
+            });
+        };
+
+        self.addStudentToWishList = function (studentKey, callback) {
             $http({
                 method: 'POST',
-                // TODO: replace this id when company login is done
-                url: host + "company/addStudent",
-                // url: "http://localhost:8080/company/" + id,
+                url: host + "organization/addStudent",
                 data: {
-                    // "id": 5066549580791808,
-                    "token": getToken('auth'),
-                    "studentId": studentId
+                    "studentKey": studentKey
                 },
                 headers: {
                     'Content-Type': "application/json",
@@ -185,20 +167,17 @@
             }).then(function (data) {
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ' );
-                console.log(response);
+                console.log('error occured: ', response );
                 callback('', 'err');
             });
         };
 
-        self.removeStudentFromWishList = function (studentId, callback) {
+        self.removeStudentFromWishList = function (studentKey, callback) {
             $http({
                 method: 'POST',
-                // TODO: replace this id when company login is done
-                url: host + "company/removeStudent",
+                url: host + "organization/removeStudent",
                 data: {
-                    // "id": 5066549580791808,
-                    "studentId": studentId
+                    "studentKey": studentKey
                 },
                 headers: {
                     'Content-Type': "application/json",
@@ -208,21 +187,18 @@
             }).then(function (data) {
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ');
-                console.log(response);
+                console.log('error occured: ', response);
                 callback('', 'err');
             });
         };
 
-        self.switchStudentsInWishList = function (student1Id, student2Id, callback) {
+        self.switchStudentsInWishList = function (studentKey, pos, callback) {
             $http({
-                method: 'POST',
-                // TODO: replace this id when company login is done
-                url: host + "company/switchStudents",
+                method: 'PUT',
+                url: host + "organization/moveStudent",
                 data: {
-                    "id": 5066549580791808,
-                    "student1Id": student1Id,
-                    "student2Id": student2Id
+                    "studentKey": studentKey,
+                    "position": pos
                 },
                 headers: {
                     'Content-Type': "application/json",
@@ -232,15 +208,16 @@
             }).then(function (data) {
                 callback(data);
             }, function errorCallback(response) {
-                console.log('error occured: ');
-                console.log(response);
+                console.log('error occured: ', response);
                 callback('', 'err');
             });
         };
 
-    }]).service('TechPointDashboardService',['$http', function ($http){
+    }])
+        .service('TechPointDashboardService',['$http', function ($http) {
         var self = this;
-        self.userSummaryData = null;
+        self.studentSummaryData = null;
+        self.studentKeys = null;
 
         self.queryUserSummaryData = function(callback){
             $http({
@@ -252,82 +229,200 @@
                     'Authorization': 'bearer '+getToken('auth')
                 }
             }).then(function (data) {
-                self.userSummaryData = data.data;
-                callback(self.userSummaryData);
+                self.studentSummaryData = data.data.students;
+                self.studentKeys = data.data.keys;
+                callback(self.studentSummaryData, self.studentKeys);
             }, function errorCallback(response) {
-                console.log('error occured: '+response);
+                console.log('error occured: ', response);
                 console.log('Here: '+getToken('auth'));
                 callback('','err');
             });
         };
-    }]).service('AuthService',['$http', function ($http) {
-        var self = this;
-        self.jwtToken = null;
+    }])
+        .service('AccountControlService',['$http', function ($http){
+            var self = this;
+            self.userData = null;
+            self.getOrganizations = function(callback) {
+                var route = "organization";
+                $http({
+                    method: 'GET',
+                    url: host + route,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer '+ getToken('auth')
+                    }
+                }).then(function (data) {
+                    for(var i = 0; i < data.data.organizations.length; i++) {
+                        data.data.organizations[i].key = data.data.keys[i]
+                    }
+                    callback(data.data.organizations);
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                    callback('','err')
+                });
+            };
+            self.getUsers = function(orgKey,callback) {
+                console.log('Key: ', orgKey);
+                var route = "user/org/"+orgKey;
+                $http({
+                    method: 'GET',
+                    url: host + route,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    if(data.data && data.data.users && data.data.keys){
+                        for(var i = 0; i < data.data.users.length; i++) {
+                            data.data.users[i].key = data.data.keys[i];
+                        }
+                        callback(data.data.users);
+                    }else{
+                        callback([]);
+                    }
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                    callback('','err')
+                });
+            };
+            self.addUser = function(user, callback){
+                console.log('Here: ', user);
+                var route = "user";
+                $http({
+                    method: 'POST',
+                    url: host + route,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    },
+                    data: {
+                        name: user.name,
+                        email: user.email,
+                        //TODO encrypt into nonplain-text
+                        password: user.password,
+                        orgKey: user.organization
+                    }
+                }).then(function (data) {
+                    //success
+                    callback(data);
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                    // console.log('Here: ' + getToken('auth'));
+                    callback('', 'err')
+                });
+            };
+            self.updateUser = function(user, callback){
+                var route = "user/"+user.key;
+                $http({
+                    method: 'PUT',
+                    url: host + route,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    },
+                    data: {
+                        name: user.name,
+                        email: user.email,
+                        password: user.password
+                    }
+                }).then(function (data) {
+                    //success
+                    callback(data);
+                }, function errorCallback(response) {
+                    console.log('error occured: ' ,  response);
+                    callback('', 'err')
+                });
+            };
+            self.deleteUser = function (key, callback) {
+                var route = "user/" + key;
+                $http({
+                    method: 'DELETE',
+                    url: host + route,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    callback(data);
+                }, function errorCallback(response) {
+                    console.log('error occured: ' ,  response);
+                    callback('', 'err')
+                });
+            };
+    }])
+        .service('AuthService',['$http', function ($http) {
+            var self = this;
+            self.userKey = null;
 
-        self.login = function(email,password,callback) {
-            $http({
-                method: 'POST',
-                url: host + "auth/login",
-                data: {
-                    "email": email,
-                    "password": password
-                },
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json"
-                }
-            }).then(function (data) {
-                self.jwtToken = data.data['token'];
-                callback(self.jwtToken);
-            }, function errorCallback(response) {
-                console.log('error occured: '+response);
-                callback('','err');
-            });
-        };
+            self.login = function(email,password,callback) {
+                $http({
+                    method: 'POST',
+                    url: host + "auth/login",
+                    data: {
+                        "email": email,
+                        "password": password
+                    },
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json"
+                    }
+                }).then(function (data) {
+                   // setToken(data.data.token);
+                   setToken(data.data['token'], "auth");
+                   setToken(data.data.organizationName, "organization");
+                   callback(data.data['token'],data.data.organizationName);
+                }, function errorCallback(response) {
+                    console.log('error occured: ' + response);
+                    callback('','','err');
+                });
+            };
 
-        self.renderTokens = function (callback) {
-            $http({
-                method: 'GET',
-                url: host + "admin/getUser",
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json",
-                    'Authorization': 'bearer ' + self.jwtToken
-                }
-            }).then(function (data) {
-                setToken(data.role, "role");
-                setToken(data.organization, "organization");
-                callback(data);
-            }, function errorCallback(response) {
-                callback('', response);
-            });
-        };
-
-        self.logout = function (callback) {
-            $http({
-                method: 'POST',
-                url: host + "auth/logout",
-                data: {},
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json",
-                    'Authorization': 'bearer '+getToken('auth')
-                }
-            }).then(function () {
-                self.jwtToken = null;
-                localStorage.removeItem("auth");
-                localStorage.removeItem("role");
-                localStorage.removeItem("organization");
+            // self.renderTokens = function (callback) {
+            //     $http({
+            //         method: 'GET',
+            //         url: host + "admin/getUser",
+            //         headers: {
+            //             'Content-Type': "application/json",
+            //             'Accept': "application/json",
+            //             'Authorization': 'bearer ' + getToken('auth')
+            //         }
+            //     }).then(function (data) {
+            //         setToken(data.data.organization, "organization");
+            //         callback(data);
+            //     }, function errorCallback(response) {
+            //         callback('', response);
+            //     });
+            // };
+            self.logout = function (callback) {
+                // $http({
+                //     method: 'POST',
+                //     url: host + "auth/logout",
+                //     data: {},
+                //     headers: {
+                //         'Content-Type': "application/json",
+                //         'Accept': "application/json",
+                //         'Authorization': 'bearer '+getToken('auth')
+                //     }
+                // }).then(function () {
+                //     logout();
+                //     callback();
+                // }, function errorCallback(response) {
+                //     // console.log('error occured: '+response);
+                //     callback('err')
+                // });
+                logout();
                 callback();
-            }, function errorCallback(response) {
-                // console.log('error occured: '+response);
-                callback('err')
-            });
-        };
+            };
 
-    }]).service('ResumeService',['$http', function ($http) {
+    }])
+        .service('ResumeService',['$http', function ($http) {
         var self = this;
-        self.jwtToken = null;
+        
 		self.uploadResume = function(id){
 			var fd = new FormData();
 			fd.append('file', document.getElementById("file").files[0]);
@@ -341,7 +436,7 @@
             .success(function () {
 				console.log("Upload successful")
             }).error(function(response) {
-                console.log('error occured: '+response);
+                console.log('error occured: ', response);
                 console.log('Here: '+getToken('auth'));
             });
         };

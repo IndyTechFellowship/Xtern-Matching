@@ -1,23 +1,17 @@
 package main
 
 import (
-	"net/http"
 	"Xtern-Matching/routes"
-
+	"net/http"
 	"os"
-	"google.golang.org/appengine"
+	"log"
 )
 
 func init() {
 	if os.Getenv("XTERN_ENVIRONMENT") != "production" {
 		os.Setenv("XTERN_ENVIRONMENT","development")
-		// os.Setenv("GOOGLE_APPLICATION_CREDENTIALS","environments/development/cloudstore-dev.json")
+		log.Println("Setting Environment to Development")
 	}
-
-	//Seed Datasbase
-
 	http.Handle("/", routes.NewRouter())
 }
-func main() {
-	appengine.Main()
-}
+func main() {}

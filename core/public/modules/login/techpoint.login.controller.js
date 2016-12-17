@@ -31,45 +31,47 @@ angular.module('Xtern')
                     }
                 },
                 onSuccess: function(event, fields) {
+                    if(event)
+                        event.preventDefault();
                     authenticate(fields);
+                    return false;
                 },
-                onFailure: function(formErrors, fields) {
-                    return '';
+                onFailure: function(formErrors, fields) {    
+                    return false;
                 }
             });
         };
-
         formConfig();
 
         $scope.login = function() {
             $('#techpointLogin').form('validate form');
         };
         var authenticate = function(fields) {
-            console.log(fields);
-            var tempFields = {
-                email: "xniccum@gmail.com",
-                password: "admin1"
-            };
-            AuthService.login(tempFields.email, tempFields.password, function(token, err) {
+            $('#techpointLogin .ui.button').addClass("disabled");
+            AuthService.login(fields.email, fields.password, function(token, org, err) {
                 if (err) {
-                    console.log('Login unsuccessful');
                     $('#techpointLogin .ui.error.message').html(
                         '<ui class="list"><li>Invalid Username or Password</li></ui>'
-                    );
+                    ).show();
+                    $('#techpointLogin .ui.button').removeClass("disabled");
                 } else {
-                    setToken(token, "auth");
-                    AuthService.renderTokens(function(token, err) {
-                        if (err) {
-                            console.log('Render Token unsuccessful', err);
-                            $('#techpointLogin .ui.error.message').html(
-                                '<ui class="list"><li>A server error occured</li></ui>'
-                            ).show();
-                        } else {
-                            console.log('Login Success');
-                            $scope.isCompany = false;
-                            $state.go('techpoint.dashboard');
-                        }
-                    });
+                    console.log('Login Success '+org);
+                    setToken(false,'isCompany');
+                    $scope.isCompany = false;
+                    $state.go('techpoint.dashboard');
+                    // AuthService.renderTokens(function(token, err) {
+                    //     if (err) {
+                    //         console.log('Render Token unsuccessful', err);
+                    //         $('#techpointLogin .ui.error.message').html(
+                    //             '<ui class="list"><li>A server error occured</li></ui>'
+                    //         ).show();
+                    //     } else {
+                    //         // console.log('Login Success');
+                    //         $scope.isCompany = false;
+                    //         $state.go('techpoint.dashboard');
+                    //     }
+                    // });
+
                 }
             });
         };

@@ -41,10 +41,13 @@ angular.module('Xtern')
                 }
             },
             onSuccess: function (event, fields) {
+                if(event)
+                    event.preventDefault();
                 authenticate(fields);
+                return false;
             },
             onFailure: function (formErrors, fields) {
-                return '';
+                return false;
             }
         });
     };
@@ -55,31 +58,19 @@ angular.module('Xtern')
         $('#companyLogin').form('validate form');
     };
     var authenticate = function (fields) {
-        console.log(fields);
-        var tempFields = {
-            email: "xniccum@gmail.com",
-            password: "admin1"
-        }
-        AuthService.login(tempFields.email, tempFields.password, function (token, err) {
+        $('#companyLogin .ui.button').addClass("disabled");
+        AuthService.login(fields.email, fields.password, function (token, org, err) {
             if (err) {
-                console.log('Login unsuccessful');
                 $('#companyLogin .ui.error.message').html(
-                    '<ui class="list"><li>Invalid Username or Passord</li></ui>'
-                );
+                    '<ui class="list"><li>Invalid Username or Password</li></ui>'
+                ).show();
+                $('#companyLogin .ui.button').removeClass("disabled");
             } else {
-                setToken(token, "auth");
-                setToken("ININ", "company");
-                AuthService.renderTokens(function (token, err) {
-                    if (err) {
-                        console.log('Render Token unsuccessful', err);
-                        $('#companyLogin .ui.error.message').html(
-                            '<ui class="list"><li>A server error occured</li></ui>'
-                        ).show();
-                    } else {
-                        $scope.isCompany = true;
-                        $state.go('company.dashboard');
-                    }
-                });
+                console.log('Login Success '+org);
+                setToken(true,'isCompany');
+                $scope.isCompany = true;
+                $('#companyLogin .ui.button').removeClass("disabled");
+                $state.go('company.dashboard');
             }
         });
     };

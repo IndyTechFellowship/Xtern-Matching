@@ -15,4 +15,11 @@ angular.module('Xtern')
             templateUrl: 'public/modules/student_profile/tech_labels/techLabels.html',
             controller: 'TechLabelsCtrl'
         };
+    })
+    .directive('studentDataPage', function() {
+        return {
+            restrict: 'E',
+            templateUrl: 'public/modules/student_profile/partials/studentDataPage.html',
+            controller: 'StudentDataPageCtrl'
+        };
     });
