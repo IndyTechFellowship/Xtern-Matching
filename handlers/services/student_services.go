@@ -98,6 +98,7 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 	defer file.Close()
 	resumeURL, err := addResume(ctx, key.IntID(), file)
 	if err != nil {
+		log.Println("Error uploading resume")
 		return http.StatusInternalServerError, err
 	}
 	student.Resume = resumeURL
@@ -121,10 +122,12 @@ func addResume(ctx context.Context, studentId int64, file io.Reader) (string, er
 
 	client, err := google.DefaultClient(ctx, storage.DevstorageFullControlScope)
 	if err != nil {
+		log.Println("Error getting storage client")
 		return "", err
 	}
 	service, err := storage.New(client)
 	if err != nil {
+		log.Println("Error getting storage service")
 		return "", err
 	}
 
@@ -146,6 +149,7 @@ func addResume(ctx context.Context, studentId int64, file io.Reader) (string, er
 	if err == nil {
 		log.Printf("Created object %v at location %v\n\n", res.Name, res.SelfLink)
 	} else {
+		log.Println("Error inserting into bucket")
 		return "", err
 	}
 
