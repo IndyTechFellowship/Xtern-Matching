@@ -5,8 +5,8 @@ import (
 	"Xtern-Matching/handlers"
 )
 
-func GetOrganizationRoutes() *mux.Router {
-	router := mux.NewRouter().StrictSlash(true)
+func GetOrganizationRoutes(router *mux.Router) *mux.Router {
+	// router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/organization", handlers.GetOrganizations).Methods("GET").Name("GetOrganization")
 	router.HandleFunc("/organization", handlers.AddOrganization).Methods("POST").Name("AddOrganization")
 	router.HandleFunc("/organization/students", handlers.GetOrganizationStudents).Methods("GET").Name("GetOrganizationStudents")
