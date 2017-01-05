@@ -22,27 +22,49 @@
                 controller: 'TechPointDashboardCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                       return isLoggedInTechPoint($q);
+                        return isLoggedInTechPoint($q);
                     }]
                 }
             })
-            .state('techpoint.accounts',{
-                url:"/accounts",
+            .state('techpoint.accounts', {
+                url: "/accounts",
                 templateUrl: "public/modules/account_control/partials/accounts.html",
                 controller: 'TechPointAccountCtrl',
                 resolve: {
-                    security: ['$q', function($q){
-                       return isLoggedInTechPoint($q);
+                    security: ['$q', function ($q) {
+                        return isLoggedInTechPoint($q);
                     }]
                 }
             })
+            .state('techpoint.process', {
+                url: "/process_control",
+                templateUrl: "public/modules/process_control/partials/process_control.html",
+                controller: 'TechPointProcessControl',
+                // abstract: true,
+                // redirectTo:'techpoint.process.phase1',
+                resolve: {
+                    security: ['$q', function ($q) {
+                        return isLoggedInTechPoint($q);
+                    }]
+                }
+            })
+            // .state('techpoint.process.phase1', {
+            //     url: "/phase1",
+            //     templateUrl: "public/modules/process_control/partials/process_control.phase1.html",
+            //     // controller: 'TechPointAccountCtrl',
+            //     resolve: {
+            //         security: ['$q', function ($q) {
+            //             return isLoggedInTechPoint($q);
+            //         }]
+            //     }
+            // })
             .state('techpoint.profile', {
                 url: "/profile/:key",
                 templateUrl: "public/modules/student_profile/partials/techpoint.studentProfile.html",
                 controller: 'TechPointStudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                       return isLoggedInTechPoint($q);
+                        return isLoggedInTechPoint($q);
                     }]
                 }
             })
@@ -52,7 +74,7 @@
                 controller: 'TechpointLogin',
                 resolve: {
                     security: ['$q', function ($q) {
-                        return isLoggedIn($q,'ALREADY_AUTHENTICATED_TECHPOINT');
+                        return isLoggedIn($q, 'ALREADY_AUTHENTICATED_TECHPOINT');
                     }]
                 }
             })
@@ -102,7 +124,7 @@
                 controller: 'CompanyLogin',
                 resolve: {
                     security: ['$q', function ($q) {
-                        return isLoggedIn($q,'ALREADY_AUTHENTICATED_COMPANY');
+                        return isLoggedIn($q, 'ALREADY_AUTHENTICATED_COMPANY');
                     }]
                 }
             });
