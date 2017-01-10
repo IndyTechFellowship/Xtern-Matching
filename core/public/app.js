@@ -7,6 +7,8 @@
         $urlRouterProvider.when('/techpoint/', '/techpoint/login');
         $urlRouterProvider.when('/company', '/company/login');
         $urlRouterProvider.when('/company/', '/company/login');
+        $urlRouterProvider.when('/reviewer', '/reviewer/login');
+        $urlRouterProvider.when('/reviewer/', '/reviewer/login');
         $urlRouterProvider.otherwise("/techpoint/login");
         $stateProvider
             //Techpoint
@@ -105,6 +107,33 @@
                         return isLoggedIn($q,'ALREADY_AUTHENTICATED_COMPANY');
                     }]
                 }
+            })
+            // Reviewer
+            .state('reviewer', {
+                url: "/reviewer",
+                abstract: true,
+                templateUrl: "public/reviewer/partials/reviewer.html",
+                controller: 'CompanyMain'
+            })
+            .state('reviewer.login', {
+                url: "/login",
+                templateUrl: "public/modules/login/partials/reviewer.login.html",
+                controller: 'ReviewerLogin'
+                // resolve: {
+                //     security: ['$q', function ($q) {
+                //         return isLoggedIn($q,'ALREADY_AUTHENTICATED_COMPANY');
+                //     }]
+                // }
+            })
+            .state('reviewer.profile', {
+                url: "/profile/:key",
+                templateUrl: "public/modules/student_profile/partials/reviewer.studentProfile.html",
+                controller: 'ReviewerStudentProfileCtrl'
+            })
+            .state('reviewer.dashboard', {
+                url: "/dashboard",
+                templateUrl: "public/modules/dashboard/partials/reviewer.dashboard.html",
+                controller: 'ReviewerDashboardCtrl'
             });
     });
     app.run(function ($state, $rootScope) {
