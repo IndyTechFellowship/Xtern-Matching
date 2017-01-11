@@ -1,5 +1,5 @@
 <div class="ui container">
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sit amet ex eu eros luctus dignissim et et nisi.
+    <!--<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sit amet ex eu eros luctus dignissim et et nisi.
         Duis sollicitudin tortor in vulputate gravida. Sed eu nunc gravida est tempor ultricies. Vestibulum ante ipsum primis
         in faucibus orci luctus et ultrices posuere cubilia Curae; Donec eget mauris feugiat, lobortis erat eget, mollis
         metus. Pellentesque eget leo neque. Etiam vulputate ullamcorper vulputate. Nulla finibus arcu sit amet diam gravida,
@@ -30,9 +30,52 @@
     <p>Nullam vehicula sapien fermentum mattis tempor. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
         cubilia Curae; Curabitur dictum volutpat erat at blandit. Vestibulum vitae turpis vel enim porttitor aliquam ut a
         erat. Vestibulum cursus tellus purus, eget condimentum purus hendrerit eget. Suspendisse sagittis erat at iaculis
-        auctor. Nulla vel odio justo. Morbi laoreet pretium turpis, quis molestie metus maximus in.</p>
-
+        auctor. Nulla vel odio justo. Morbi laoreet pretium turpis, quis molestie metus maximus in.</p>-->
     <!--<div class="ui-view"></div>-->
+
+    <h1 class="ui centered header">Phase 1 Decision Board</h1>
+    <div class="ui relaxed internally celled grid">
+        <div class="row">
+            <div class="five wide column">
+                <div class="ui horizontal statistic">
+                    <div class="value">
+                        {{phase1.list.length}}
+                    </div>
+                    <div class="label">
+                        Students in Range
+                    </div>
+                </div>
+            </div>
+            <div class="eleven wide column">
+                <h2 class="ui centered header">Students</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="five wide column">
+                <rzslider rz-slider-model="phase1.slider.value" rz-slider-options="phase1.slider.options">
+                </rzslider>                
+                <div ng-repeat="chart in phase1.charts">
+                    <h4 class="ui header">{{chart.name}} Breakdown</h4>
+                <canvas id="stage-doughnut" class="chart chart-doughnut" 
+                    chart-data="chart.data" chart-labels="chart.labels" 
+                    chart-legend="false">
+                </canvas>
+                </div>
+            </div>
+            <div class="eleven wide column" id="processTableContainer">
+                <table class="ui fixed table">
+                    <tbody>
+                        <tr ng-repeat="studentPair in phase1.displayList">
+                            <td>{{studentPair.right.name}}</td>
+                            <td>{{studentPair.left.name}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
     <div class="ui fluid tablet stackable steps">
         <div class="step">
             <i class="user icon"></i>

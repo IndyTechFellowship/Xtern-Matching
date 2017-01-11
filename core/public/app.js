@@ -1,5 +1,5 @@
 (function () {
-    var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable", "DataManager", "ngSanitize"]);//ngSanitize
+    var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable", "DataManager", "ngSanitize", 'rzModule']);
 
     app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
         // $locationProvider.html5Mode(true);
@@ -47,17 +47,7 @@
                         return isLoggedInTechPoint($q);
                     }]
                 }
-            })
-            // .state('techpoint.process.phase1', {
-            //     url: "/phase1",
-            //     templateUrl: "public/modules/process_control/partials/process_control.phase1.html",
-            //     // controller: 'TechPointAccountCtrl',
-            //     resolve: {
-            //         security: ['$q', function ($q) {
-            //             return isLoggedInTechPoint($q);
-            //         }]
-            //     }
-            // })
+            })           
             .state('techpoint.profile', {
                 url: "/profile/:key",
                 templateUrl: "public/modules/student_profile/partials/techpoint.studentProfile.html",
