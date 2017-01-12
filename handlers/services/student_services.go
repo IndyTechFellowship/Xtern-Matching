@@ -4,16 +4,20 @@ import (
 	"Xtern-Matching/models"
 	"log"
 	"net/http"
-	"golang.org/x/net/context"
-	"google.golang.org/appengine/datastore"
+
+	"Xtern-Matching/handlers/services/csv"
+
 	"io"
 	"os"
+	"strconv"
+
+	"golang.org/x/net/context"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/storage/v1"
-	"strconv"
+	"google.golang.org/appengine/datastore"
 )
 
-func GetStudents(ctx context.Context, parent *datastore.Key) ([]models.Student,[]*datastore.Key,error) {
+func GetStudents(ctx context.Context, parent *datastore.Key) ([]models.Student, []*datastore.Key, error) {
 	q := datastore.NewQuery("Student")
 	if parent != nil {
 		q = datastore.NewQuery("Student").Ancestor(parent)
@@ -37,6 +41,18 @@ func GetStudent(ctx context.Context, studentKey *datastore.Key) (models.Student,
 	return student, nil
 }
 
+func ExportStudents(ctx context.Context) ([]byte, error) {
+	students, _, err := GetStudents(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	output, err := csv.Marshal(students)
+	if err != nil {
+		return nil, err
+	}
+	return output, nil
+}
+
 func NewStudent(ctx context.Context, student models.Student) (int, error) {
 
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
@@ -52,7 +68,7 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 		return http.StatusInternalServerError, err
 	}
 	defer file.Close()
-	resumeURL, err := addResume(ctx,key.IntID(), file)
+	resumeURL, err := addResume(ctx, key.IntID(), file)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
@@ -64,7 +80,7 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 	return http.StatusCreated, nil
 }
 
-func addResume(ctx context.Context, studentId int64, file io.Reader) (string,error) {
+func addResume(ctx context.Context, studentId int64, file io.Reader) (string, error) {
 	var bucketName string
 	var projectID string
 	if os.Getenv("XTERN_ENVIRONMENT") != "production" {
@@ -81,7 +97,7 @@ func addResume(ctx context.Context, studentId int64, file io.Reader) (string,err
 	}
 	service, err := storage.New(client)
 	if err != nil {
-		return "",err
+		return "", err
 	}
 
 	//Access Bucket and see if it exists
