@@ -6,7 +6,7 @@
     <a ng-if="loggedIn" ui-sref="reviewer.dashboard" ui-sref-active="active" class="item">Dashboard</a>
     <div class="right menu">
         <a ng-if="loggedIn" ui-sref="reviewer.login" ng-click="logout()" class="item">Sign Out</a>
-        <a ng-if="!loggedIn" class="item">Sign In</a>
+        <a ng-if="!loggedIn" ui-sref="reviewer.login" class="item">Sign In</a>
     </div>
 </div>
 <div class="vertical-spacer"></div>
