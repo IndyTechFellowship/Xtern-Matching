@@ -9,28 +9,7 @@
             </div>
                 <div class="five wide column">
                     <div id="statusAndGrade">
-                        <div class="ui header">Status and Grade</div>
-                        <div class="ui fluid selection dropdown">
-                            <input name="status" type="hidden" value="0">
-                            <div class="text">{{studentData.status}}</div><i class="dropdown icon"></i>
-                            <div class="menu transition hidden">
-                                <div data-value="{{option}}" class="item" ng-repeat="option in statusOptions" ng-click="selectStatus(option)">
-                                    {{option}}
-                                </div>
-                            </div>
-                        </div>
-                        <!--             <div class="ui fluid selection dropdown">
-                                      <input type="hidden" name="grade" ng-model="studentData.r1Grade">
-                                      <i class="dropdown icon"></i>
-                                      <div class="default text">Grade</div>
-                                      <div class="menu">
-                                        <div class="item" data-value="4">A</div>
-                                        <div class="item" data-value="3">B</div>
-                                        <div class="item" data-value="2">C</div>
-                                        <div class="item" data-value="1">D</div>
-                                        <div class="item" data-value="0">F</div>
-                                      </div>
-                                    </div> -->
+                        <div class="ui header">Grade</div>
                         <div class="ui fluid selection dropdown">
                             <input name="grade" type="hidden" value="0">
                             <div class="text">{{studentData.r1Grade}}</div><i class="dropdown icon"></i>
@@ -65,18 +44,6 @@
         </div>
     </div>
 </div>
-
-<!--Can Uncomment for testing-->
-<!-- <div class="ui container">
-    <form class="ui form" ng-controller="UploadCtrl as ctrl" enctype="multipart/form-data">
-
-        <label for="file">File:</label>
-        <input id="file" name="file" type="file"></input>
-
-        <input type="submit" ng-click="ctrl.uploadResume(4505248894812160);"></input>
-
-    </form>
-</div> -->
 <div class="vertical-spacer"></div>
 
 <script src="node_modules/pdfjs-dist/build/pdf.js">
