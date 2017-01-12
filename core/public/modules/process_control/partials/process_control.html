@@ -1,82 +1,84 @@
 <div class="ui container">
-    <!--<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sit amet ex eu eros luctus dignissim et et nisi.
-        Duis sollicitudin tortor in vulputate gravida. Sed eu nunc gravida est tempor ultricies. Vestibulum ante ipsum primis
-        in faucibus orci luctus et ultrices posuere cubilia Curae; Donec eget mauris feugiat, lobortis erat eget, mollis
-        metus. Pellentesque eget leo neque. Etiam vulputate ullamcorper vulputate. Nulla finibus arcu sit amet diam gravida,
-        sodales lobortis est interdum. Vivamus at sapien accumsan, ornare diam eget, lobortis sem.</p>
-    <p>Suspendisse tempus congue sem a sagittis. Vestibulum nec orci vehicula, facilisis nisl lobortis, bibendum dui. Praesent
-        quam neque, laoreet non tempor quis, ultrices porttitor libero. Morbi ornare libero quis magna accumsan, a ultrices
-        mi congue. Mauris blandit commodo erat sed fermentum. Nulla facilisi. Pellentesque porta ipsum sit amet lectus posuere,
-        in lacinia sem maximus. Ut diam justo, semper quis accumsan a, maximus nec massa. Maecenas porttitor urna id tempus
-        aliquam. Phasellus accumsan justo egestas rutrum faucibus. Ut pretium rhoncus pellentesque. Suspendisse bibendum
-        quis enim semper finibus. Nulla non ligula interdum, lacinia arcu quis, dictum leo. Morbi nec vehicula turpis. Sed
-        rhoncus malesuada mauris eget aliquam.</p>
-    <p>Curabitur in placerat sapien, sed dapibus purus. Suspendisse bibendum massa id porttitor vehicula. Etiam vel posuere
-        enim, ac feugiat leo. Nam rutrum, turpis vel dignissim pretium, justo tellus tempor quam, at pretium massa leo eu
-        tellus. Proin et enim sit amet neque tempus fermentum. Vivamus cursus ultrices porta. Pellentesque non consectetur
-        est. Quisque et efficitur elit. Sed nec ornare nibh. Nunc quis urna elementum, dapibus diam non, pellentesque justo.
-        Nullam a ipsum sapien. Aenean sed semper tortor. Proin dignissim hendrerit quam, in luctus ipsum euismod et. Duis
-        sagittis pulvinar lacus, vitae volutpat libero lacinia eu. Class aptent taciti sociosqu ad litora torquent per conubia
-        nostra, per inceptos himenaeos.</p>
-    <p>Sed eget ipsum lectus. Vestibulum tincidunt sollicitudin quam. Vestibulum in porta leo. Lorem ipsum dolor sit amet, consectetur
-        adipiscing elit. Phasellus sed odio odio. Pellentesque a arcu ex. Nam in diam vitae mi sagittis feugiat.</p>
-    <p>Donec mi leo, viverra nec pharetra sit amet, auctor at libero. Nullam tempus egestas turpis, vitae sagittis sem vulputate
-        lacinia. Quisque nec posuere turpis, vel egestas quam. Aenean quis libero ligula. Duis eget egestas magna, ac porttitor
-        lorem. Nulla elementum euismod fermentum. Praesent auctor sollicitudin tortor sed hendrerit. Vestibulum ac elementum
-        est, id sagittis erat. Cras sed ultricies dolor, sit amet faucibus mi. Sed molestie, sem porta vulputate feugiat,
-        justo libero egestas odio, sit amet commodo dui risus vitae sapien. Aenean iaculis risus at justo rutrum placerat.
-        Morbi venenatis massa at suscipit ultrices. Mauris fermentum, nisl a ultricies euismod, urna velit commodo arcu,
-        in congue nisi quam vitae felis. Nam eleifend metus quis mauris convallis, sit amet tempus odio fermentum.</p>
-    <p>Nullam vehicula sapien fermentum mattis tempor. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
-        cubilia Curae; Curabitur dictum volutpat erat at blandit. Vestibulum vitae turpis vel enim porttitor aliquam ut a
-        erat. Vestibulum cursus tellus purus, eget condimentum purus hendrerit eget. Suspendisse sagittis erat at iaculis
-        auctor. Nulla vel odio justo. Morbi laoreet pretium turpis, quis molestie metus maximus in.</p>-->
-    <!--<div class="ui-view"></div>-->
-
-    <h1 class="ui centered header">Phase 1 Decision Board</h1>
-    <div class="ui relaxed internally celled grid">
-        <div class="row">
-            <div class="five wide column">
-                <div class="ui horizontal statistic">
-                    <div class="value">
-                        {{phase1.list.length}}
-                    </div>
-                    <div class="label">
-                        Students in Range
+    <div ng-if="showDecisionboard" class="decision board wrapper">
+        <h1 class="ui centered header">Phase I Decision Board</h1>
+        <div class="ui relaxed internally celled grid">
+            <div class="row">
+                <div class="five wide column">
+                    <div class="ui horizontal statistic">
+                        <div class="value">
+                            {{phase1.list.length}}
+                        </div>
+                        <div class="label">
+                            Students in Range
+                        </div>
                     </div>
                 </div>
+                <div class="eleven wide column">
+                    <h2 class="ui centered header">Students</h2>
+                </div>
             </div>
-            <div class="eleven wide column">
-                <h2 class="ui centered header">Students</h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="five wide column">
-                <rzslider rz-slider-model="phase1.slider.value" rz-slider-options="phase1.slider.options">
-                </rzslider>
-                <div ng-repeat="chart in phase1.charts">
-                    <h4 class="ui header">{{chart.name}} Breakdown</h4>
-                    <canvas class="chart chart-doughnut" chart-data="chart.data" chart-labels="chart.labels" chart-legend="false">
+            <div class="row">
+                <div class="five wide column">
+                    <rzslider rz-slider-model="phase1.slider.value" rz-slider-options="phase1.slider.options">
+                    </rzslider>
+                    <div ng-repeat="chart in phase1.charts">
+                        <h4 class="ui header">{{chart.name}} Breakdown</h4>
+                        <canvas class="chart chart-doughnut" chart-data="chart.data" chart-labels="chart.labels" chart-legend="false">
+                        </canvas>
+                    </div>
+                    <h4 class="ui header">{{phase1.histogram.name}}</h4>
+                    <canvas class="chart chart-bar" chart-data="phase1.histogram.data" chart-labels="phase1.histogram.labels" chart-legend="false">
                     </canvas>
-                </div>
-                <h4 class="ui header">{{phase1.histogram.name}}</h4>
-                <canvas class="chart chart-bar" chart-data="phase1.histogram.data" chart-labels="phase1.histogram.labels" chart-legend="false">
-                </canvas>
 
-            </div>
-            <div class="eleven wide column" id="processTableContainer">
-                <table class="ui fixed table">
-                    <tbody>
-                        <tr ng-repeat="studentPair in phase1.displayList">
-                            <td>{{studentPair.right.name}}</td>
-                            <td>{{studentPair.left.name}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                </div>
+                <div class="eleven wide column" id="processTableContainer">
+                    <table class="ui fixed table">
+                        <tbody>
+                            <tr ng-repeat="studentPair in phase1.displayList">
+                                <td>{{studentPair.right.name}}</td>
+                                <td>{{studentPair.left.name}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-
+    <div ng-if="showInstructorStats" class="instructor stats wrapper">
+        <h1 class="ui centered header"> Phase II Reviewer Statistics</h1>
+        <div class="ui relaxed centered grid">
+            <div class="row">
+                <div class="seven wide column">
+                    <div class="vertical-spacer"></div>
+                    <div class="ui huge statistic">
+                        <div class="value">
+                            100
+                        </div>
+                        <div class="label">
+                            Students Remaining
+                        </div>
+                    </div>
+                </div>
+                <div class="seven wide column">
+                    <canvas class="chart chart-bar" chart-data="phase2Instrutor.studentHist.data" chart-labels="phase2Instrutor.studentHist.labels" chart-legend="false">
+                    </canvas>
+                    <h4 class="ui centered header">{{phase2Instrutor.studentHist.name}}</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="seven wide column">
+                    <canvas class="chart chart-doughnut" chart-data="phase2Instrutor.progressPie.data" chart-labels="phase2Instrutor.progressPie.labels" chart-legend="false">
+                    </canvas>
+                </div>
+                <div class="seven wide column">
+                    <canvas class="chart chart-bar" chart-data="phase2Instrutor.reviewerHist.data" chart-labels="phase2Instrutor.reviewerHist.labels" chart-legend="false">
+                    </canvas>
+                    <h4 class="ui centered header">{{phase2Instrutor.reviewerHist.name}}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="vertical-spacer"></div>
+    </div>
 
     <div class="ui fluid tablet stackable steps">
         <div class="step">

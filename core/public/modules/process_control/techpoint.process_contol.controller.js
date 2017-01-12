@@ -2,6 +2,11 @@ angular.module('Xtern')
     // .controller('TechPointProcessControl', ['$scope', '$rootScope', '$state', 'AccountControlService', 'rzModule' , function ($scope, $rootScope, $state, AccountControlService, rzModule) {
     .controller('TechPointProcessControl', ['$scope', '$rootScope', '$state', 'AccountControlService', function ($scope, $rootScope, $state, AccountControlService) {
         var self = this;
+        $scope.showDecisionboard = true;
+        $scope.showInstructorStats = false;
+        $scope.companyList = [];
+
+
         $scope.phase1 = {
             fullList: [],
             list:[],
@@ -37,9 +42,8 @@ angular.module('Xtern')
                 data: [[1,2]],
                 name: 'Histogram of Scores'
             }
-        }
+        }  
 
-        $scope.companyList = [];
 
 
         var phase1FilterLoad = function () {
@@ -62,6 +66,7 @@ angular.module('Xtern')
             var histData = renderHistogramData(metadata, 'score');
             $scope.phase1.histogram.data = [histData.values];
             $scope.phase1.histogram.labels = histData.keys;
+            console.log($scope.phase1.histogram);
         }
 
         var splitInToTwo = function (inList) {
@@ -75,6 +80,31 @@ angular.module('Xtern')
             return tempArr;
         };
 
+        //Instructor Stats
+        $scope.phase2 = {
+
+        };
+
+        $scope.phase2Instrutor = {
+            studentHist: {
+                labels:["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+                data:[[1, 6, 11, 12, 18, 14, 12, 12, 10, 1]],
+                name: "Distribution of Student Scores"
+            },
+            reviewerHist: {
+                labels:["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+                data:[[2, 6, 11, 15, 18, 16, 12, 10, 8, 1]],
+                name: "Distribution of Reviewer Scores (AVG)"
+            },
+            progressPie: {
+                labels:['Completed','In Progress', 'Remaining'],
+                data:[50, 23, 30],
+                name: ""
+            }
+        };
+
+
+        // Chart Util Funcitons
         var renderHistogramData = function (data, field) {
             var _map = [];
             //create map
@@ -94,8 +124,6 @@ angular.module('Xtern')
             return output;
         };
 
-
-
         var renderChartData = function (data, field) {
             var _map = [];
             //create map
@@ -113,33 +141,6 @@ angular.module('Xtern')
                 output.values.push(_map[key]);
             };
             return output;
-        };
-
-        var generateHeaders = function (field, data, array) {
-            array.length = 0;
-            for (var rowIndex in data) {
-                if (array.indexOf(data[rowIndex][field]) === -1) {
-                    array.push(data[rowIndex][field]);
-                }
-            }
-            array.sort();
-        };
-
-        var generateChartData = function (headers, data, dataLabel) {
-            //initialize array
-            var returnData = Array.apply(null, Array(headers.length)).map(function () {
-                return 0
-            });
-            for (var rowIndex in data) {
-                var value = data[rowIndex][dataLabel];
-                for (var i = 0; i < headers.length; i++) {
-                    if (headers[i] === value) {
-                        returnData[i]++;
-                        // break;
-                    }
-                }
-            }
-            return returnData;
         };
 
 
