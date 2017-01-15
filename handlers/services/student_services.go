@@ -96,12 +96,12 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 		return http.StatusInternalServerError, err
 	}
 	defer file.Close()
-	resumeURL, err := addResume(ctx, key.IntID(), file)
+	/* resumeURL, err := addResume(ctx, key.IntID(), file)
 	if err != nil {
 		log.Println("Error uploading resume")
 		return http.StatusInternalServerError, err
-	}
-	student.Resume = resumeURL
+	} */
+	student.Resume = "public/sample.pdf"//resumeURL
 	_, err = datastore.Put(ctx, key, &student)
 	if err != nil {
 		return http.StatusInternalServerError, err
