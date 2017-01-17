@@ -117,7 +117,7 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 		log.Println("Error uploading resume")
 		return http.StatusInternalServerError, err
 	} */
-	student.Resume = "http://xtern-matching.appspot.com/public/sample.pdf"//resumeURL
+	student.Resume = "http://localhost:8080/public/sample.pdf"//resumeURL
 	_, err = datastore.Put(ctx, key, &student)
 	if err != nil {
 		return http.StatusInternalServerError, err
