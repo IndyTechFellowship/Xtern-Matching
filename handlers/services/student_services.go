@@ -59,11 +59,12 @@ func ExportResumes(ctx context.Context, students []models.Student) (*bytes.Buffe
 	defer archive.Close()
 	for _, student := range students {
 		// Get the resume and write it
+		log.Printf(student.Resume)
 		resp, err := client.Get(student.Resume)
-		defer resp.Body.Close()
 		if err != nil {
 			return nil, err
 		}
+		defer resp.Body.Close()
 		f, err := archive.Create(student.Email + ".pdf")
 		io.Copy(f, resp.Body)
 	}
@@ -101,7 +102,7 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 		log.Println("Error uploading resume")
 		return http.StatusInternalServerError, err
 	} */
-	student.Resume = "public/sample.pdf"//resumeURL
+	student.Resume = "http://xtern-matching.appspot.com/public/sample.pdf"//resumeURL
 	_, err = datastore.Put(ctx, key, &student)
 	if err != nil {
 		return http.StatusInternalServerError, err
