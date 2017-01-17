@@ -1,4 +1,45 @@
 package tests
+
+import (
+	//"os"
+
+	"Xtern-Matching/models"
+
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/datastore"
+)
+
+func createStudent(ctx context.Context) (models.Student, error) {
+	var student models.Student
+	student.FirstName = "Darla"
+	student.LastName = "leach"
+	student.Email = "darlaleach@stockpost.com"
+	student.University = "Rose-Hulman Institute of Technology"
+	student.Major = "Computer Engineering"
+	student.GradYear = "2017"
+	student.WorkStatus = "US Citizen"
+	student.HomeState = "West Virginia"
+	student.Gender = "female"
+	student.Skills = []models.Skill{{Name: "SQL", Category: "Database"}, {Name: "HTML", Category: "Frontend"}}
+	student.Github = "https://github.com/xniccum"
+	student.Linkin = ""
+	student.PersonalSite = ""
+	student.Interests = []string{"Product Management", "Software Engineer- Middle-tier Dev."}
+	student.Grade = 5
+	student.Status = "Stage 1 Approved"
+	student.Resume = "public/data_mocks/sample.pdf"
+	student.Active = true
+
+	key := datastore.NewIncompleteKey(ctx, "Student", nil)
+	key, err := datastore.Put(ctx, key, &student)
+	if err != nil {
+		return models.Student{}, err
+	}
+	// time.Sleep(time.Millisecond * 500)
+
+	return student, nil
+}
+
 //
 //import (
 //	//"os"

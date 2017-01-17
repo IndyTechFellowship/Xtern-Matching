@@ -7,6 +7,9 @@ import (
 	// "io/ioutil"
 	"log"
 	"net/http"
+
+	"Xtern-Matching/handlers/services/csv"
+
 	"os"
 	"strconv"
 
@@ -59,7 +62,6 @@ func ExportResumes(ctx context.Context, students []models.Student) (*bytes.Buffe
 	defer archive.Close()
 	for _, student := range students {
 		// Get the resume and write it
-		log.Printf(student.Resume)
 		resp, err := client.Get(student.Resume)
 		if err != nil {
 			return nil, err
@@ -82,6 +84,18 @@ func GetStudent(ctx context.Context, studentKey *datastore.Key) (models.Student,
 	return student, nil
 }
 
+func ExportStudents(ctx context.Context) ([]byte, error) {
+	students, _, err := GetStudents(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	output, err := csv.Marshal(students)
+	if err != nil {
+		return nil, err
+	}
+	return output, nil
+}
+
 func NewStudent(ctx context.Context, student models.Student) (int, error) {
 
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
@@ -97,6 +111,7 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 		return http.StatusInternalServerError, err
 	}
 	defer file.Close()
+
 	/* resumeURL, err := addResume(ctx, key.IntID(), file)
 	if err != nil {
 		log.Println("Error uploading resume")

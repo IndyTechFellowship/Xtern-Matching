@@ -1,20 +1,19 @@
 package handlers
 
 import (
-	"net/http"
-	"google.golang.org/appengine"
-	"encoding/json"
-	"Xtern-Matching/models"
 	"Xtern-Matching/handlers/services"
+	"Xtern-Matching/models"
+	"encoding/json"
 	"log"
-	"google.golang.org/appengine/datastore"
+	"net/http"
+
 	"github.com/gorilla/mux"
-	// "os"
-	// "io"
-	// "google.golang.org/appengine/file"
+	"google.golang.org/appengine/datastore"
+
+	"google.golang.org/appengine"
 )
 
-func GetStudents(w http.ResponseWriter,r *http.Request) {
+func GetStudents(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 	students, keys, err := services.GetStudents(ctx, nil)
 	if err != nil {
@@ -22,19 +21,19 @@ func GetStudents(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
+
 	type Response struct {
-		Keys []*datastore.Key		`json:"keys"`
-		Students []models.Student	`json:"students"`
+		Keys     []*datastore.Key `json:"keys"`
+		Students []models.Student `json:"students"`
 	}
 	response := Response{Keys: keys, Students: students}
-
 
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
 
-func GetStudent(w http.ResponseWriter,r *http.Request) {
+func GetStudent(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
 	studentKey, err := datastore.DecodeKey(mux.Vars(r)["studentKey"])
@@ -45,6 +44,7 @@ func GetStudent(w http.ResponseWriter,r *http.Request) {
 	}
 
 	student, err := services.GetStudent(ctx, studentKey)
+
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
@@ -103,11 +103,24 @@ func AddStudent(w http.ResponseWriter,r *http.Request) {
 	//}
 	//defer file.Close()
 
-	status,err := services.NewStudent(ctx, student)
+	status, err := services.NewStudent(ctx, student)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
 	w.WriteHeader(status)
+}
+
+func ExportStudents(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+	students, err := services.ExportStudents(ctx)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "text/csv")
+	w.Write(students)
 }
