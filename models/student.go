@@ -1,5 +1,9 @@
 package models
 
+import (
+	"google.golang.org/appengine/datastore"
+)
+
 // csv:"-" to exclude export
 type Student struct {
 	FirstName    string   `json:"firstName"`
@@ -31,7 +35,7 @@ type Skill struct {
 }
 
 type ReviewerGrade struct {
-	Reviewer	*User `json:"reviewer"`
+	Reviewer	*datastore.Key `json:"reviewer"`
 	Grade 		int `json:"grade"`
 }
 

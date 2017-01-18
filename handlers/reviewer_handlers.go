@@ -7,6 +7,9 @@ import (
 	"Xtern-Matching/handlers/services"
 	"log"
 	"google.golang.org/appengine/datastore"
+	"math/rand"
+	"math"
+	"Xtern-Matching/models"
 )
 
 func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
@@ -18,17 +21,17 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	// minStudents := dat["minStudents"].(int)
-	// minReviewers := dat["minReviewers"].(int)
+	minStudents := int(dat["minStudents"].(float64))
+	minReviewers := int(dat["minReviewers"].(float64))
 
 	//TODO: Wipe existing groups
-	_, ReviewGroupKeys, err := services.GetReviewGroups(ctx, nil)
+	_, oldReviewGroupKeys, err := services.GetReviewGroups(ctx, nil)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	} else {
-		err := datastore.DeleteMulti(ctx, ReviewGroupKeys)
+		err := datastore.DeleteMulti(ctx, oldReviewGroupKeys)
 		if err != nil {
 			log.Println(err.Error())
 			http.Error(w, err.Error(), 500)
@@ -37,38 +40,96 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
 	}
 
 	//TODO: get array of keys for reviewers
+	_, reviewerKeys, err := services.GetUsersByOrgName(ctx, "Reviewers")
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	} else {
+		log.Println(reviewerKeys)
+	}
 
 	//TODO: get array of keys for students
+	_, studentKeys, err := services.GetStudents(ctx, nil)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	//TODO shuffle the arrays
+	for i := range reviewerKeys {
+    	j := rand.Intn(i + 1)
+    	reviewerKeys[i], reviewerKeys[j] = reviewerKeys[j], reviewerKeys[i]
+	}
+
+	for i := range studentKeys {
+    	j := rand.Intn(i + 1)
+    	studentKeys[i], studentKeys[j] = studentKeys[j], studentKeys[i]
+	}
 
 	//TODO: loop: create and assign reviewers/students to groups - limit max groups to min number of students or reviewers
+	maxGroups := int(math.Min(float64(minStudents), float64(minReviewers)));
+
+	//TODO compute num groups from input group size
+	reviewGroups := make([]models.ReviewGroup,maxGroups)
+	reviewGroupKeys := make([]*datastore.Key,maxGroups)
+
+	var reviewerArrayIndex = 0;
+	var studentArrayIndex = 0;
+	var numReviewersPerGroup = minReviewers;
+	var numStudentsPerGroup = minStudents;
+
+	for i := 0; i < maxGroups; i++ {
+		var newReviewGroup models.ReviewGroup
+		reviewGroups = append(reviewGroups, newReviewGroup)
+		reviewGroupKeys = append(reviewGroupKeys, datastore.NewIncompleteKey(ctx, "ReviewGroup", nil))
+
+		for j := 0; j < numReviewersPerGroup; j++ {
+			newReviewGroup.Reviewers = append(newReviewGroup.Reviewers, reviewerKeys[reviewerArrayIndex + j])
+		}
+		reviewerArrayIndex += numReviewersPerGroup
+
+		for j := 0; j < numStudentsPerGroup; j++ {
+			newReviewGroup.Students = append(newReviewGroup.Students, studentKeys[numStudentsPerGroup + j])
+		}
+		studentArrayIndex += numStudentsPerGroup
+	}
 
 	//TODO: assign remaining students and reviewers while looping groups one at a time
 
+	var reviewGroupIndex = 0;
 
+	if(reviewerArrayIndex < len(reviewerKeys)) {
+		for reviewerArrayIndex < len(reviewerKeys) {
+			reviewGroups[reviewGroupIndex].Reviewers = append(reviewGroups[reviewGroupIndex].Reviewers, reviewerKeys[reviewerArrayIndex])
+			reviewerArrayIndex++
+			reviewGroupIndex++
+			if(reviewGroupIndex >= len(reviewGroups)) {
+				reviewGroupIndex = 0;
+			}
+		}
+		reviewGroupIndex = 0;
+	}
 
+	if(studentArrayIndex < len(studentKeys)) {
+		for studentArrayIndex < len(studentKeys) {
+			reviewGroups[reviewGroupIndex].Students = append(reviewGroups[reviewGroupIndex].Students, studentKeys[studentArrayIndex])
+			studentArrayIndex++
+			reviewGroupIndex++
+			if(reviewGroupIndex >= len(reviewGroups)) {
+				reviewGroupIndex = 0;
+			}
+		}
+	}
 
-
-
-
-
-
-
-	// user := context.Get(r, "user")
-	// mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	// orgKey, err := datastore.DecodeKey(mapClaims["org"].(string))
+	// _, err = datastore.PutMulti(ctx, reviewGroupKeys, &reviewGroups)
 	// if err != nil {
 	// 	log.Println(err.Error())
 	// 	http.Error(w, err.Error(), 500)
-	// 	return
 	// }
-	// position :=  int(dat["position"].(float64));
 
-	// _, err = services.MoveStudentInOrganization(ctx, orgKey, studentKey, position)
-	// if err != nil {
-	// 	log.Print(err)
-	// 	http.Error(w, err.Error(), 500)
-	// 	return
-	// }
+	for i := 0; i < len(reviewGroups); i ++ {
+		datastore.Put(ctx, reviewGroupKeys[i], &reviewGroups[i])
+	}
 	w.WriteHeader(http.StatusOK)
-
 }

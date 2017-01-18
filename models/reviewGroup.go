@@ -1,6 +1,10 @@
 package models
 
+import (
+	"google.golang.org/appengine/datastore"
+)
+
 type ReviewGroup struct {
-	Reviewers       []*User  `json:"reviewers"`
-	Students []*Student 	`json:"students"`
+	Reviewers       []*datastore.Key  `json:"reviewers"`
+	Students []*datastore.Key 	`json:"students"`
 }
