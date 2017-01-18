@@ -9,8 +9,8 @@
         "kind": "Company"
       },
       {
-        "name": "Instructors",
-        "kind": "Instructors"
+        "name": "Reviewers",
+        "kind": "Reviewers"
       }
     ],
   "users": [
@@ -55,6 +55,108 @@
       "email": "merillat@techpoint.org",
       "password": "admin1",
       "org": "Techpoint"
+      },
+      {
+      "name": "Test1 Reviewer",
+      "email": "test1@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test2 Reviewer",
+      "email": "test2@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test3 Reviewer",
+      "email": "test3@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test4 Reviewer",
+      "email": "test4@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test5 Reviewer",
+      "email": "test5@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test6 Reviewer",
+      "email": "test6@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test7 Reviewer",
+      "email": "test7@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+	  {
+      "name": "Test8 Reviewer",
+      "email": "test8@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test8 Reviewer",
+      "email": "test8@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test9 Reviewer",
+      "email": "test9@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test10 Reviewer",
+      "email": "test10@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test11 Reviewer",
+      "email": "test11@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test12 Reviewer",
+      "email": "test12@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test12 Reviewer",
+      "email": "test12@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test13 Reviewer",
+      "email": "test13@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test14 Reviewer",
+      "email": "test14@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
+      },
+      {
+      "name": "Test15 Reviewer",
+      "email": "test15@reviewer.org",
+      "password": "admin1",
+      "org": "Reviewers"
       }
       ],
   "students": [

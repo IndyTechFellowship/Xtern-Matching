@@ -1,8 +1,79 @@
-<div class="ui">
-    <mission-control startchartsandchats="STARTCHARTSANDSTATS"
-                     startfilters="STARTFILTERS"
-                     tableheaders="TABLEHEADERS"
-                     data="DATA"
-                     path="PATH"
-    ></mission-control>
+<div class="ui grid">
+    <div class="computer only one wide column"></div>
+    <div class="three wide computer six wide tablet column">
+        <div class="ui message filter box">
+            <div class="ui statistic">
+                <div class="value">
+                    <i class="users icon"></i>
+                    {{personsCount}}
+                </div>
+                <div class="label">
+                    Applicants
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="ui vertical divider"></div>-->
+    <div class="eleven wide column" >
+        <h2 class="ui header">Students </h2>
+        <table class="ui striped selectable sortable table">
+            <thead>
+            <tr>
+                <!-- <th ng-repeat="header in tableHeaders" ng-click="sort(header)" class="sorted"> -->
+                <th >
+                    Header1
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="row in summaryData" ng-click="rowClick(row.key)" class="clickable">
+                <td Header1>
+                    <div ng-bind-html="row[name]"></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="cube">
+          <img class="side" src="/public/images/xtern-x.png" alt="Smiley face" height="150" width="150"></img>
+      </div>
+  </div>
+    <div class="computer only one wide column"></div>
 </div>
+
+<style type=text/css>
+      .cube {
+        width: 150px;
+        height: 150px;
+        transform-style: preserve-3d;
+        transform: rotateY(45deg);
+        margin: auto;
+        left: 50%;
+      }
+      .cube div {
+        position:absolute;
+        z-index:1;
+        top:0;
+        left:0;
+        height:150px;
+        width:150px;
+        backface-visibility:show;
+        border:1px solid #fff;
+      }
+      .side:nth-child(1) {
+        /*transform: translateZ(150px);*/
+      }
+      .cube {
+        /* Add an animation property here. */
+        animation: rotateAboutY 5s linear infinite;
+/*        top:50%;
+        left: 50%;
+        margin-top: -150px;
+        margin-left: -150px;*/
+        position: fixed;
+      }
+      /* Add a keyframe animation to rotateAboutY here. */
+      @keyframes rotateAboutY {
+        0% {transform: rotateY(0deg);}
+        100% {transform: rotateY(360deg);}
+      }
+</style>
