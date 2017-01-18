@@ -60,7 +60,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 
 	var orgKey *datastore.Key
 	if val, ok := mux.Vars(r)["orgKey"]; ok {
-		log.Println("Found orgkey");
+		// log.Println("Found orgkey");
 		var err error
 		orgKey, err = datastore.DecodeKey(val)
 		if err != nil {
@@ -69,7 +69,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		log.Println("Grabbing all");
+		// log.Println("Grabbing all");
 		orgKey = nil
 	}
 	log.Printf("%v\n",orgKey)
@@ -88,6 +88,30 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
+}
+
+func GetUsersByOrgName(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	if orgName, ok := mux.Vars(r)["orgName"]; ok {
+		users, keys, err := services.GetUsersByOrgName(ctx, orgName)
+		if err != nil {
+			log.Println("ERROR: " + err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		type Response struct {
+			Keys []*datastore.Key		`json:"keys"`
+			Users []models.User		`json:"users"`
+		}
+		response := Response{Keys: keys, Users: users}
+
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	} else {
+		http.Error(w, "ERROR: could not find orgName", http.StatusInternalServerError)
+	}
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
