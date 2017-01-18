@@ -17,7 +17,7 @@ type Student struct {
 	Interests    []string `json:"interests"`
 	Resume       string   `json:"resume"`
 	Grade        int      `json:"grade"`
-	ReveiwersToGrades	map[*User]int	`json:"reviewersToGrades"`
+	ReviewerGrades	[]ReviewerGrade	`json:"reviewersToGrades"`
 	Status       string   `json:"status"`
 	Active       bool     `json:"active"`
 	HomeState    string   `json:"homeState"`
@@ -28,6 +28,11 @@ type Student struct {
 type Skill struct {
 	Name     string `json:"name"`
 	Category string `json:"category"`
+}
+
+type ReviewerGrade struct {
+	Reviewer	*User `json:"reviewer"`
+	Grade 		int `json:"grade"`
 }
 
 func (skill Skill) MarshalCSV() ([]byte, error) {

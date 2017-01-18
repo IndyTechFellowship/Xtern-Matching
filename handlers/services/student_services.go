@@ -4,13 +4,10 @@ import (
 	"Xtern-Matching/models"
 	"log"
 	"net/http"
-
 	"Xtern-Matching/handlers/services/csv"
-
 	"io"
 	"os"
 	"strconv"
-
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/storage/v1"
@@ -57,22 +54,23 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
 	student.Active = true
+	student.ReviewerGrades = make([]models.ReviewerGrade, 0, 1)
 
 	//TODO make this done in a single put
 	key, err := datastore.Put(ctx, key, &student)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
-	file, err := os.Open("public/sample.pdf")
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-	defer file.Close()
-	resumeURL, err := addResume(ctx, key.IntID(), file)
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-	student.Resume = resumeURL
+	// file, err := os.Open("public/sample.pdf")
+	// if err != nil {
+	// 	return http.StatusInternalServerError, err
+	// }
+	// defer file.Close()
+	// resumeURL, err := addResume(ctx, key.IntID(), file)
+	// if err != nil {
+	// 	return http.StatusInternalServerError, err
+	// }
+	// student.Resume = resumeURL
 	_, err = datastore.Put(ctx, key, &student)
 	if err != nil {
 		return http.StatusInternalServerError, err
