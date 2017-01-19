@@ -45,8 +45,6 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
-	} else {
-		log.Println(reviewerKeys)
 	}
 
 	//TODO: get array of keys for students
@@ -68,7 +66,8 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
 	}
 
 	//TODO: loop: create and assign reviewers/students to groups - limit max groups to min number of students or reviewers
-	maxGroups := int(math.Min(float64(minStudents), float64(minReviewers)));
+	maxGroups := int(math.Min(float64(len(studentKeys)/minStudents), float64(len(reviewerKeys)/minReviewers)));
+	// maxGroups = 2
 
 	//TODO compute num groups from input group size
 	reviewGroups := make([]models.ReviewGroup,maxGroups)
@@ -76,12 +75,17 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
 
 	var reviewerArrayIndex = 0;
 	var studentArrayIndex = 0;
-	var numReviewersPerGroup = minReviewers;
-	var numStudentsPerGroup = minStudents;
+	var numReviewersPerGroup = int(len(reviewerKeys)/maxGroups);
+	var numStudentsPerGroup = int(len(studentKeys)/maxGroups);
+
+	log.Println("numReviewersPerGroup: ", numReviewersPerGroup)
+	log.Println("numStudentsPerGroup: ", numStudentsPerGroup)
+	log.Println("maxGroups: ", maxGroups)
+
 
 	for i := 0; i < maxGroups; i++ {
 		var newReviewGroup models.ReviewGroup
-		reviewGroups = append(reviewGroups, newReviewGroup)
+		
 		reviewGroupKeys = append(reviewGroupKeys, datastore.NewIncompleteKey(ctx, "ReviewGroup", nil))
 
 		for j := 0; j < numReviewersPerGroup; j++ {
@@ -89,10 +93,12 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
 		}
 		reviewerArrayIndex += numReviewersPerGroup
 
-		for j := 0; j < numStudentsPerGroup; j++ {
-			newReviewGroup.Students = append(newReviewGroup.Students, studentKeys[numStudentsPerGroup + j])
+		for k := 0; k < numStudentsPerGroup; k++ {
+			newReviewGroup.Students = append(newReviewGroup.Students, studentKeys[studentArrayIndex + k])
 		}
 		studentArrayIndex += numStudentsPerGroup
+		reviewGroups = append(reviewGroups, newReviewGroup)
+		// log.Println("new group made")
 	}
 
 	//TODO: assign remaining students and reviewers while looping groups one at a time
@@ -107,6 +113,7 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
 			if(reviewGroupIndex >= len(reviewGroups)) {
 				reviewGroupIndex = 0;
 			}
+			log.Println("extra reviewer added")
 		}
 		reviewGroupIndex = 0;
 	}
@@ -119,6 +126,7 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
 			if(reviewGroupIndex >= len(reviewGroups)) {
 				reviewGroupIndex = 0;
 			}
+			log.Println("extra reviewer added")
 		}
 	}
 
@@ -129,6 +137,7 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
 	// }
 
 	for i := 0; i < len(reviewGroups); i ++ {
+		log.Println(reviewGroups[i]);
 		datastore.Put(ctx, reviewGroupKeys[i], &reviewGroups[i])
 	}
 	w.WriteHeader(http.StatusOK)
