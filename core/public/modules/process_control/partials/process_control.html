@@ -18,20 +18,24 @@
                 </div>
             </div>
             <div class="row">
-                <div class="five wide column">
+                <div class="eight wide column">
                     <rzslider rz-slider-model="phase1.slider.value" rz-slider-options="phase1.slider.options">
                     </rzslider>
-                    <div ng-repeat="chart in phase1.charts">
+                    <div class="ui grid">
+                    <div class="row">
+                    <div class="eight wide column" ng-repeat="chart in phase1.charts">
                         <h4 class="ui header">{{chart.name}} Breakdown</h4>
                         <canvas class="chart chart-doughnut" chart-data="chart.data" chart-labels="chart.labels" chart-legend="false">
                         </canvas>
+                    </div>
+                    </div>
                     </div>
                     <h4 class="ui header">{{phase1.histogram.name}}</h4>
                     <canvas class="chart chart-bar" chart-data="phase1.histogram.data" chart-labels="phase1.histogram.labels" chart-legend="false">
                     </canvas>
 
                 </div>
-                <div class="eleven wide column" id="processTableContainer">
+                <div class="eight wide column" id="processTableContainer">
                     <table class="ui fixed table">
                         <tbody>
                             <tr ng-repeat="studentPair in phase1.displayList">
@@ -81,14 +85,14 @@
     </div>
 
     <div class="ui fluid tablet stackable steps">
-        <div class="step">
+        <div class="step" ng-class="{'active': showDecisionboard}" ng-click="stepClick("p1")">
             <i class="user icon"></i>
             <div class="content">
                 <div class="title">Phase I</div>
                 <div class="description">Techpoint Decision Board</div>
             </div>
         </div>
-        <div class="step">
+        <div class="step" ng-class="{'active': showInstructorStats}"  ng-click="stepClick("p2I")">
             <i class="bar chart icon"></i>
             <div class="content">
                 <div class="title">Phase II - a</div>

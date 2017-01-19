@@ -6,10 +6,12 @@ angular.module('Xtern')
         $scope.showInstructorStats = false;
         $scope.companyList = [];
 
+        $scope.activeStep = 'p1';
+
 
         $scope.phase1 = {
             fullList: [],
-            list:[],
+            list: [],
             displayList: [],
             slider: {
                 value: 7.5,
@@ -35,19 +37,37 @@ angular.module('Xtern')
                     labels: ['2016'],
                     data: [1],
                     name: 'Class Year'
+                },
+                workStatus: {
+                    labels: ['2016'],
+                    data: [1],
+                    name: 'Work Status'
+                },
+                ethnicity: {
+                    labels: ['2016'],
+                    data: [1],
+                    name: 'Ethnicity'
                 }
             },
             histogram: {
-                labels: ['5','6'],
-                data: [[1,2]],
+                labels: ['5', '6'],
+                data: [[1, 2]],
                 name: 'Histogram of Scores'
             }
-        }  
+        }
 
-
+        $scope.stepClick = function (dest) {
+            if (dest === 'p1') {
+                $scope.showDecisionboard = true;
+                $scope.showInstructorStats = false;
+            } else if (dest === 'p2I') {
+                $scope.showDecisionboard = false;
+                $scope.showInstructorStats = true;
+            }
+        };
 
         var phase1FilterLoad = function () {
-            $scope.phase1.list = $scope.phase1.fullList.filter(function(val){
+            $scope.phase1.list = $scope.phase1.fullList.filter(function (val) {
                 return val["score"] >= $scope.phase1.slider.value;
             });
             // console.log(list);
@@ -59,10 +79,16 @@ angular.module('Xtern')
             var chartData2 = renderChartData($scope.phase1.list, 'gradYear');
             $scope.phase1.charts.class.data = chartData2.values;
             $scope.phase1.charts.class.labels = chartData2.keys;
+            var chartData3 = renderChartData($scope.phase1.list, 'workStatus');
+            $scope.phase1.charts.workStatus.data = chartData3.values;
+            $scope.phase1.charts.workStatus.labels = chartData3.keys;
+            var chartData4 = renderChartData($scope.phase1.list, 'ethnicity');
+            $scope.phase1.charts.ethnicity.data = chartData4.values;
+            $scope.phase1.charts.ethnicity.labels = chartData4.keys;
 
         };
 
-        var phase1HistLoad = function(metadata){
+        var phase1HistLoad = function (metadata) {
             var histData = renderHistogramData(metadata, 'score');
             $scope.phase1.histogram.data = [histData.values];
             $scope.phase1.histogram.labels = histData.keys;
@@ -87,18 +113,18 @@ angular.module('Xtern')
 
         $scope.phase2Instrutor = {
             studentHist: {
-                labels:["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-                data:[[1, 6, 11, 12, 18, 14, 12, 12, 10, 1]],
+                labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+                data: [[1, 6, 11, 12, 18, 14, 12, 12, 10, 1]],
                 name: "Distribution of Student Scores"
             },
             reviewerHist: {
-                labels:["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-                data:[[2, 6, 11, 15, 18, 16, 12, 10, 8, 1]],
+                labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+                data: [[2, 6, 11, 15, 18, 16, 12, 10, 8, 1]],
                 name: "Distribution of Reviewer Scores (AVG)"
             },
             progressPie: {
-                labels:['Completed','In Progress', 'Remaining'],
-                data:[50, 23, 30],
+                labels: ['Completed', 'In Progress', 'Remaining'],
+                data: [50, 23, 30],
                 name: ""
             }
         };
@@ -148,7 +174,7 @@ angular.module('Xtern')
             AccountControlService.getOrganizations(function (organizations) {
                 $scope.companyList = organizations;
             });
-                      
+
             $scope.phase1.fullList = DECISION_BOARD_LIST;
             phase1HistLoad(DECISION_BOARD_LIST);
             phase1FilterLoad();
