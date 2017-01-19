@@ -4,9 +4,15 @@ import (
 	//"os"
 
 	"Xtern-Matching/models"
-
+	"google.golang.org/appengine/aetest"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
+	"Xtern-Matching/handlers/services"
+	"github.com/stretchr/testify/assert"
+	"testing"
+	"time"
+	"encoding/json"
+	"os"
 )
 
 func createStudent(ctx context.Context) (models.Student, error) {
@@ -38,6 +44,23 @@ func createStudent(ctx context.Context) (models.Student, error) {
 	// time.Sleep(time.Millisecond * 500)
 
 	return student, nil
+}
+
+func TestList(t *testing.T) {
+	ctx, done, err := aetest.NewContext()
+	if !assert.Nil(t, err, "Error instantiating context") {
+		t.Fatal(err)
+	}
+	defer done()
+	for i:= 0; i < 10; i++ {
+		createStudent(ctx)
+	}
+	time.Sleep(time.Millisecond * 500)
+	students, err := services.GetStudentDecisionList(ctx, nil)
+	if !assert.Nil(t, err, "Error getting decision list") {
+		t.Fatal(err)
+	}
+	json.NewEncoder(os.Stdout).Encode(students)
 }
 
 //

@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 // csv:"-" to exclude export
 type Student struct {
 	FirstName    string   `json:"firstName"`
@@ -22,6 +24,43 @@ type Student struct {
 	HomeState    string   `json:"homeState"`
 	//Details map[string]interface{}	`json:"details"`
 	//EmailIntrest string 	`json:"interestedInEmail"`
+}
+
+/*
+	Same model as Student,
+	So only desired fields are encoded by JSON Marshal
+ */
+type StudentDecisionQuery struct {
+	FirstName    string   `json:"-"`
+	LastName     string   `json:"-"`
+	GradYear     string   `json:"gradYear"`
+	Grade        int      `json:"grade"`
+	Gender       string   `json:"gender"`
+	Email        string   `json:"-"`
+	University   string   `json:"-"`
+	Major        string   `json:"-"`
+	WorkStatus   string   `json:"-"`
+	Skills       []Skill  `json:"-"`
+	Github       string   `json:"-"`
+	Linkin       string   `json:"-"`
+	PersonalSite string   `json:"-"`
+	Interests    []string `json:"-"`
+	Resume       string   `json:"-"`
+	Status       string   `json:"-"`
+	Active       bool     `json:"-"`
+	HomeState    string   `json:"-"`
+}
+
+type StudentDecision StudentDecisionQuery
+
+func (student *StudentDecision) MarshalJSON() ([]byte, error) {
+	type Alias StudentDecision
+	return json.Marshal(&struct {
+		*Alias
+		Name string	`json:"name"`
+	}{(*Alias)(student),
+		student.FirstName +" " + student.LastName,
+	})
 }
 
 type Skill struct {

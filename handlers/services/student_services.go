@@ -17,6 +17,19 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
+func GetStudentDecisionList(ctx context.Context, parent *datastore.Key) ([]models.StudentDecision, error){
+	q := datastore.NewQuery("Student")
+	if parent != nil {
+		q = datastore.NewQuery("Student").Ancestor(parent)
+	}
+	var students []models.StudentDecision
+	_, err := q.GetAll(ctx, &students)
+	if err != nil {
+		return nil, err
+	}
+	return students, nil
+}
+
 func GetStudents(ctx context.Context, parent *datastore.Key) ([]models.Student, []*datastore.Key, error) {
 	q := datastore.NewQuery("Student")
 	if parent != nil {
