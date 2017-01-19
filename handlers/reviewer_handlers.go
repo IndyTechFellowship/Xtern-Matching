@@ -24,7 +24,7 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
 	minStudents := int(dat["minStudents"].(float64))
 	minReviewers := int(dat["minReviewers"].(float64))
 
-	//TODO: Wipe existing groups
+	//: Wipe existing groups
 	_, oldReviewGroupKeys, err := services.GetReviewGroups(ctx, nil)
 	if err != nil {
 		log.Println(err.Error())
@@ -39,7 +39,7 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
 		}
 	}
 
-	//TODO: get array of keys for reviewers
+	//: get array of keys for reviewers
 	_, reviewerKeys, err := services.GetUsersByOrgName(ctx, "Reviewers")
 	if err != nil {
 		log.Println(err.Error())
@@ -47,14 +47,16 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 
-	//TODO: get array of keys for students
+	//: get array of keys for students
 	_, studentKeys, err := services.GetStudents(ctx, nil)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	//TODO shuffle the arrays
+	// log.Println(reviewerKeys)
+
+	// shuffle the arrays
 	for i := range reviewerKeys {
     	j := rand.Intn(i + 1)
     	reviewerKeys[i], reviewerKeys[j] = reviewerKeys[j], reviewerKeys[i]
@@ -65,11 +67,11 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
     	studentKeys[i], studentKeys[j] = studentKeys[j], studentKeys[i]
 	}
 
-	//TODO: loop: create and assign reviewers/students to groups - limit max groups to min number of students or reviewers
+	//: loop: create and assign reviewers/students to groups - limit max groups to min number of students or reviewers
 	maxGroups := int(math.Min(float64(len(studentKeys)/minStudents), float64(len(reviewerKeys)/minReviewers)));
 	// maxGroups = 2
 
-	//TODO compute num groups from input group size
+	// compute num groups from input group size
 	reviewGroups := make([]models.ReviewGroup,maxGroups)
 	reviewGroupKeys := make([]*datastore.Key,maxGroups)
 
@@ -141,4 +143,58 @@ func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
 		datastore.Put(ctx, reviewGroupKeys[i], &reviewGroups[i])
 	}
 	w.WriteHeader(http.StatusOK)
+}
+
+func GetReviewGroups(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	reviewGroups, reviewGroupKeys, err := services.GetReviewGroups(ctx, nil)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	type Response struct {
+		Keys []*datastore.Key		`json:"keys"`
+		ReviewGroups []models.ReviewGroup		`json:"users"`
+	}
+	response := Response{Keys: reviewGroupKeys, ReviewGroups: reviewGroups}
+
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+func GetReviewGroupForReviewer(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	var dat map[string]interface{}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	reviewerKey, err := datastore.DecodeKey(dat["reviewerKey"].(string))
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	reviewGroup, reviewGroupKey, err := services.GetReviewGroupForReviewer(ctx, reviewerKey)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+
+	type Response struct {
+		Key *datastore.Key		`json:"keys"`
+		ReviewGroup models.ReviewGroup		`json:"users"`
+	}
+	response := Response{Key: reviewGroupKey, ReviewGroup: reviewGroup}
+
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }

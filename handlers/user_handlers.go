@@ -72,7 +72,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		// log.Println("Grabbing all");
 		orgKey = nil
 	}
-	log.Printf("%v\n",orgKey)
+	// log.Printf("%v\n",orgKey)
 	users, keys, err := services.GetUsers(ctx, orgKey)
 	if err != nil {
 		log.Println("ERROR: " + err.Error())
