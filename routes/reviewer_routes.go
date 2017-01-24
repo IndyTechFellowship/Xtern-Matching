@@ -9,10 +9,8 @@ func GetReviewerRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/reviewer/getReviewGroups", handlers.GetReviewGroups).Methods("GET").Name("GetReviewGroups")
 	router.HandleFunc("/reviewer/create", handlers.CreateReviewGroups).Methods("POST").Name("CreateReviewGroups")
 	router.HandleFunc("/reviewer/getReviewGroupForReviewer", handlers.GetReviewGroupForReviewer).Methods("POST").Name("GetReviewGroupForReviewer")
-	// router.HandleFunc("/organization/addStudent", handlers.AddStudentToOrganization).Methods("POST").Name("AddStudentToOrganization")
-	// router.HandleFunc("/organization/removeStudent", handlers.RemoveStudentFromOrganization).Methods("POST").Name("RemoveStudentFromOrganization")
-	// router.HandleFunc("/organization/moveStudent", handlers.MoveStudentInOrganization).Methods("PUT").Name("MoveStudentInOrganization")
-
+	router.HandleFunc("/reviewer/getReviewerGradeForStudent/{studentKey}", handlers.GetReviewerGradeForStudent).Methods("GET").Name("GetReviewerGradeForStudent")
+	router.HandleFunc("/reviewer/postReviewerGradeForStudent", handlers.PostReviewerGradeForStudent).Methods("POST").Name("PostReviewerGradeForStudent")
 
 	return router
 }

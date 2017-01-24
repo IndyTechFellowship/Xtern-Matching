@@ -12,6 +12,7 @@ import (
 	"Xtern-Matching/models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/context"
+	"github.com/gorilla/mux"
 )
 
 func CreateReviewGroups(w http.ResponseWriter,r *http.Request) {
@@ -172,7 +173,7 @@ func GetReviewGroupForReviewer(w http.ResponseWriter,r *http.Request) {
 
 	user := context.Get(r, "user")
 
-	log.Println(user);
+	// log.Println(user);
 
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
 	reviewerKey, err := datastore.DecodeKey(mapClaims["key"].(string))
@@ -181,9 +182,6 @@ func GetReviewGroupForReviewer(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	log.Println("Key:");
-	log.Println(mapClaims["key"]);
-
 
 	reviewGroup, reviewGroupKey, err := services.GetReviewGroupForReviewer(ctx, reviewerKey)
 	if err != nil {
@@ -217,4 +215,86 @@ func GetReviewGroupForReviewer(w http.ResponseWriter,r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
+}
+
+func GetReviewerGradeForStudent(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	user := context.Get(r, "user")
+
+	// log.Println(user);
+
+	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+	reviewerKey, err := datastore.DecodeKey(mapClaims["key"].(string))
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	// log.Println("Key:");
+	// log.Println(mapClaims["key"]);
+
+	studentKey, err := datastore.DecodeKey(mux.Vars(r)["studentKey"])
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	student, err := services.GetStudent(ctx, studentKey)
+
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
+	for i := 0; i < len(student.ReviewerGrades); i++ {
+	// json.NewEncoder(w).Encode(student.ReviewerGradesmapClaims["key"])
+		if student.ReviewerGrades[i].Reviewer == reviewerKey {
+			json.NewEncoder(w).Encode(student.ReviewerGrades[i].Grade)
+		}
+	}
+}
+
+func PostReviewerGradeForStudent(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	user := context.Get(r, "user")
+
+	// log.Println(user);
+
+	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+	reviewerKey, err := datastore.DecodeKey(mapClaims["key"].(string))
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	// log.Println("Key:");
+	// log.Println(mapClaims["key"]);
+
+	var dat map[string]interface{}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	studentKey, err := datastore.DecodeKey(dat["studentKey"].(string))
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	reviewerGrade := int(dat["reviewerGrade"].(float64))
+
+	err = services.UpdateReviewerGradeForStudent(ctx, reviewerKey, studentKey, reviewerGrade)
+	if err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }

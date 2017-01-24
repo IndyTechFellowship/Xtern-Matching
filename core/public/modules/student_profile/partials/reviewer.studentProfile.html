@@ -12,16 +12,16 @@
                         <div class="ui header">Grade</div>
                         <div class="ui fluid selection dropdown">
                             <input name="grade" type="hidden" value="0">
-                            <div class="text">{{studentData.r1Grade}}</div><i class="dropdown icon"></i>
+                            <div class="text">{{reviewerGrade}}</div><i class="dropdown icon"></i>
                             <div class="menu transition hidden">
-                                <div data-value="{{option}}" class="item" ng-repeat="option in r1GradeOptions" ng-click="selectR1Grade(option)">
+                                <div data-value="{{option}}" class="item" ng-repeat="option in reviewerGradeOptions" ng-click="selectReviewerGrade(option)">
                                     {{option}}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <div class="ui header">
+<!--                         <div class="ui header">
                             Comments
                         </div>
                         <div class="ui fluid card">
@@ -36,7 +36,7 @@
                         <div class="ui fluid cards" id="commentCards">
                             <student-profile-comment class="blurring dimmable ui fluid card" ng-repeat="comment in studentData.comments track by $index"></student-profile-comment>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
 
 

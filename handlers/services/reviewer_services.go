@@ -39,3 +39,21 @@ func GetReviewGroupForReviewer(ctx context.Context, reviewerKey *datastore.Key) 
 
 	return models.ReviewGroup{}, nil, errors.New("Could not find a ReviewGroup containing reviewer")
 }
+
+func UpdateReviewerGradeForStudent(ctx context.Context, reviewerKey *datastore.Key, studentKey *datastore.Key, reviewerGrade int) (error) {
+	var student models.Student
+	if err := datastore.Get(ctx, studentKey, &student); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(student.ReviewerGrades); i++ {
+		if student.ReviewerGrades[i].Reviewer == reviewerKey {
+			student.ReviewerGrades[i].Grade = reviewerGrade
+		}
+	}
+
+	if _, err := datastore.Put(ctx, studentKey, &student); err != nil {
+		return err
+	}
+	return nil
+}

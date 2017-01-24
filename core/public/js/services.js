@@ -264,6 +264,48 @@
             });
         };
     }])
+    .service('ReviewerProfileService',['$http', function ($http) {
+        var self = this; 
+        self.getReviewerGradeForStudent = function(studentKey, callback){
+            $http({
+                method: 'GET',
+                url: host + "reviewer/getReviewerGradeForStudent/" + studentKey,
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer '+getToken('auth')
+                }
+            }).then(function (data) {
+                self.reviewerGrade = data.data.reviewerGrade;
+                callback(data.data.reviewerGrade);
+            }, function errorCallback(response) {
+                console.log('error occured: ', response);
+                callback('','err');
+            });
+        };
+
+        self.postReviewerGradeForStudent = function(studentKey, reviewerGrade){
+            $http({
+                method: 'POST',
+                url: host + "reviewer/postReviewerGradeForStudent",
+                data: {
+                    "studentKey": studentKey,
+                    "reviewerGrade": reviewerGrade
+                },
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer '+getToken('auth')
+                }
+            }).then(function (data) {
+                // self.reviewerGrade = data.data.reviewerGrade;
+                // callback(data.data.reviewerGrade);
+            }, function errorCallback(response) {
+                console.log('error occured: ', response);
+                // callback('','err');
+            });
+        };
+    }])
         .service('AccountControlService',['$http', function ($http){
             var self = this;
             self.userData = null;
