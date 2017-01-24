@@ -46,10 +46,20 @@ func UpdateReviewerGradeForStudent(ctx context.Context, reviewerKey *datastore.K
 		return err
 	}
 
+	var doAppend bool
+
 	for i := 0; i < len(student.ReviewerGrades); i++ {
 		if student.ReviewerGrades[i].Reviewer == reviewerKey {
 			student.ReviewerGrades[i].Grade = reviewerGrade
+			doAppend = true
 		}
+	}
+	if doAppend {
+		var newGrade models.ReviewerGrade
+		newGrade.Reviewer = reviewerKey
+		newGrade.Grade = reviewerGrade
+		student.ReviewerGrades = make([]models.ReviewerGrade, 0)
+		student.ReviewerGrades = append(student.ReviewerGrades, newGrade)
 	}
 
 	if _, err := datastore.Put(ctx, studentKey, &student); err != nil {

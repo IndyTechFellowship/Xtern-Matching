@@ -21,7 +21,7 @@ type Student struct {
 	Interests    []string `json:"interests"`
 	Resume       string   `json:"resume"`
 	Grade        int      `json:"grade"`
-	ReviewerGrades	[]ReviewerGrade	`json:"reviewersToGrades"`
+	ReviewerGrades	[]ReviewerGrade	`json:"reviewerGrades"`
 	Status       string   `json:"status"`
 	Active       bool     `json:"active"`
 	HomeState    string   `json:"homeState"`
