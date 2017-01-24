@@ -22,8 +22,11 @@ import (
 
 func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
-	router = GetAdminRoutes(router) // Add Admin Routes
+	router = GetAuthenticationRoutes(router) // Add Admin Routes
 	router = GetStudentRoutes(router) // Add Student Routes
-	router = GetAuthenticationRoutes(router) // Add Authentication Routes
+	router = GetCommentRoutes(router) // Add Authentication Routes
+	router = GetOrganizationRoutes(router)
+	router = GetUserRoutes(router)
+	router = GetSystemRoutes(router)
 	return router
 }

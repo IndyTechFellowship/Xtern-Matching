@@ -29,7 +29,7 @@ func NewRouter() *mux.Router {
 	))
 	router.PathPrefix("/organization").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
-		negroni.Wrap(GetOrganizationRoutes()),
+		negroni.Wrap(GetOrganizationRoutes(mux.NewRouter().StrictSlash(true))),
 	))
 	router.PathPrefix("/student").Handler(negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
