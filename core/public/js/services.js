@@ -234,7 +234,32 @@
                 callback(self.studentSummaryData, self.studentKeys);
             }, function errorCallback(response) {
                 console.log('error occured: ', response);
-                console.log('Here: '+getToken('auth'));
+                callback('','err');
+            });
+        };
+    }])
+    .service('ReviewerDashboardService',['$http', function ($http) {
+        var self = this;
+        self.studentSummaryData = null;
+        self.studentKeys = null;
+
+        self.queryUserSummaryData = function(callback){
+            $http({
+                method: 'POST',
+                url: host + "reviewer/getReviewGroupForReviewer",
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer '+getToken('auth')
+                }
+            }).then(function (data) {
+                self.studentSummaryData = data.data.students;
+
+
+                self.studentKeys = data.data.users.students;
+                callback(self.studentSummaryData, self.studentKeys);
+            }, function errorCallback(response) {
+                console.log('error occured: ', response);
                 callback('','err');
             });
         };
@@ -263,7 +288,7 @@
                 });
             };
             self.getUsers = function(orgKey,callback) {
-                console.log('Key: ', orgKey);
+                // console.log('Key: ', orgKey);
                 var route = "user/org/"+orgKey;
                 $http({
                     method: 'GET',
@@ -288,7 +313,7 @@
                 });
             };
             self.addUser = function(user, callback){
-                console.log('Here: ', user);
+                // console.log('Here: ', user);
                 var route = "user";
                 $http({
                     method: 'POST',

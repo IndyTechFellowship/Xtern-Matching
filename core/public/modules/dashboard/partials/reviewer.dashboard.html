@@ -21,14 +21,17 @@
             <tr>
                 <!-- <th ng-repeat="header in tableHeaders" ng-click="sort(header)" class="sorted"> -->
                 <th >
-                    Header1
+                    Name
                 </th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="row in summaryData" ng-click="rowClick(row.key)" class="clickable">
-                <td Header1>
-                    <div ng-bind-html="row[name]"></div>
+            <tr ng-repeat="student in summaryData" ng-click="rowClick(student.key)" class="clickable">
+<!--                 <td Header1>
+                    <div ng-bind-html="row[firstName]"></div>
+                </td> -->
+                <td>
+                    <div>{{student.firstName}} {{student.lastName}}</div>
                 </td>
             </tr>
             </tbody>
