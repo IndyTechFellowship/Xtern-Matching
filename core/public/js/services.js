@@ -1,14 +1,13 @@
 (function (){
-    var app = angular.module('DataManager',[]);
-	var host = "http://localhost:8080/";
+    let app = angular.module('DataManager',[]);
+	let host = "http://localhost:8080/";
     app.service('ProfileService', ['$http', function ($http){
-        var self = this;
+        let self = this;
         self.profile = null;
         self.studentKey = null;
         self.comments = null;
-        self.commentKeys = null;
 
-        self.getStudentData = function(key, callback){
+        self.getStudent = function(key, callback){
             if(!self.profile || self.studentKey != key) {
                 $http({
                     method: 'GET',
@@ -32,38 +31,33 @@
             }
         };
 
-        self.getCommentData = function(callback) {
-            if(self.studentKey != key) {
-                $http({
-                    method: 'GET',
-                    url: host + "comment",
-                    data: {
-                        "studentKey": self.studentKey
-                    },
-                    headers: {
-                        'Content-Type': "application/json",
-                        'Accept': "application/json",
-                        'Authorization': 'bearer ' + getToken('auth')
-                    }
-                }).then(function (data) {
-                    self.comments = data.data.comments;
-                    self.commentKeys = data.data.keys;
-                    callback(self.comments);
-                }, function errorCallback(response) {
-                    console.log('error occured: ' + response);
-                    callback('', 'err');
-                });
-            } else {
-                console.log('error occured: Called before student');
-            }
+        self.getComments = function(key,callback) {
+            $http({
+                method: 'GET',
+                url: host + "comment/" + key,
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                }
+            }).then(function (data) {
+                console.log(data);
+                self.comments = data.data.comments;
+                self.commentKeys = data.data.keys;
+                for(let i = 0;i < self.comments.length;i++) {
+                    self.comments[i].key = self.commentKeys[i];
+                }
+                callback(self.comments);
+            }, function errorCallback(err) {
+                callback(null, err);
+            });
         };
 
-        self.addCommentToStudent = function(text, callback){
+        self.addComment = function(key ,text, callback){
             $http({
                 method: 'POST',
-                url: host + "comment",
+                url: host + "comment/" + key,
                 data: {
-                    "studentKey": self.studentKey,
                     "message": text
                 },
                 headers: {
@@ -72,14 +66,15 @@
                     'Authorization': 'bearer ' + getToken('auth')
                 }
             }).then(function (data) {
+                console.log("Here: ",data);
+                let comment = {key: data, };
                 callback(data);
-            }, function errorCallback(response) {
-                console.log('error occured: ', response);
-                callback('', 'err');
+            }, function errorCallback(err) {
+                callback(null, 'err');
             });
         };
 
-        self.removeCommentFromStudent = function(commentKey, callback){
+        self.removeComment = function(commentKey, callback){
             $http({
                 method: 'DELETE',
                 url: host + "comment/" + commentKey,
@@ -91,15 +86,13 @@
                 }
             }).then(function (data) {
                 callback(data);
-            }, function errorCallback(response) {
-                console.log('error occured: ', response);
-                callback('', 'err');
+            }, function errorCallback(err) {
+                callback(null, err);
             });
         };
-
     }])
         .service('CompanyService', ['$http', function ($http){
-        var self = this;
+        let self = this;
         self.organization = null;
         self.organizationKey = null;
 
@@ -215,7 +208,7 @@
 
     }])
         .service('TechPointDashboardService',['$http', function ($http) {
-        var self = this;
+        let self = this;
         self.studentSummaryData = null;
         self.studentKeys = null;
 
@@ -240,7 +233,7 @@
         };
     }])
         .service('AccountControlService',['$http', function ($http){
-            var self = this;
+            let self = this;
             self.userData = null;
             self.getOrganizations = function(callback) {
                 var route = "organization";
@@ -356,7 +349,7 @@
             };
     }])
         .service('AuthService',['$http', function ($http) {
-            var self = this;
+            let self = this;
             self.userKey = null;
 
             self.login = function(email,password,callback) {
@@ -421,24 +414,24 @@
 
     }])
         .service('ResumeService',['$http', function ($http) {
-        var self = this;
+            let self = this;
         
-		self.uploadResume = function(id){
-			var fd = new FormData();
-			fd.append('file', document.getElementById("file").files[0]);
-			$http.post(host + "student/resume/" + id, fd,{
-                headers: {
-					'Content-Type': undefined,
-					'Accept': "application/json",
-                    'Authorization': 'bearer ' + getToken('auth')
-                }
-            })
-            .success(function () {
-				console.log("Upload successful")
-            }).error(function(response) {
-                console.log('error occured: ', response);
-                console.log('Here: '+getToken('auth'));
-            });
-        };
+            self.uploadResume = function(id){
+                var fd = new FormData();
+                fd.append('file', document.getElementById("file").files[0]);
+                $http.post(host + "student/resume/" + id, fd,{
+                    headers: {
+                        'Content-Type': undefined,
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                })
+                .success(function () {
+                    console.log("Upload successful")
+                }).error(function(response) {
+                    console.log('error occured: ', response);
+                    console.log('Here: '+getToken('auth'));
+                });
+            };
     }]);
 })();

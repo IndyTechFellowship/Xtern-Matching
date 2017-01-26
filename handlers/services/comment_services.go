@@ -15,7 +15,6 @@ func GetComments(ctx context.Context, studentKey *datastore.Key, organizationKey
 		return nil, nil, err
 	}
 
-	//TODO optimize
 	var keys []*datastore.Key
 	comments := make([]models.Comment, 0)
 	for index, comment := range allComments {
@@ -28,13 +27,14 @@ func GetComments(ctx context.Context, studentKey *datastore.Key, organizationKey
 	return comments, keys, nil
 }
 
-func AddComment(ctx context.Context, studentKey *datastore.Key, message string, name string, authorKey *datastore.Key) (int, error) {
+func AddComment(ctx context.Context, studentKey *datastore.Key, message string, name string, authorKey *datastore.Key) (*datastore.Key,error) {
 	commentKey := datastore.NewIncompleteKey(ctx, "Comment", studentKey)
 	comment := models.Comment{Message: message, Author: authorKey, AuthorName: name}
-	if _, err := datastore.Put(ctx, commentKey, &comment); err != nil {
-		return http.StatusInternalServerError, err
+	key, err := datastore.Put(ctx, commentKey, &comment);
+	if err != nil {
+		return nil,err
 	}
-	return http.StatusAccepted, nil
+	return key,nil
 }
 
 func EditComment(ctx context.Context, commentKey *datastore.Key, message string) (int, error) {

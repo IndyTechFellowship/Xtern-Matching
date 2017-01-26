@@ -90,18 +90,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!--             <div class="ui fluid selection dropdown">
-                                      <input type="hidden" name="grade" ng-model="studentData.r1Grade">
-                                      <i class="dropdown icon"></i>
-                                      <div class="default text">Grade</div>
-                                      <div class="menu">
-                                        <div class="item" data-value="4">A</div>
-                                        <div class="item" data-value="3">B</div>
-                                        <div class="item" data-value="2">C</div>
-                                        <div class="item" data-value="1">D</div>
-                                        <div class="item" data-value="0">F</div>
-                                      </div>
-                                    </div> -->
+
                         <div class="ui fluid selection dropdown">
                             <input name="grade" type="hidden" value="0">
                             <div class="text">{{studentData.grade}}</div><i class="dropdown icon"></i>
@@ -126,7 +115,7 @@
                         </div>
 
                         <div class="ui fluid cards" id="commentCards">
-                            <student-profile-comment class="blurring dimmable ui fluid card" ng-repeat="comment in studentData.comments track by $index"></student-profile-comment>
+                            <student-profile-comment class="blurring dimmable ui fluid card" ng-repeat="comment in comments"></student-profile-comment>
                         </div>
                     </div>
                 </div>

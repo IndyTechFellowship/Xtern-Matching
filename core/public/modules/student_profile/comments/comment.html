@@ -2,18 +2,18 @@
   <div class="content">
     <div class="center">
       <!-- <div class="ui inverted button">Edit</div> -->
-      <div class="ui red inverted button" ng-click="removeComment(comment)">Delete</div>
+      <div class="ui red inverted button" ng-click="removeComment(comment.key)">Delete</div>
     </div>
   </div>
 </div>
 <div class="content">
   <div class="header">
-    {{comment.author}}
-    <div class="right floated meta">
-      {{comment.group}}
-    </div>
+    {{comment.authorName}}
+    <!--<div class="right floated meta">-->
+      <!--{{comment.group}}-->
+    <!--</div>-->
   </div>
   <div class="description">
-    {{comment.text}}
+    {{comment.message}}
   </div>
 </div>
