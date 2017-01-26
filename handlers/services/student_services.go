@@ -17,13 +17,34 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
-func GetStudentDecisionList(ctx context.Context, parent *datastore.Key) ([]models.StudentDecision, error){
+func GetStudentDecisionList(ctx context.Context, parent *datastore.Key) ([]models.StudentDecision, error) {
 	q := datastore.NewQuery("Student")
 	if parent != nil {
 		q = datastore.NewQuery("Student").Ancestor(parent)
 	}
 	var students []models.StudentDecision
 	_, err := q.GetAll(ctx, &students)
+	if err != nil {
+		return nil, err
+	}
+	return students, nil
+}
+
+
+
+func GetStudentsAtLeastStatus(ctx context.Context, status string) ([]models.StudentDecision, error) {
+	statuses := [...]string{"Rejected (Stage 1)", "Rejected (Stage 2)", "Rejected (Stage 3)",
+				"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
+	query := datastore.NewQuery("Student")
+	for i := 0; i < len(status); i++ {
+		if statuses[i] == status {
+			for ; i < len(status); i++ {
+				query = query.Filter("status =", statuses[i])
+			}
+		}
+	}
+	var students []models.StudentDecision
+	_, err := query.GetAll(ctx, &students)
 	if err != nil {
 		return nil, err
 	}
