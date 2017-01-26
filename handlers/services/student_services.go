@@ -38,7 +38,7 @@ func GetStudentDecisionList(ctx context.Context, parent *datastore.Key) ([]model
 
 
 
-func GetStudentsAtLeastStatus(ctx context.Context, status string) ([]models.StudentDecision, error) {
+func GetStudentsAtLeastWithStatus(ctx context.Context, status string) ([]models.StudentDecision, error) {
 	statuses := [...]string{"Rejected (Stage 1)", "Rejected (Stage 2)", "Rejected (Stage 3)",
 				"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
 	query := datastore.NewQuery("Student")
