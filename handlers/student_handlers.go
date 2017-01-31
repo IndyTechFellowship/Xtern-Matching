@@ -55,7 +55,24 @@ func GetStudent(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(student)
 }
 
-func AddStudent(w http.ResponseWriter, r *http.Request) {
+func ExportResumes(w http.ResponseWriter,r *http.Request)  {
+	ctx := appengine.NewContext(r)
+	defer ctx.Done()
+
+	buf, err := services.ExportAllResumes(ctx)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "archive/zip")
+	w.Header().Set("Content-Disposition", "attachment; filename=archive.zip")
+	w.Write(buf.Bytes())
+}
+
+func AddStudent(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
 	var student models.Student

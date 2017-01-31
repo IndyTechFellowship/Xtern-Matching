@@ -2,16 +2,19 @@ package services
 
 import (
 	"Xtern-Matching/models"
+	"archive/zip"
+	"io"
 	"log"
 	"net/http"
 	"Xtern-Matching/handlers/services/csv"
-	"io"
 	"os"
 	"strconv"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/storage/v1"
 	"google.golang.org/appengine/datastore"
+	"bytes"
+	"google.golang.org/appengine/urlfetch"
 )
 
 func GetStudents(ctx context.Context, parent *datastore.Key) ([]models.Student, []*datastore.Key, error) {
@@ -26,6 +29,43 @@ func GetStudents(ctx context.Context, parent *datastore.Key) ([]models.Student, 
 	}
 
 	return students, keys, nil
+}
+
+/*
+Exports all student resumes in the Database.
+Queries all students and exports them
+ */
+func ExportAllResumes(ctx context.Context) (*bytes.Buffer, error) {
+	students, _, err := GetStudents(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	return ExportResumes(ctx, students)
+}
+
+/*
+Exports a slice of students as archive.pdf.
+Useful for testing service to minimize the number of pdf GET requests
+ */
+func ExportResumes(ctx context.Context, students []models.Student) (*bytes.Buffer, error) {
+
+	client := urlfetch.Client(ctx)
+	buf := new(bytes.Buffer)
+
+	archive := zip.NewWriter(buf)
+	defer archive.Close()
+	for _, student := range students {
+		// Get the resume and write it
+		resp, err := client.Get(student.Resume)
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
+		f, err := archive.Create(student.Email + ".pdf")
+		io.Copy(f, resp.Body)
+	}
+
+	return buf, nil
 }
 
 func GetStudent(ctx context.Context, studentKey *datastore.Key) (models.Student, error) {
@@ -61,16 +101,20 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
-	// file, err := os.Open("public/sample.pdf")
-	// if err != nil {
-	// 	return http.StatusInternalServerError, err
-	// }
-	// defer file.Close()
-	// resumeURL, err := addResume(ctx, key.IntID(), file)
-	// if err != nil {
-	// 	return http.StatusInternalServerError, err
-	// }
-	// student.Resume = resumeURL
+
+	file, err := os.Open("public/sample.pdf")
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	defer file.Close()
+
+	/* resumeURL, err := addResume(ctx, key.IntID(), file)
+	if err != nil {
+		log.Println("Error uploading resume")
+		return http.StatusInternalServerError, err
+	} */
+	student.Resume = "http://localhost:8080/public/sample.pdf"//resumeURL
+
 	_, err = datastore.Put(ctx, key, &student)
 	if err != nil {
 		return http.StatusInternalServerError, err
@@ -91,10 +135,12 @@ func addResume(ctx context.Context, studentId int64, file io.Reader) (string, er
 
 	client, err := google.DefaultClient(ctx, storage.DevstorageFullControlScope)
 	if err != nil {
+		log.Println("Error getting storage client")
 		return "", err
 	}
 	service, err := storage.New(client)
 	if err != nil {
+		log.Println("Error getting storage service")
 		return "", err
 	}
 
@@ -116,6 +162,7 @@ func addResume(ctx context.Context, studentId int64, file io.Reader) (string, er
 	if err == nil {
 		log.Printf("Created object %v at location %v\n\n", res.Name, res.SelfLink)
 	} else {
+		log.Println("Error inserting into bucket")
 		return "", err
 	}
 
