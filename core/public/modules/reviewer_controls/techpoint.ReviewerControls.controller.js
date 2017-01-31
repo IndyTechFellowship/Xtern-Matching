@@ -1,9 +1,28 @@
 angular.module('Xtern').controller('TechPointReviewerCtrl', function ($scope, $rootScope, $state, TechPointReviewerControlService) {
     var self = this;
     PATH ='techpoint';
+
+    $scope.reviewGroups = null;
+    $scope.reviewGroupKeys = null;
+    $scope.selectedGroup = null;
+
     $scope.createReviewGroups = function() {
         TechPointReviewerControlService.createReviewGroups(20, 2);
     };
 
 
+    $scope.selectReviewGroup = function(group) {
+        $scope.selectedGroup = group;
+        console.log("Group Selected", $scope.selectedGroup);
+        console.log("Group Selected", $scope.reviewGroups[$scope.selectedGroup]);
+    };
+
+    $('.ui.dropdown').dropdown();//activates semantic drowpdowns
+
+    TechPointReviewerControlService.queryReviewGroups(function(groups, keys) {
+        $scope.reviewGroups = groups;
+        $scope.reviewGroupKeys = keys;
+        console.log("$scope", $scope);
+
+    });
 });

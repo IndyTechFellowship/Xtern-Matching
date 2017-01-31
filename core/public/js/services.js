@@ -506,6 +506,9 @@
     }])
     .service('TechPointReviewerControlService',['$http', function ($http) {
         var self = this;
+        self.reviewGroups = null;
+        self.reviewGroupKeys = null;
+
         self.createReviewGroups = function(minStudents, minReviewers){
             $http({
                 method: 'POST',
@@ -523,6 +526,25 @@
 
             }, function errorCallback(response) {
                 console.log('error occured: ', response);
+            });
+        };
+
+        self.queryReviewGroups = function(callback){
+            $http({
+                method: 'GET',
+                url: "reviewer/getReviewGroups",
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer '+getToken('auth')
+                }
+            }).then(function (data) {
+                self.reviewGroups = data.data.users;
+                self.reviewGroupKeys = data.data.keys;
+                callback(self.reviewGroups, self.reviewGroupKeys);
+            }, function errorCallback(response) {
+                console.log('error occured: ', response);
+                callback('','err');
             });
         };
     }]);

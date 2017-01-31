@@ -1,3 +1,40 @@
-<div class="ui container">
-	<button class="ui orange button" ng-click="createReviewGroups()">Create Review Groups (!)</button>
-</div>
+<div class="ui grid">
+	<div class="computer only one wide column"></div>
+	<div class="three wide computer six wide tablet column">
+		<div class="ui container">
+			<button class="ui orange button" ng-click="createReviewGroups()">Create Review Groups (!)</button>
+		</div>
+	</div>
+	<div class="eleven wide column" >
+
+		<div class="ui fluid selection dropdown">
+			<div class="text">Select Group</div><i class="dropdown icon"></i>
+			<div class="menu transition hidden">
+				<div data-value="{{$index}}" class="item" ng-repeat="option in reviewGroupKeys" ng-click="selectReviewGroup($index)">
+					{{option}}
+				</div>
+			</div>
+		</div>
+
+		<h2 class="ui header">Group 1</h2>
+		<table class="ui definition table">
+			<thead>
+				<tr><th></th>
+					<th>Reviewer 1</th>
+					<th>Reviewer 2</th>
+				</tr></thead>
+				<tbody>
+					<tr>
+						<td>Student A</td>
+						<td>4</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<td>Student B</td>
+						<td>6</td>
+						<td>9</td>
+					</tr>
+				</tbody></table>
+			</div>
+			<div class="computer only one wide column"></div>
+		</div>
