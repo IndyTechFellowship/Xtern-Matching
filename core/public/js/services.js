@@ -122,31 +122,23 @@
     }])
         .service('CompanyService', ['$http', function ($http){
             let self = this;
-            self.organization = null;
-            self.organizationKey = null;
-
             self.getOrganizationData = function(key, callback){
-                if(!self.organization || self.organizationKey !== key) {
-                    $http({
-                        method: 'GET',
-                        url: "organization/" + key,
-                        host: host,
-                        headers: {
-                            'Content-Type': "application/json",
-                            'Accept': "application/json",
-                            'Authorization': 'bearer ' + getToken('auth')
-                        }
-                    }).then(function (data) {
-                        //console.log(data.data);
-                        self.organization = data.data;
-                        self.organizationKey = key;
-                        callback(self.organization);
-                    }, function errorCallback(err) {
-                        callback(null, err);
-                    });
-                } else {
-                     callback(self.organization);
-                }
+                $http({
+                    method: 'GET',
+                    url: "organization/" + key,
+                    host: host,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    //console.log(data.data);
+                    let organization = data.data;
+                    callback(organization);
+                }, function errorCallback(err) {
+                    callback(null, err);
+                });
             };
 
             self.getOrganizationStudents = function (callback) {
@@ -241,8 +233,6 @@
     }])
         .service('TechPointDashboardService',['$http', function ($http) {
             let self = this;
-            self.studentSummaryData = null;
-            self.studentKeys = null;
 
             self.queryUserSummaryData = function(callback){
                 $http({
@@ -255,9 +245,7 @@
                         'Authorization': 'bearer '+getToken('auth')
                     }
                 }).then(function (data) {
-                    self.studentSummaryData = data.data.students;
-                    self.studentKeys = data.data.keys;
-                    callback(self.studentSummaryData, self.studentKeys);
+                    callback(data.data.students, data.data.keys);
                 }, function errorCallback(response) {
                     console.log('error occured: ', response);
                     console.log('Here: '+getToken('auth'));
@@ -267,7 +255,6 @@
     }])
         .service('AccountControlService',['$http', function ($http){
             let self = this;
-            self.userData = null;
             self.getOrganizations = function(callback) {
                 var route = "organization";
                 $http({
@@ -302,17 +289,12 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    if(data.data && data.data.users && data.data.keys){
-                        for(var i = 0; i < data.data.users.length; i++) {
-                            data.data.users[i].key = data.data.keys[i];
-                        }
-                        callback(data.data.users);
-                    }else{
-                        callback([]);
+                    for(var i = 0; i < data.data.users.length; i++) {
+                        data.data.users[i].key = data.data.keys[i];
                     }
-                }, function errorCallback(response) {
-                    console.log('error occured: ', response);
-                    callback('','err')
+                    callback(data.data.users);
+                }, function errorCallback(err) {
+                    callback(null,err)
                 });
             };
             self.addUser = function(user, callback){
@@ -362,9 +344,8 @@
                 }).then(function (data) {
                     //success
                     callback(data);
-                }, function errorCallback(response) {
-                    console.log('error occured: ' ,  response);
-                    callback('', 'err')
+                }, function errorCallback(err) {
+                    callback(null, err)
                 });
             };
             self.deleteUser = function (key, callback) {
@@ -388,8 +369,6 @@
     }])
         .service('AuthService',['$http', function ($http) {
             let self = this;
-            self.userKey = null;
-
             self.login = function(email,password,callback) {
                 $http({
                     method: 'POST',
