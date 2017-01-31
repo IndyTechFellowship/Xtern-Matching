@@ -16,7 +16,7 @@ type Student struct {
 	PersonalSite string   `json:"personalWebiteUrl"`
 	Interests    []string `json:"interests"`
 	Resume       string   `json:"resume"`
-	Grade        int      `json:"grade"`
+	Grade        float64  `json:"grade"`
 	Status       string   `json:"status"`
 	Active       bool     `json:"active"`
 	HomeState    string   `json:"homeState"`

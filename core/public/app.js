@@ -1,5 +1,5 @@
  (function () {
-    let app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable", "DataManager", "ngSanitize"]);//ngSanitize
+    let app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable", "DataManager", "ngSanitize"]);
 
     app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
         // $locationProvider.html5Mode(true);
@@ -167,15 +167,7 @@ var rowClass = function (data, key) {
     data.gradeLabel = data.grade;
     data.key = key;
     removeDataColors(data);
-
-    //console.log(data);
     return data;
-};
-
-var removedDuplicates = function (arr) {
-    return arr.filter(function (elem, index, self) {
-        return index == self.indexOf(elem);
-    });
 };
 
 var cleanStudents = function (student) {

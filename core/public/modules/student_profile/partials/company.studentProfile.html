@@ -16,19 +16,19 @@
                             <i class="add user icon"></i> Recruit
                         </div>
                         <div class="ui header">
-                            Comments:
+                            Comments
                         </div>
                         <div class="ui fluid card">
                             <div class="ui form">
                                 <div class="field">
-                                    <textarea placeholder="Enter a new comment" ng-model="comment.text"></textarea>
+                                    <textarea placeholder="Enter a new comment" ng-model="commentMessage">{{commentMessage}}</textarea>
                                 </div>
                             </div>
-                            <button class="ui bottom attached teal button" ng-click="addComment()">Post Comment</button>
+                            <button class="ui bottom attached teal button" ng-click="addComment(studentKey)">Post Comment</button>
                         </div>
-                        
+
                         <div class="ui fluid cards" id="commentCards">
-                            <student-profile-comment class="blurring dimmable ui fluid card" ng-repeat="comment in studentData.comments track by $index"></student-profile-comment>
+                            <student-profile-comment class="blurring dimmable ui fluid card" ng-repeat="comment in comments track by $index"></student-profile-comment>
                         </div>
                     </div>
                 </div>

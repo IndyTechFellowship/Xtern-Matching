@@ -70,13 +70,17 @@ func AddComment(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 
-	key, err := services.AddComment(ctx, studentKey, message, mapClaims["name"].(string),author)
+	comment, key, err := services.AddComment(ctx, studentKey, message, mapClaims["name"].(string),author)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
+	response := make(map[string]interface{});
+	response["key"] = key;
+	response["comment"] = comment;
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(key.Encode())
+	data, _ := json.Marshal(response)
+	w.Write(data)
 }
 
 func EditComment(w http.ResponseWriter,r *http.Request) {
@@ -115,11 +119,9 @@ func DeleteComment(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 
-	_, err = services.DeleteComment(ctx, commentKey)
-	if err != nil {
+	if err = services.DeleteComment(ctx, commentKey); err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-
 	w.WriteHeader(http.StatusOK)
 }

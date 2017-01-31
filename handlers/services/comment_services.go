@@ -23,18 +23,17 @@ func GetComments(ctx context.Context, studentKey *datastore.Key, organizationKey
 			keys = append(keys, commentKeys[index])
 		}
 	}
-
 	return comments, keys, nil
 }
 
-func AddComment(ctx context.Context, studentKey *datastore.Key, message string, name string, authorKey *datastore.Key) (*datastore.Key,error) {
+func AddComment(ctx context.Context, studentKey *datastore.Key, message string, name string, authorKey *datastore.Key) (models.Comment,*datastore.Key,error) {
 	commentKey := datastore.NewIncompleteKey(ctx, "Comment", studentKey)
 	comment := models.Comment{Message: message, Author: authorKey, AuthorName: name}
 	key, err := datastore.Put(ctx, commentKey, &comment);
 	if err != nil {
-		return nil,err
+		return models.Comment{},nil,err
 	}
-	return key,nil
+	return comment,key,nil
 }
 
 func EditComment(ctx context.Context, commentKey *datastore.Key, message string) (int, error) {
@@ -51,9 +50,9 @@ func EditComment(ctx context.Context, commentKey *datastore.Key, message string)
 	return http.StatusAccepted, nil
 }
 
-func DeleteComment(ctx context.Context, commantKey *datastore.Key) (int, error) {
+func DeleteComment(ctx context.Context, commantKey *datastore.Key) error {
 	if err := datastore.Delete(ctx, commantKey); err != nil {
-		return http.StatusInternalServerError, err
+		return err
 	}
-	return http.StatusAccepted, nil
+	return nil
 }

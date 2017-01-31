@@ -21,7 +21,7 @@
                         </div>
                         <div class="ui fluid selection dropdown">
                             <input name="grade" type="hidden" value="0">
-                            <div class="text">{{studentData.r1Grade}}</div><i class="dropdown icon"></i>
+                            <div class="text">{{studentData.grade}}</div><i class="dropdown icon"></i>
                             <div class="menu transition hidden">
                                 <div data-value="{{option}}" class="item" ng-repeat="option in r1GradeOptions" ng-click="selectR1Grade(option)">
                                     {{option}}
@@ -36,14 +36,14 @@
                         <div class="ui fluid card">
                             <div class="ui form">
                                 <div class="field">
-                                    <textarea placeholder="Enter a new comment" ng-model="commentMessage"></textarea>
+                                    <textarea placeholder="Enter a new comment" ng-model="commentMessage">{{commentMessage}}</textarea>
                                 </div>
                             </div>
                             <button class="ui bottom attached teal button" ng-click="addComment(studentKey)">Post Comment</button>
                         </div>
 
                         <div class="ui fluid cards" id="commentCards">
-                            <student-profile-comment class="blurring dimmable ui fluid card" ng-repeat="comment in comments"></student-profile-comment>
+                            <student-profile-comment class="blurring dimmable ui fluid card" ng-repeat="comment in comments track by $index"></student-profile-comment>
                         </div>
                     </div>
                 </div>
