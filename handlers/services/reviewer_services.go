@@ -46,12 +46,12 @@ func UpdateReviewerGradeForStudent(ctx context.Context, reviewerKey *datastore.K
 		return err
 	}
 
-	var doAppend bool
+	var doAppend bool = true
 
 	for i := 0; i < len(student.ReviewerGrades); i++ {
 		if student.ReviewerGrades[i].Reviewer == reviewerKey {
 			student.ReviewerGrades[i].Grade = reviewerGrade
-			doAppend = true
+			doAppend = false
 		}
 	}
 	if doAppend {

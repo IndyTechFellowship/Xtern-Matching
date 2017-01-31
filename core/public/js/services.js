@@ -444,7 +444,7 @@
                    setToken(data.data.organizationName, "organization");
                    callback(data.data['token'],data.data.organizationName);
                 }, function errorCallback(response) {
-                    console.log('error occured: ' + response);
+                    console.log('error occured: ', response);
                     callback('','','err');
                 });
             };
