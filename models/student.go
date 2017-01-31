@@ -46,7 +46,7 @@ func (student *StudentDecision) MarshalJSON() ([]byte, error) {
 		*Alias
 		Name string	`json:"name"`
 	}{(*Alias)(student),
-		student.FirstName +" " + student.LastName,
+		student.FirstName + " " + student.LastName,
 	})
 }
 

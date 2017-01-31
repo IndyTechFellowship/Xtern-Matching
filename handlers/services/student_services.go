@@ -41,21 +41,28 @@ func GetStudentDecisionList(ctx context.Context, parent *datastore.Key) ([]model
 func GetStudentsAtLeastWithStatus(ctx context.Context, status string) ([]models.StudentDecision, error) {
 	statuses := [...]string{"Rejected (Stage 1)", "Rejected (Stage 2)", "Rejected (Stage 3)",
 				"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
-	query := datastore.NewQuery("Student").Project("FirstName", "LastName", "GradYear", "Grade", "Gender")
+	query := datastore.NewQuery("Student").
+		Project("FirstName", "LastName", "GradYear", "Grade", "Gender")
+	var students []models.StudentDecision
 	for i := 0; i < len(statuses); i++ {
 
 		if statuses[i] == status {
-			//for ; i < len(statuses); i++ {
-			//	query = query.Filter("status =", statuses[i])
-			//}
+			for ; i < len(statuses); i++ {
+				/*
+					Not efficient query wise, but the best option for now
+				 */
+				newQuery := query.Filter("Status =", statuses[i])
+				var newStudents []models.StudentDecision
+				_, err := newQuery.GetAll(ctx, &newStudents)
+				if err != nil {
+					return nil, err
+				}
+				for j := 0; j < len(newStudents); j++ {
+					students = append(students, newStudents[j])
+				}
+			}
 			break
 		}
-		query = query.Filter("status >", statuses[i]).Filter("status <", statuses[i])
-	}
-	var students []models.StudentDecision
-	_, err := query.GetAll(ctx, &students)
-	if err != nil {
-		return nil, err
 	}
 	return students, nil
 }
