@@ -503,5 +503,27 @@
                 console.log('Here: '+getToken('auth'));
             });
         };
+    }])
+    .service('TechPointReviewerControlService',['$http', function ($http) {
+        var self = this;
+        self.createReviewGroups = function(minStudents, minReviewers){
+            $http({
+                method: 'POST',
+                url: "reviewer/create",
+                data: {
+                    "minStudents": minStudents,
+                    "minReviewers": minReviewers
+                },
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer '+getToken('auth')
+                }
+            }).then(function (data) {
+
+            }, function errorCallback(response) {
+                console.log('error occured: ', response);
+            });
+        };
     }]);
 })();

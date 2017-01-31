@@ -48,6 +48,16 @@
                     }]
                 }
             })
+            .state('techpoint.reviewerControls',{
+                url:"/reviewerControls",
+                templateUrl: "public/modules/reviewer_controls/partials/reviewerControls.html",
+                controller: 'TechPointReviewerCtrl',
+                resolve: {
+                    security: ['$q', function($q){
+                       return isLoggedInTechPoint($q);
+                    }]
+                }
+            })
             .state('techpoint.login', {
                 url: "/login",
                 templateUrl: "public/modules/login/partials/techpoint.login.html",
