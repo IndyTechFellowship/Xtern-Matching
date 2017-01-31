@@ -24,7 +24,7 @@ import (
 )
 
 func GetStudentDecisionList(ctx context.Context, parent *datastore.Key) ([]models.StudentDecision, error) {
-	q := datastore.NewQuery("Student")
+	q := datastore.NewQuery("Student").Project("FirstName", "LastName", "GradYear", "Grade", "Gender")
 	if parent != nil {
 		q = datastore.NewQuery("Student").Ancestor(parent)
 	}
@@ -41,13 +41,16 @@ func GetStudentDecisionList(ctx context.Context, parent *datastore.Key) ([]model
 func GetStudentsAtLeastWithStatus(ctx context.Context, status string) ([]models.StudentDecision, error) {
 	statuses := [...]string{"Rejected (Stage 1)", "Rejected (Stage 2)", "Rejected (Stage 3)",
 				"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
-	query := datastore.NewQuery("Student")
-	for i := 0; i < len(status); i++ {
+	query := datastore.NewQuery("Student").Project("FirstName", "LastName", "GradYear", "Grade", "Gender")
+	for i := 0; i < len(statuses); i++ {
+
 		if statuses[i] == status {
-			for ; i < len(status); i++ {
-				query = query.Filter("status =", statuses[i])
-			}
+			//for ; i < len(statuses); i++ {
+			//	query = query.Filter("status =", statuses[i])
+			//}
+			break
 		}
+		query = query.Filter("status >", statuses[i]).Filter("status <", statuses[i])
 	}
 	var students []models.StudentDecision
 	_, err := query.GetAll(ctx, &students)

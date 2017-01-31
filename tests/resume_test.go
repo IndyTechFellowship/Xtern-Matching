@@ -1,5 +1,5 @@
 package tests
-
+/*
 import (
 	"testing"
 	"google.golang.org/appengine/aetest"
@@ -9,7 +9,8 @@ import (
 	"os"
 	"time"
 )
-
+*/
+/*
 func TestPost(t *testing.T) {
 	os.Setenv("XTERN_ENVIRONMENT", "")
 	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS",
@@ -61,3 +62,4 @@ func TestPost(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 }
+*/

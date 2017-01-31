@@ -36,19 +36,6 @@ type StudentDecisionQuery struct {
 	GradYear     string   `json:"gradYear"`
 	Grade        int      `json:"grade"`
 	Gender       string   `json:"gender"`
-	Email        string   `json:"-"`
-	University   string   `json:"-"`
-	Major        string   `json:"-"`
-	WorkStatus   string   `json:"-"`
-	Skills       []Skill  `json:"-"`
-	Github       string   `json:"-"`
-	Linkin       string   `json:"-"`
-	PersonalSite string   `json:"-"`
-	Interests    []string `json:"-"`
-	Resume       string   `json:"-"`
-	Status       string   `json:"-"`
-	Active       bool     `json:"-"`
-	HomeState    string   `json:"-"`
 }
 
 type StudentDecision StudentDecisionQuery

@@ -46,7 +46,45 @@ func createStudent(ctx context.Context) (models.Student, error) {
 	return student, nil
 }
 
-func TestList(t *testing.T) {
+/*
+	Creates students where each status is represented as many times as eachStatus
+ */
+func createStudentsWithEqualStatus(ctx context.Context, eachStatus int) (error){
+	statuses := [...]string{"Rejected (Stage 1)", "Rejected (Stage 2)", "Rejected (Stage 3)",
+				"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
+	for i := 0; i < len(statuses); i++ {
+		var student models.Student
+		student.FirstName = "Darla"
+		student.LastName = "leach"
+		student.Email = "darlaleach@stockpost.com"
+		student.University = "Rose-Hulman Institute of Technology"
+		student.Major = "Computer Engineering"
+		student.GradYear = "2017"
+		student.WorkStatus = "US Citizen"
+		student.HomeState = "West Virginia"
+		student.Gender = "female"
+		student.Skills = []models.Skill{{Name: "SQL", Category: "Database"}, {Name: "HTML", Category: "Frontend"}}
+		student.Github = "https://github.com/xniccum"
+		student.Linkin = ""
+		student.PersonalSite = ""
+		student.Interests = []string{"Product Management", "Software Engineer- Middle-tier Dev."}
+		student.Grade = 5
+		student.Status = statuses[i]
+		student.Resume = "public/data_mocks/sample.pdf"
+		student.Active = true
+
+		for j:=0; j<eachStatus; j++ {
+			key := datastore.NewIncompleteKey(ctx, "Student", nil)
+			key, err := datastore.Put(ctx, key, &student)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func TestDecisionList(t *testing.T) {
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
@@ -63,6 +101,27 @@ func TestList(t *testing.T) {
 	json.NewEncoder(os.Stdout).Encode(students)
 }
 
+func TestStatusList(t *testing.T) {
+	ctx, done, err := aetest.NewContext()
+	if !assert.Nil(t, err, "Error instantiating context") {
+		t.Fatal(err)
+	}
+	defer done()
+	createStudentsWithEqualStatus(ctx, 2)
+	time.Sleep(time.Millisecond * 500)
+	statuses := [...]string{"Rejected (Stage 1)", "Rejected (Stage 2)", "Rejected (Stage 3)",
+				"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
+	for i := 0; i < len(statuses); i++ {
+		students, err := services.GetStudentsAtLeastWithStatus(ctx, statuses[i])
+		if !assert.Nil(t, err, "Error getting status list") {
+			t.Fatal(err)
+		}
+		if !assert.Equal(t, 2 * (len(statuses) - i ), len(students),
+			"Invalid number of students returned in status query") {
+			t.Fatal()
+		}
+	}
+}
 //
 //import (
 //	//"os"
