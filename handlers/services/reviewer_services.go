@@ -65,7 +65,7 @@ func UpdateReviewerGradeForStudent(ctx context.Context, reviewerKey *datastore.K
 	if _, err := datastore.Put(ctx, studentKey, &student); err != nil {
 		return err
 	}
-	return errors.New("Reviewer grade could not be updated")
+	return nil
 }
 
 func GetReviewerGradeForStudent(ctx context.Context, reviewerKey *datastore.Key, studentKey *datastore.Key) (int, error) {

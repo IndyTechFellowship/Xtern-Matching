@@ -191,26 +191,30 @@ func GetReviewGroupForReviewer(w http.ResponseWriter,r *http.Request) {
 	}
 
 	var studentsArr = make([]models.Student, len(reviewGroup.Students))
-
-	// for studentKey := range reviewGroup.Students {
- //    	student, err := services.GetStudent(ctx, studentKey)
- //    	append(students, student);
-	// }
+	var studentGrades = make([]int, len(reviewGroup.Students))
 
 	for i := 0; i < len(reviewGroup.Students); i++ {
     	student, _ := services.GetStudent(ctx, reviewGroup.Students[i])
     	studentsArr[i] = student
+
+		grade, err := services.GetReviewerGradeForStudent(ctx, reviewerKey, reviewGroup.Students[i])
+		if err != nil {
+			studentGrades[i] = -1
+		} else {
+			studentGrades[i] = grade
+		}
 	}
 
-// var dat map[string]interface{}
+
 
 
 	type Response struct {
 		Key *datastore.Key		`json:"keys"`
 		ReviewGroup models.ReviewGroup		`json:"users"`
 		Students []models.Student 		`json:"students"`
+		StudentGrades []int 		`json:"studentGrades"`
 	}
-	response := Response{Key: reviewGroupKey, ReviewGroup: reviewGroup, Students: studentsArr}
+	response := Response{Key: reviewGroupKey, ReviewGroup: reviewGroup, Students: studentsArr, StudentGrades: studentGrades}
 
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
@@ -219,10 +223,7 @@ func GetReviewGroupForReviewer(w http.ResponseWriter,r *http.Request) {
 
 func GetReviewerGradeForStudent(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
-
 	user := context.Get(r, "user")
-
-	// log.Println(user);
 
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
 	reviewerKey, err := datastore.DecodeKey(mapClaims["key"].(string))
@@ -231,8 +232,6 @@ func GetReviewerGradeForStudent(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	// log.Println("Key:");
-	// log.Println(mapClaims["key"]);
 
 	studentKey, err := datastore.DecodeKey(mux.Vars(r)["studentKey"])
 	if err != nil {
@@ -241,25 +240,6 @@ func GetReviewerGradeForStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// student, err := services.GetStudent(ctx, studentKey)
-
-	// if err != nil {
-	// 	log.Println(err.Error())
-	// 	http.Error(w, err.Error(), 500)
-	// 	return
-	// }
-	// w.Header().Add("Access-Control-Allow-Origin", "*")
-	// w.Header().Set("Content-Type", "application/json")
-
-	// var grade int
-
-	// for i := 0; i < len(student.ReviewerGrades); i++ {
-	// // json.NewEncoder(w).Encode(student.ReviewerGradesmapClaims["key"])
-	// 	if student.ReviewerGrades[i].Reviewer == reviewerKey {
-	// 		// json.NewEncoder(w).Encode(student.ReviewerGrades[i].Grade)
-	// 		grade = int(student.ReviewerGrades[i].Grade)
-	// 	}
-	// }
 	grade, err := services.GetReviewerGradeForStudent(ctx, reviewerKey, studentKey)
 	if err != nil {
 		log.Println(err.Error())
@@ -278,7 +258,6 @@ func GetReviewerGradeForStudent(w http.ResponseWriter, r *http.Request) {
 
 func PostReviewerGradeForStudent(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
-
 	user := context.Get(r, "user")
 
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)

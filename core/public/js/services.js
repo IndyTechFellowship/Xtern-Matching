@@ -19,7 +19,7 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    console.log('SUCCESS: get student data', data.data);
+                    // console.log('SUCCESS: get student data', data.data);
                     self.profile = cleanStudents(data.data);
                     self.studentKey = key;
                     callback(self.profile);
@@ -243,7 +243,7 @@
         self.studentSummaryData = null;
         self.studentKeys = null;
 
-        self.queryUserSummaryData = function(callback){
+        self.queryReviewGroup = function(callback){
             $http({
                 method: 'POST',
                 url: host + "reviewer/getReviewGroupForReviewer",
@@ -254,10 +254,9 @@
                 }
             }).then(function (data) {
                 self.studentSummaryData = data.data.students;
-
-
                 self.studentKeys = data.data.users.students;
-                callback(self.studentSummaryData, self.studentKeys);
+                self.studentGrades = data.data.studentGrades;
+                callback(self.studentSummaryData, self.studentKeys, self.studentGrades);
             }, function errorCallback(response) {
                 console.log('error occured: ', response);
                 callback('','err');

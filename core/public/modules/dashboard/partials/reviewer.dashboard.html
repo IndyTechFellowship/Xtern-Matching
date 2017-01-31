@@ -13,70 +13,62 @@
             </div>
         </div>
     </div>
-    <!--<div class="ui vertical divider"></div>-->
     <div class="eleven wide column" >
         <h2 class="ui header">Students </h2>
         <table class="ui striped selectable sortable table">
             <thead>
-            <tr>
-                <!-- <th ng-repeat="header in tableHeaders" ng-click="sort(header)" class="sorted"> -->
-                <th >
-                    Name
-                </th>
-            </tr>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Your Grade
+                    </th>
+                </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="student in summaryData" ng-click="rowClick(student.key)" class="clickable">
-<!--                 <td Header1>
-                    <div ng-bind-html="row[firstName]"></div>
-                </td> -->
-                <td>
-                    <div>{{student.firstName}} {{student.lastName}}</div>
-                </td>
-            </tr>
+                <tr ng-repeat="student in summaryData" ng-click="rowClick(student.key)" class="clickable">
+                    <td>
+                        <div>{{student.firstName}} {{student.lastName}}</div>
+                    </td>
+                    <td>
+                        <div>{{student.currentReviewerGrade}}</div>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <div class="cube">
           <img class="side" src="/public/images/xtern-x.png" alt="Smiley face" height="150" width="150"></img>
       </div>
   </div>
-    <div class="computer only one wide column"></div>
+  <div class="computer only one wide column"></div>
 </div>
 
 <style type=text/css>
-      .cube {
-        width: 150px;
-        height: 150px;
-        transform-style: preserve-3d;
-        transform: rotateY(45deg);
-        margin: auto;
-        left: 50%;
-      }
-      .cube div {
-        position:absolute;
-        z-index:1;
-        top:0;
-        left:0;
-        height:150px;
-        width:150px;
-        backface-visibility:show;
-        border:1px solid #fff;
-      }
-      .side:nth-child(1) {
-        /*transform: translateZ(150px);*/
-      }
-      .cube {
-        /* Add an animation property here. */
-        animation: rotateAboutY 5s linear infinite;
-/*        top:50%;
-        left: 50%;
-        margin-top: -150px;
-        margin-left: -150px;*/
-        position: fixed;
-      }
-      /* Add a keyframe animation to rotateAboutY here. */
-      @keyframes rotateAboutY {
-        0% {transform: rotateY(0deg);}
-        100% {transform: rotateY(360deg);}
-      }
+  .cube {
+    width: 150px;
+    height: 150px;
+    transform-style: preserve-3d;
+    transform: rotateY(45deg);
+    margin: auto;
+    left: 50%;
+}
+.cube div {
+    position:absolute;
+    z-index:1;
+    top:0;
+    left:0;
+    height:150px;
+    width:150px;
+    backface-visibility:show;
+    border:1px solid #fff;
+}
+.cube {
+    animation: rotateAboutY 5s linear infinite;
+    position: fixed;
+}
+@keyframes rotateAboutY {
+    0% {transform: rotateY(0deg);}
+    100% {transform: rotateY(360deg);}
+}
 </style>

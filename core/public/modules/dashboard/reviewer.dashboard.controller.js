@@ -1,6 +1,4 @@
-angular.module('Xtern')
-    .controller('ReviewerDashboardCtrl', ['$scope', '$state', 'ReviewerDashboardService', function($scope, $state, ReviewerDashboardService){
-
+angular.module('Xtern').controller('ReviewerDashboardCtrl', function($scope, $state, ReviewerDashboardService, ReviewerProfileService){
     PATH ='reviewer';
 
     $scope.isCompany = false;
@@ -8,15 +6,17 @@ angular.module('Xtern')
     $scope.rawData = null;
     $scope.personsCount = 0;
 
-    //Table Click
     $scope.rowClick = function (key) {
         $state.go(PATH + '.profile', {key: key});
     };
 
-    ReviewerDashboardService.queryUserSummaryData(function (data, keys) {
-        let students = [];
+    ReviewerDashboardService.queryReviewGroup(function (data, keys, grades) {
+        var students = [];
         for(var i = 0; i < data.length; i++) {
             students[i] = rowClass(data[i],keys[i]);
+            if(grades[i] !== null && grades[i] > 0) {
+                students[i].currentReviewerGrade = grades[i];
+            }
         }
         $scope.summaryData = students;
         $scope.rawData = students;
@@ -24,4 +24,4 @@ angular.module('Xtern')
         $('.ui.dropdown').dropdown();//activates semantic drowpdowns
         $('.ui.accordion').accordion();
     });
-}]);
+});
