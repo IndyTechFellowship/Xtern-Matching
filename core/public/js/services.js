@@ -276,8 +276,8 @@
                     'Authorization': 'bearer '+getToken('auth')
                 }
             }).then(function (data) {
-                self.reviewerGrade = data.data.reviewerGrade;
-                callback(data.data.reviewerGrade);
+                self.reviewerGrade = data.data.grade;
+                callback(data.data.grade);
             }, function errorCallback(response) {
                 console.log('error occured: ', response);
                 callback('','err');
@@ -298,11 +298,8 @@
                     'Authorization': 'bearer '+getToken('auth')
                 }
             }).then(function (data) {
-                // self.reviewerGrade = data.data.reviewerGrade;
-                // callback(data.data.reviewerGrade);
             }, function errorCallback(response) {
                 console.log('error occured: ', response);
-                // callback('','err');
             });
         };
     }])

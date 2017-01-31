@@ -241,30 +241,45 @@ func GetReviewerGradeForStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	student, err := services.GetStudent(ctx, studentKey)
+	// student, err := services.GetStudent(ctx, studentKey)
 
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// 	http.Error(w, err.Error(), 500)
+	// 	return
+	// }
+	// w.Header().Add("Access-Control-Allow-Origin", "*")
+	// w.Header().Set("Content-Type", "application/json")
+
+	// var grade int
+
+	// for i := 0; i < len(student.ReviewerGrades); i++ {
+	// // json.NewEncoder(w).Encode(student.ReviewerGradesmapClaims["key"])
+	// 	if student.ReviewerGrades[i].Reviewer == reviewerKey {
+	// 		// json.NewEncoder(w).Encode(student.ReviewerGrades[i].Grade)
+	// 		grade = int(student.ReviewerGrades[i].Grade)
+	// 	}
+	// }
+	grade, err := services.GetReviewerGradeForStudent(ctx, reviewerKey, studentKey)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json")
 
-	for i := 0; i < len(student.ReviewerGrades); i++ {
-	// json.NewEncoder(w).Encode(student.ReviewerGradesmapClaims["key"])
-		if student.ReviewerGrades[i].Reviewer == reviewerKey {
-			json.NewEncoder(w).Encode(student.ReviewerGrades[i].Grade)
-		}
+	type Response struct {
+		Grade int		`json:"grade"`
 	}
+	response := Response{Grade: grade}
+	w.Header().Add("Access-Control-Allow-Origin", "*")	
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }
 
 func PostReviewerGradeForStudent(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
 	user := context.Get(r, "user")
-
-	// log.Println(user);
 
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
 	reviewerKey, err := datastore.DecodeKey(mapClaims["key"].(string))
@@ -273,8 +288,6 @@ func PostReviewerGradeForStudent(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	// log.Println("Key:");
-	// log.Println(mapClaims["key"]);
 
 	var dat map[string]interface{}
 	decoder := json.NewDecoder(r.Body)

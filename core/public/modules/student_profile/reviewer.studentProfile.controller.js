@@ -54,8 +54,10 @@ angular.module('Xtern')
         console.log($scope);
         ReviewerStudentProfileCtrlSetup();
         ReviewerProfileService.getReviewerGradeForStudent($stateParams.key, function (reviewerGrade) {
+            console.log($stateParams.key);
             console.log("REVIEWER GRADE", reviewerGrade);
             $scope.reviewerGrade = reviewerGrade;
         });
+        // console.log("reviewergrades from json", $stateParams.key);
     });
 });

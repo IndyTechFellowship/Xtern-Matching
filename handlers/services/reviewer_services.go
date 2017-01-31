@@ -65,5 +65,20 @@ func UpdateReviewerGradeForStudent(ctx context.Context, reviewerKey *datastore.K
 	if _, err := datastore.Put(ctx, studentKey, &student); err != nil {
 		return err
 	}
-	return nil
+	return errors.New("Reviewer grade could not be updated")
+}
+
+func GetReviewerGradeForStudent(ctx context.Context, reviewerKey *datastore.Key, studentKey *datastore.Key) (int, error) {
+	student, err := GetStudent(ctx, studentKey)
+	if err != nil {
+		return -1, errors.New("Could not find student")
+	}
+
+	for i := 0; i < len(student.ReviewerGrades); i++ {
+		if student.ReviewerGrades[i].Reviewer.Equal(reviewerKey) {
+			return int(student.ReviewerGrades[i].Grade), nil
+		}
+	}
+
+	return -2, errors.New("Could not find grade for reviewer key")
 }
