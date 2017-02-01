@@ -509,7 +509,7 @@
         self.reviewGroups = null;
         self.reviewGroupKeys = null;
 
-        self.createReviewGroups = function(minStudents, minReviewers){
+        self.createReviewGroups = function(minStudents, minReviewers, callback){
             $http({
                 method: 'POST',
                 url: "reviewer/create",
@@ -523,7 +523,7 @@
                     'Authorization': 'bearer '+getToken('auth')
                 }
             }).then(function (data) {
-
+                callback(data);
             }, function errorCallback(response) {
                 console.log('error occured: ', response);
             });

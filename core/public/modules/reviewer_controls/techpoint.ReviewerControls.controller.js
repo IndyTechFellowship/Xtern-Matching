@@ -7,7 +7,12 @@ angular.module('Xtern').controller('TechPointReviewerCtrl', function ($scope, $r
     $scope.selectedGroup = null;
 
     $scope.createReviewGroups = function() {
-        TechPointReviewerControlService.createReviewGroups(20, 2);
+        TechPointReviewerControlService.createReviewGroups(20, 2, function(data) {
+            TechPointReviewerControlService.queryReviewGroups(function(groups, keys) {
+                $scope.reviewGroups = groups;
+                $scope.reviewGroupKeys = keys;
+            });
+        });
     };
 
 
@@ -22,7 +27,6 @@ angular.module('Xtern').controller('TechPointReviewerCtrl', function ($scope, $r
     TechPointReviewerControlService.queryReviewGroups(function(groups, keys) {
         $scope.reviewGroups = groups;
         $scope.reviewGroupKeys = keys;
-        console.log("$scope", $scope);
-
+        // console.log("$scope", $scope);
     });
 });
