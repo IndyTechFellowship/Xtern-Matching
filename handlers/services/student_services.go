@@ -171,3 +171,26 @@ func addResume(ctx context.Context, studentId int64, file io.Reader) (string, er
 
 	return res.MediaLink, nil
 }
+
+func AddMappedStudent(ctx context.Context, mapping map[string]string, data map[string]interface{}) (int, error) {
+	var student models.Student
+	student.FirstName = data[mapping["firstName"]].(string)
+	student.LastName = data[mapping["lastName"]].(string)
+	student.Email = data[mapping["email"]].(string)
+	student.University = data[mapping["university"]].(string)
+	student.Major = data[mapping["major"]].(string)
+	//student.GradYear = data[mapping["gradYear"]].(string)
+	//student.WorkStatus = data[mapping["workStatus"]].(string)
+	//student.Gender = data[mapping["gender"]].(string)
+	//// student.Skills = data[mapping["skills"]]
+	//student.Github = data[mapping["githubUrl"]].(string)
+	//student.Linkin = data[mapping["linkedinUrl"]].(string)
+	//student.PersonalSite = data[mapping["personalWebsiteUrl"]].(string)
+	//student.Interests = data[mapping["interests"]].([]string)
+	//student.Resume = data[mapping["resume"]].(string)
+	//student.Grade = data[mapping["grade"]].(int)
+	//student.Status = data[mapping["status"]].(string)
+	//student.Active,_ = strconv.ParseBool(data[mapping["active"]].(string))
+	//student.HomeState = data[mapping["homeState"]].(string)
+	return NewStudent(ctx, student)
+}

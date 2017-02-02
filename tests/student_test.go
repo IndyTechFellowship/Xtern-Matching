@@ -4,9 +4,14 @@ import (
 	//"os"
 
 	"Xtern-Matching/models"
-
+	"Xtern-Matching/handlers/services"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
+	"testing"
+	"encoding/json"
+	"github.com/stretchr/testify/assert"
+	"google.golang.org/appengine/aetest"
+	"os"
 )
 
 func createStudent(ctx context.Context) (models.Student, error) {
@@ -38,6 +43,63 @@ func createStudent(ctx context.Context) (models.Student, error) {
 	// time.Sleep(time.Millisecond * 500)
 
 	return student, nil
+}
+
+func TestAddMappedStudent(t *testing.T) {
+	ctx, done, err := aetest.NewContext()
+	if !assert.Nil(t, err, "Error instantiating context") {
+		t.Fatal(err.Error())
+	}
+	defer done()
+
+	studentJson := `{
+		"firstName": "Alison",
+			"lastName": "Hurley",
+			"email": "alisonhurley@retrack.com",
+			"university": "Rose-Hulman Institute of Technology",
+			"major": "Design",
+			"gradYear": "2017",
+			"workStatus": "US Citizen",
+			"gender": "female",
+			"skills": [
+	],
+		"resume": "",
+			"githubUrl": "https://github.com/Sp4rkfun",
+			"linkedinUrl": null,
+			"personalWebiteUrl": null,
+			"interestedIn": [
+		"Security",
+			"Product Management",
+			"Software Engineer- Middle-tier Dev."
+		],
+		"status": "Remaining",
+			"interestedInEmail": "true",
+			"homeState": "Delaware"
+	}`
+	//var studentI map[string]interface{}
+	studentI := `{
+	"firstName" : "firstName",
+	 "lastName" : "lastName",
+	 "email" : "email",
+	 "university" : "university",
+	 "major" : "major",
+	}`
+	var studentMapping map[string]string
+	json.Unmarshal([]byte(studentI), &studentMapping)
+	var studentJSON map[string]interface{}
+	json.Unmarshal([]byte(studentJson), &studentJSON)
+	_, err = services.AddMappedStudent(ctx, studentMapping, studentJSON)
+
+	students, _, _ := services.GetStudents(ctx, nil)
+	json.NewEncoder(os.Stdout).Encode(students)
+	//{
+	//	"name": "C#",
+	//	"category": "General"
+	//},
+	//{
+	//"name": ".Net",
+	//"category": "Full-Stack"
+	//}
 }
 
 //
