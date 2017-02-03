@@ -61,12 +61,18 @@ func TestAddMappedStudent(t *testing.T) {
 			"gradYear": "2017",
 			"workStatus": "US Citizen",
 			"gender": "female",
-			"skills": [
-	],
+			"skills": [{
+			"name": "C#",
+			"category": "General"
+			},
+			{
+			"name": ".Net",
+			"category": "Full-Stack"
+			}],
 		"resume": "",
 			"githubUrl": "https://github.com/Sp4rkfun",
-			"linkedinUrl": null,
-			"personalWebiteUrl": null,
+			"linkedinUrl": "",
+			"personalWebiteUrl": "",
 			"interestedIn": [
 		"Security",
 			"Product Management",
@@ -77,29 +83,47 @@ func TestAddMappedStudent(t *testing.T) {
 			"homeState": "Delaware"
 	}`
 	//var studentI map[string]interface{}
-	studentI := `{
-	"firstName" : "firstName",
+	studentMapJSON := `{
+	 "firstName" : "firstName",
 	 "lastName" : "lastName",
 	 "email" : "email",
 	 "university" : "university",
 	 "major" : "major",
+	 "gradYear" : "gradYear",
+	 "workStatus" : "workStatus",
+	 "gender" : "gender",
+	 "skills" : "skills",
+	 "githubUrl" : "githubUrl",
+	 "linkedinUrl" : "linkedinUrl",
+	 "personalWebsiteUrl" : "personalWebiteUrl",
+	 "interests" : "interests",
+	 "interests" : "interestedIn",
+	 "resume" : "resume",
+	 "grade" : "grade",
+	 "status" : "status",
+	 "active" : "active",
+	 "homeState" : "homeState"
 	}`
 	var studentMapping map[string]string
-	json.Unmarshal([]byte(studentI), &studentMapping)
-	var studentJSON map[string]interface{}
-	json.Unmarshal([]byte(studentJson), &studentJSON)
-	_, err = services.AddMappedStudent(ctx, studentMapping, studentJSON)
-
+	err = json.Unmarshal([]byte(studentMapJSON), &studentMapping)
+	if !assert.Nil(t, err, "Error Unmarshaling Student mapping") {
+		t.Fatal(err.Error())
+	}
+	var student map[string]interface{}
+	err = json.Unmarshal([]byte(studentJson), &student)
+	if !assert.Nil(t, err, "Error Unmarshaling Student JSON") {
+		t.Fatal(err.Error())
+	}
+	_, err = services.AddMappedStudent(ctx, studentMapping, student)
+	if !assert.Nil(t, err, "Error Adding Mapped Student") {
+		t.Fatal(err.Error())
+	}
 	students, _, _ := services.GetStudents(ctx, nil)
+	if !assert.Equal(t, 1, len(students),
+		"Incorrect number of mapped students returned") {
+		t.Fatal()
+	}
 	json.NewEncoder(os.Stdout).Encode(students)
-	//{
-	//	"name": "C#",
-	//	"category": "General"
-	//},
-	//{
-	//"name": ".Net",
-	//"category": "Full-Stack"
-	//}
 }
 
 //
