@@ -77,7 +77,13 @@ func GetStudentsAtLeastWithStatus(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 	defer ctx.Done()
 
-	status := mux.Vars(r)["status"]
+	var dat map[string]interface{}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	status := dat["status"].(string)
 
 	students, err := services.GetStudentsAtLeastWithStatus(ctx, status)
 	if err != nil {

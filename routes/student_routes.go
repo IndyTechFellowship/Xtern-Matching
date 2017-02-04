@@ -7,7 +7,7 @@ import (
 )
 
 func GetStudentRoutes(router *mux.Router) *mux.Router {
-	router.HandleFunc("/student/status/{status}", handlers.GetStudentsAtLeastWithStatus).Methods("GET").Name("StudentsWithStatus")
+	router.HandleFunc("/student/status", handlers.GetStudentsAtLeastWithStatus).Methods("POST").Name("StudentsWithStatus")
 	router.HandleFunc("/student/light", handlers.GetStudentDecisionList).Methods("GET").Name("GetDecisionList")
 	router.HandleFunc("/student/resumes", handlers.ExportResumes).Methods("GET").Name("ExportResumes")
 	router.HandleFunc("/student/export", handlers.ExportStudents).Methods("GET").Name("ExportStudents")
