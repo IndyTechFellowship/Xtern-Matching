@@ -15,7 +15,7 @@ func TestFormQuery(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer done()
-	form := models.Form{"NewForm", "2017", true, nil}
+	form := models.Form{"NewForm", "2017", true}
 	key, err := services.AddForm(ctx, form)
 	if !assert.Nil(t, err, "Error creating form") {
 		t.Fatal(err)
@@ -41,6 +41,8 @@ func TestFormQuery(t *testing.T) {
 	student.Resume = "public/data_mocks/sample.pdf"
 	student.Active = true
 	_, err = services.NewStudent(ctx, student)
+	//Add a student without a form parent
+	createStudent(ctx)
 	time.Sleep(time.Millisecond * 500)
 	if !assert.Nil(t, err, "Error adding student") {
 		t.Fatal(err)

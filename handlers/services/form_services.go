@@ -16,7 +16,7 @@ func AddForm(ctx context.Context, form models.Form) (*datastore.Key, error) {
 }
 
 func GetActiveForm(ctx context.Context) (models.Form, *datastore.Key, error) {
-	q := datastore.NewQuery("Form").Filter("Active =", true)
+	q := datastore.NewQuery("Form").Filter("Active=", true)
 	var forms []models.Form
 	keys, err := q.GetAll(ctx, &forms)
 	if err != nil {
