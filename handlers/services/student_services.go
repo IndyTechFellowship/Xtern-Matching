@@ -97,12 +97,15 @@ func ExportStudents(ctx context.Context) ([]byte, error) {
 }
 
 func NewStudent(ctx context.Context, student models.Student) (int, error) {
-
-	key := datastore.NewIncompleteKey(ctx, "Student", nil)
+	_, parentKey, err := GetActiveForm(ctx)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	key := datastore.NewIncompleteKey(ctx, "Student", parentKey)
 	student.Active = true
 
 	//TODO make this done in a single put
-	key, err := datastore.Put(ctx, key, &student)
+	key, err = datastore.Put(ctx, key, &student)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
