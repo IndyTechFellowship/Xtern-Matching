@@ -21,6 +21,7 @@ import (
 	// "google.golang.org/appengine/file"
 	// "fmt"
 	"google.golang.org/appengine/urlfetch"
+	//"fmt"
 )
 
 func GetStudents(ctx context.Context, parent *datastore.Key) ([]models.Student, []*datastore.Key, error) {
@@ -175,14 +176,44 @@ func addResume(ctx context.Context, studentId int64, file io.Reader) (string, er
 func AddMappedStudent(ctx context.Context, mapping map[string]string, data map[string]interface{}) (int, error) {
 	var student models.Student
 	var err error
-	if data[mapping["active"]] == nil {
-		student.Active = true
-	} else {
-		student.Active, err = strconv.ParseBool(data[mapping["active"]].(string))
-		if err != nil {
-			return http.StatusInternalServerError, err
+	for key, val := range mapping {
+		if key == "active" {
+			if data[val] == nil {
+				student.Active = true
+			} else {
+				student.Active, err = strconv.ParseBool(data[mapping["active"]].(string))
+				if err != nil {
+					return http.StatusInternalServerError, err
+				}
+			}
+		} else if key == "skills" {
+			if data[val] != nil {
+				skills := data[val].([]interface{})
+				student.Skills = make([]models.Skill, len(skills))
+				for i:=0; i < len(skills); i++ {
+					student.Skills[i].Name = skills[i].(map[string]interface{})["name"].(string)
+					student.Skills[i].Name = skills[i].(map[string]interface{})["category"].(string)
+				}
+			}
+		} else if key == "interests" {
+			if data[val] != nil {
+				interests := data[val].([]interface{})
+				student.Interests = make([]string, len(interests))
+				for i:=0; i < len(interests); i++ {
+					student.Interests[i] = interests[i].(string)
+				}
+			}
+		} else if key == "grade" {
+			if data[val] == nil {
+				student.Grade = 0
+			} else {
+				student.Grade = data[mapping["grade"]].(int)
+			}
+		} else if data[val] == nil {
+			data[val] = ""
 		}
 	}
+
 	student.FirstName = data[mapping["firstName"]].(string)
 	student.LastName = data[mapping["lastName"]].(string)
 	student.Email = data[mapping["email"]].(string)
@@ -191,26 +222,13 @@ func AddMappedStudent(ctx context.Context, mapping map[string]string, data map[s
 	student.GradYear = data[mapping["gradYear"]].(string)
 	student.WorkStatus = data[mapping["workStatus"]].(string)
 	student.Gender = data[mapping["gender"]].(string)
-	skills := data[mapping["skills"]].([]interface{})
-	student.Skills = make([]models.Skill, len(skills))
-	for i:=0; i < len(skills); i++ {
-		student.Skills[i].Name = skills[i].(map[string]interface{})["name"].(string)
-		student.Skills[i].Name = skills[i].(map[string]interface{})["category"].(string)
-	}
+
 	student.Github = data[mapping["githubUrl"]].(string)
 	student.Linkin = data[mapping["linkedinUrl"]].(string)
 	student.PersonalSite = data[mapping["personalWebsiteUrl"]].(string)
-	interests := data[mapping["interests"]].([]interface{})
-	student.Interests = make([]string, len(interests))
-	for i:=0; i < len(interests); i++ {
-		student.Interests[i] = interests[i].(string)
-	}
+
 	student.Resume = data[mapping["resume"]].(string)
-	if data[mapping["grade"]] == nil {
-		student.Grade = 0
-	} else {
-		student.Grade = data[mapping["grade"]].(int)
-	}
+
 	student.Status = data[mapping["status"]].(string)
 
 	student.HomeState = data[mapping["homeState"]].(string)

@@ -69,7 +69,6 @@ func TestAddMappedStudent(t *testing.T) {
 			"name": ".Net",
 			"category": "Full-Stack"
 			}],
-		"resume": "",
 			"githubUrl": "https://github.com/Sp4rkfun",
 			"linkedinUrl": "",
 			"personalWebiteUrl": "",

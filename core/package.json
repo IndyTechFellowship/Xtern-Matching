@@ -7,7 +7,7 @@
     "prestart": "",
     "start": "goapp serve",
     "pretest" : "goapp get github.com/stretchr/testify/assert",
-    "test": "goapp test Xtern-Matching/tests",
+    "test": "goapp test -v Xtern-Matching/tests",
     "test-front": "karma start karma.conf.js"
   },
   "repository": {
