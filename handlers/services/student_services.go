@@ -57,8 +57,14 @@ func GetStudentsAtLeastWithStatus(ctx context.Context, status string) ([]models.
 				if err != nil {
 					return nil, err
 				}
-				for j := 0; j < len(newStudents); j++ {
-					students = append(students, newStudents[j])
+				if newStudents != nil {
+					if students == nil {
+						students = newStudents
+					} else {
+						for j := 0; j < len(newStudents); j++ {
+							students = append(students, newStudents[j])
+						}
+					}
 				}
 			}
 			break
