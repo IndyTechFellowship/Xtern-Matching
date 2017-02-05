@@ -97,6 +97,29 @@ func GetStudentsAtLeastWithStatus(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(students)
 }
 
+func UpdateStudentsToStatus(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+	defer ctx.Done()
+
+	var dat map[string]interface{}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	status := dat["level"].(string)
+	keys := dat["ids"].([]*datastore.Key)
+	err := services.MoveStudentsToStatus(ctx, keys, status)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	//TODO: Add keys if necessary to response
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+}
+
 func ExportResumes(w http.ResponseWriter,r *http.Request)  {
 	ctx := appengine.NewContext(r)
 	defer ctx.Done()

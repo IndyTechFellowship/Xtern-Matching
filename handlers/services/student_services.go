@@ -41,8 +41,7 @@ func GetStudentDecisionList(ctx context.Context, parent *datastore.Key) ([]model
 func GetStudentsAtLeastWithStatus(ctx context.Context, status string) ([]models.StudentDecision, error) {
 	statuses := [...]string{"Rejected (Stage 1)", "Rejected (Stage 2)", "Rejected (Stage 3)",
 				"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
-	query := datastore.NewQuery("Student").
-		Project("FirstName", "LastName", "GradYear", "Grade", "Gender")
+	query := datastore.NewQuery("Student")
 	var students []models.StudentDecision
 	for i := 0; i < len(statuses); i++ {
 
@@ -51,19 +50,16 @@ func GetStudentsAtLeastWithStatus(ctx context.Context, status string) ([]models.
 				/*
 					Not efficient query wise, but the best option for now
 				 */
-				newQuery := query.Filter("Status =", statuses[i])
+				newQuery := query.Filter("Status =", statuses[i]).
+					Project("FirstName", "LastName", "GradYear", "Grade", "Gender")
 				var newStudents []models.StudentDecision
 				_, err := newQuery.GetAll(ctx, &newStudents)
 				if err != nil {
 					return nil, err
 				}
 				if newStudents != nil {
-					if students == nil {
-						students = newStudents
-					} else {
-						for j := 0; j < len(newStudents); j++ {
-							students = append(students, newStudents[j])
-						}
+					for j := 0; j < len(newStudents); j++ {
+						students = append(students, newStudents[j])
 					}
 				}
 			}
@@ -71,6 +67,39 @@ func GetStudentsAtLeastWithStatus(ctx context.Context, status string) ([]models.
 		}
 	}
 	return students, nil
+}
+
+func MoveStudentsToStatus(ctx context.Context, keys []*datastore.Key,status string) (error) {
+	statuses := [...]string{"Rejected (Stage 1)", "Rejected (Stage 2)", "Rejected (Stage 3)",
+				"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
+	query := datastore.NewQuery("Student")
+
+	for i := 0; i < len(statuses); i++ {
+		if statuses[i] == status {
+			break
+		}
+		newQuery := query.Filter("Status =", statuses[i])
+		/*
+			Terribly inefficient, but again,
+			go datastore doesn't support the queries I would like to perform
+ 		*/
+		var students []models.Student
+		qKeys, err := newQuery.GetAll(ctx, &students)
+		if err != nil {
+			return err
+		}
+		if students != nil {
+			for i :=0; i < len(students); i++ {
+				for j := 0; j < len(keys); j++ {
+					if keys[j].Equal(qKeys[i]) {
+						students[i].Status = status
+						datastore.Put(ctx, qKeys[i], &students[i])
+					}
+				}
+			}
+		}
+	}
+	return nil
 }
 
 func GetStudents(ctx context.Context, parent *datastore.Key) ([]models.Student, []*datastore.Key, error) {
