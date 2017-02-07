@@ -7,6 +7,8 @@
         $urlRouterProvider.when('/techpoint/', '/techpoint/login');
         $urlRouterProvider.when('/company', '/company/login');
         $urlRouterProvider.when('/company/', '/company/login');
+        $urlRouterProvider.when('/reviewer', '/reviewer/login');
+        $urlRouterProvider.when('/reviewer/', '/reviewer/login');
         $urlRouterProvider.otherwise("/techpoint/login");
         $stateProvider
             //Techpoint
@@ -105,6 +107,43 @@
                         return isLoggedIn($q,'ALREADY_AUTHENTICATED_COMPANY');
                     }]
                 }
+            })
+            // Reviewer
+            .state('reviewer', {
+                url: "/reviewer",
+                abstract: true,
+                templateUrl: "public/reviewer/partials/reviewer.html",
+                controller: 'CompanyMain'
+            })
+            .state('reviewer.login', {
+                url: "/login",
+                templateUrl: "public/modules/login/partials/reviewer.login.html",
+                controller: 'ReviewerLogin',
+                resolve: {
+                    security: ['$q', function ($q) {
+                        return isLoggedIn($q,'ALREADY_AUTHENTICATED_REVIEWER');
+                    }]
+                }
+            })
+            .state('reviewer.profile', {
+                url: "/profile/:key",
+                templateUrl: "public/modules/student_profile/partials/reviewer.studentProfile.html",
+                controller: 'ReviewerStudentProfileCtrl',
+                resolve: {
+                    security: ['$q', function ($q) {
+                        return isLoggedIn($q,'$q');
+                    }]
+                }
+            })
+            .state('reviewer.dashboard', {
+                url: "/dashboard",
+                templateUrl: "public/modules/dashboard/partials/reviewer.dashboard.html",
+                controller: 'ReviewerDashboardCtrl',
+                resolve: {
+                    security: ['$q', function ($q) {
+                        return isLoggedIn($q,'$q');
+                    }]
+                }
             });
     });
     app.run(function ($state, $rootScope) {
@@ -127,13 +166,13 @@
                         //go to the dash board
                         $state.go('company.dashboard');
                         break;
-                    case 'NOT_AUTHENTICATED_INSTRUCTOR':
+                    case 'NOT_AUTHENTICATED_REVIEWER':
                         // go to the login page
-                        //$state.go('company.login');
+                        $state.go('reviewer.login');
                         break;
-                    case 'ALREADY_AUTHENTICATED_INSTRUCTOR':
+                    case 'ALREADY_AUTHENTICATED_REVIEWER':
                         //go to the dash board
-                        //$state.go('company.dashboard');
+                        $state.go('reviewer.dashboard');
                         break;
                     default:
                         // set the error object on the error state and go there
@@ -145,7 +184,7 @@
                 // unexpected error
                 $state.go('techpoint.login');
             }
-        })
+        });
     });
 })();
 
