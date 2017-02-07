@@ -258,8 +258,8 @@ func GetReviewerGradeForStudent(w http.ResponseWriter, r *http.Request) {
 
 func PostReviewerGradeForStudent(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
-	user := context.Get(r, "user")
 
+	user := context.Get(r, "user")
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
 	reviewerKey, err := datastore.DecodeKey(mapClaims["key"].(string))
 	if err != nil {

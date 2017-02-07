@@ -1,7 +1,8 @@
 (function (){
     var app = angular.module('DataManager',[]);
 	var host = "http://localhost:8080/";
-    app.service('ProfileService', ['$http', function ($http){
+    app
+        .service('ProfileService', ['$http', function ($http){
         var self = this;
         self.profile = null;
         self.studentKey = null;
@@ -238,70 +239,70 @@
             });
         };
     }])
-    .service('ReviewerDashboardService',['$http', function ($http) {
-        var self = this;
-        self.studentSummaryData = null;
-        self.studentKeys = null;
+        .service('ReviewerDashboardService',['$http', function ($http) {
+            var self = this;
+            self.studentSummaryData = null;
+            self.studentKeys = null;
 
-        self.queryReviewGroup = function(callback){
-            $http({
-                method: 'POST',
-                url: host + "reviewer/getReviewGroupForReviewer",
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json",
-                    'Authorization': 'bearer '+getToken('auth')
-                }
-            }).then(function (data) {
-                self.studentSummaryData = data.data.students;
-                self.studentKeys = data.data.users.students;
-                self.studentGrades = data.data.studentGrades;
-                callback(self.studentSummaryData, self.studentKeys, self.studentGrades);
-            }, function errorCallback(response) {
-                console.log('error occured: ', response);
-                callback('','err');
-            });
-        };
-    }])
-    .service('ReviewerProfileService',['$http', function ($http) {
-        var self = this; 
-        self.getReviewerGradeForStudent = function(studentKey, callback){
-            $http({
-                method: 'GET',
-                url: host + "reviewer/getReviewerGradeForStudent/" + studentKey,
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json",
-                    'Authorization': 'bearer '+getToken('auth')
-                }
-            }).then(function (data) {
-                self.reviewerGrade = data.data.grade;
-                callback(data.data.grade);
-            }, function errorCallback(response) {
-                console.log('error occured: ', response);
-                callback('','err');
-            });
-        };
+            self.queryReviewGroup = function(callback){
+                $http({
+                    method: 'POST',
+                    url: host + "reviewer/getReviewGroupForReviewer",
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer '+getToken('auth')
+                    }
+                }).then(function (data) {
+                    self.studentSummaryData = data.data.students;
+                    self.studentKeys = data.data.users.students;
+                    self.studentGrades = data.data.studentGrades;
+                    callback(self.studentSummaryData, self.studentKeys, self.studentGrades);
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                    callback('','err');
+                });
+            };
+        }])
+        .service('ReviewerProfileService',['$http', function ($http) {
+            var self = this;
+            self.getReviewerGradeForStudent = function(studentKey, callback){
+                $http({
+                    method: 'GET',
+                    url: host + "reviewer/getReviewerGradeForStudent/" + studentKey,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer '+getToken('auth')
+                    }
+                }).then(function (data) {
+                    self.reviewerGrade = data.data.grade;
+                    callback(data.data.grade);
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                    callback('','err');
+                });
+            };
 
-        self.postReviewerGradeForStudent = function(studentKey, reviewerGrade){
-            $http({
-                method: 'POST',
-                url: host + "reviewer/postReviewerGradeForStudent",
-                data: {
-                    "studentKey": studentKey,
-                    "reviewerGrade": reviewerGrade
-                },
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json",
-                    'Authorization': 'bearer '+getToken('auth')
-                }
-            }).then(function (data) {
-            }, function errorCallback(response) {
-                console.log('error occured: ', response);
-            });
-        };
-    }])
+            self.postReviewerGradeForStudent = function(studentKey, reviewerGrade){
+                $http({
+                    method: 'POST',
+                    url: host + "reviewer/postReviewerGradeForStudent",
+                    data: {
+                        "studentKey": studentKey,
+                        "reviewerGrade": reviewerGrade
+                    },
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer '+getToken('auth')
+                    }
+                }).then(function (data) {
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                });
+            };
+        }])
         .service('AccountControlService',['$http', function ($http){
             var self = this;
             self.userData = null;
