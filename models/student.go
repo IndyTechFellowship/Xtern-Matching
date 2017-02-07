@@ -9,7 +9,7 @@ type Student struct {
 	Email        string   `json:"email"`
 	University   string   `json:"university"`
 	Major        string   `json:"major"`
-	GradYear     int      `json:"gradYear"`
+	GradYear     string   `json:"gradYear"`
 	WorkStatus   string   `json:"workStatus"`
 	Gender       string   `json:"gender"`
 	Skills       []Skill  `json:"skills"`
@@ -35,7 +35,7 @@ type StudentDecisionQuery struct {
 	Id int64              `json:"key" datastore:"-"`
 	FirstName    string   `json:"-"`
 	LastName     string   `json:"-"`
-	GradYear     int      `json:"gradYear"`
+	GradYear     string   `json:"gradYear"`
 	Grade        float64  `json:"grade"`
 	Gender       string   `json:"gender"`
 	WorkStatus   string   `json:"workStatus"`
