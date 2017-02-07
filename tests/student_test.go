@@ -23,7 +23,7 @@ func createStudent(ctx context.Context) (models.Student, error) {
 	student.Email = "darlaleach@stockpost.com"
 	student.University = "Rose-Hulman Institute of Technology"
 	student.Major = "Computer Engineering"
-	student.GradYear = "2017"
+	student.GradYear = 2017
 	student.WorkStatus = "US Citizen"
 	student.HomeState = "West Virginia"
 	student.Gender = "female"
@@ -61,7 +61,7 @@ func createStudentsWithEqualStatus(ctx context.Context, eachStatus int) ([]*data
 		student.Email = "darlaleach@stockpost.com"
 		student.University = "Rose-Hulman Institute of Technology"
 		student.Major = "Computer Engineering"
-		student.GradYear = "2017"
+		student.GradYear = 2017
 		student.WorkStatus = "US Citizen"
 		student.HomeState = "West Virginia"
 		student.Gender = "female"

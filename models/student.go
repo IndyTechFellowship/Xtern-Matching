@@ -9,7 +9,7 @@ type Student struct {
 	Email        string   `json:"email"`
 	University   string   `json:"university"`
 	Major        string   `json:"major"`
-	GradYear     string   `json:"gradYear"`
+	GradYear     int      `json:"gradYear"`
 	WorkStatus   string   `json:"workStatus"`
 	Gender       string   `json:"gender"`
 	Skills       []Skill  `json:"skills"`
@@ -18,10 +18,11 @@ type Student struct {
 	PersonalSite string   `json:"personalWebiteUrl"`
 	Interests    []string `json:"interests"`
 	Resume       string   `json:"resume"`
-	Grade        int      `json:"grade"`
+	Grade        float64  `json:"grade"`
 	Status       string   `json:"status"`
 	Active       bool     `json:"active"`
 	HomeState    string   `json:"homeState"`
+	Ethnicity    string   `json:"ethnicity"`
 	//Details map[string]interface{}	`json:"details"`
 	//EmailIntrest string 	`json:"interestedInEmail"`
 }
@@ -31,11 +32,14 @@ type Student struct {
 	So only desired fields are encoded by JSON Marshal
  */
 type StudentDecisionQuery struct {
+	Id int64              `json:"key" datastore:"-"`
 	FirstName    string   `json:"-"`
 	LastName     string   `json:"-"`
-	GradYear     string   `json:"gradYear"`
-	Grade        int      `json:"grade"`
+	GradYear     int      `json:"gradYear"`
+	Grade        float64  `json:"grade"`
 	Gender       string   `json:"gender"`
+	WorkStatus   string   `json:"workStatus"`
+	Ethnicity    string   `json:"ethnicity"`
 }
 
 type StudentDecision StudentDecisionQuery
