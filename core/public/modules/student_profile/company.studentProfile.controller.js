@@ -39,6 +39,14 @@ angular.module('Xtern')
         };
 
         $scope.$on('$viewContentLoaded', function (evt) {
+            $scope.studentKey = $stateParams.key;
+            ProfileService.getComments($scope.studentKey, function (comments,err) {
+                if(err) {
+                    //error
+                } else {
+                    $scope.comments = comments;
+                }
+            });
             $('.ui.dropdown').dropdown();
             $('.ui.sticky').sticky({
                 context: '#example1'

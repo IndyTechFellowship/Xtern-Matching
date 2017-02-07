@@ -2,9 +2,9 @@ package services
 
 import (
 	"Xtern-Matching/models"
-	"net/http"
 	"google.golang.org/appengine/datastore"
 	"golang.org/x/net/context"
+	"github.com/pkg/errors"
 )
 
 func GetComments(ctx context.Context, studentKey *datastore.Key, organizationKey *datastore.Key) ([]models.Comment,[]*datastore.Key,error) {
@@ -36,22 +36,30 @@ func AddComment(ctx context.Context, studentKey *datastore.Key, message string, 
 	return comment,key,nil
 }
 
-func EditComment(ctx context.Context, commentKey *datastore.Key, message string) (int, error) {
+func EditComment(ctx context.Context, commentKey *datastore.Key, message string) error {
 
 	var comment models.Comment
 	err := datastore.Get(ctx, commentKey, &comment)
 	if err != nil {
-		return http.StatusInternalServerError, err
+		return err
 	}
 	comment.Message = message
 	if _, err := datastore.Put(ctx, commentKey, &comment); err != nil {
-		return http.StatusInternalServerError, err
+		return err
 	}
-	return http.StatusAccepted, nil
+	return nil
 }
 
-func DeleteComment(ctx context.Context, commantKey *datastore.Key) error {
-	if err := datastore.Delete(ctx, commantKey); err != nil {
+func DeleteComment(ctx context.Context, commentKey *datastore.Key, author *datastore.Key) error {
+	var comment models.Comment
+	if err := datastore.Get(ctx, commentKey, &comment); err != nil {
+		return err
+	}
+	if !comment.Author.Equal(author) {
+		return errors.New("Can't delete comment that isn't yours")
+	}
+
+	if err := datastore.Delete(ctx, commentKey); err != nil {
 		return err
 	}
 	return nil

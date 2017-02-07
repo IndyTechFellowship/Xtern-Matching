@@ -1,6 +1,9 @@
 angular.module('Xtern')
     .controller('CommentCtrl', function($scope) {
-        $('.dimmable.card').dimmer({
-            on: 'hover'
-        });
+        console.log($scope);
+        if($scope.comment) {
+            $('.dimmable.card').dimmer({
+                on: 'hover'
+            });
+        }
     });

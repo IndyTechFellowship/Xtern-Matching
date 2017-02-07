@@ -2,6 +2,9 @@ angular.module('Xtern')
     .directive('studentProfileComment', function() {
         return {
             restrict: 'E',
+            scope: {
+                comment: '='
+            },
             templateUrl: 'public/modules/student_profile/comments/comment.html',
             controller: 'CommentCtrl'
         };

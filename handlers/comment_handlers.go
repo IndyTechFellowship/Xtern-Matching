@@ -101,17 +101,22 @@ func EditComment(w http.ResponseWriter,r *http.Request) {
 	}
 
 	message := dat["message"].(string)
-	status, err := services.EditComment(ctx, commentKey, message)
-	if err != nil {
+	err = services.EditComment(ctx, commentKey, message); if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-
-	w.WriteHeader(status)
 }
 
 func DeleteComment(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
+
+	user := context.Get(r, "user")
+	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+	authorKey, err := datastore.DecodeKey(mapClaims["key"].(string))
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 
 	commentKey, err := datastore.DecodeKey(mux.Vars(r)["commentKey"])
 	if err != nil {
@@ -119,7 +124,7 @@ func DeleteComment(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 
-	if err = services.DeleteComment(ctx, commentKey); err != nil {
+	if err = services.DeleteComment(ctx, commentKey, authorKey); err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
