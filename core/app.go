@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"log"
+	"google.golang.org/appengine"
 )
 
 func init() {
@@ -14,4 +15,6 @@ func init() {
 	}
 	http.Handle("/", routes.NewRouter())
 }
-func main() {}
+func main() {
+	appengine.Main()
+}

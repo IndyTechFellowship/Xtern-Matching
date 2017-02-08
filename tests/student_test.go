@@ -1,4 +1,166 @@
 package tests
+
+import (
+	//"os"
+
+	"Xtern-Matching/models"
+	"google.golang.org/appengine/aetest"
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/datastore"
+	"Xtern-Matching/handlers/services"
+	"github.com/stretchr/testify/assert"
+	"testing"
+	"time"
+	"encoding/json"
+	"os"
+	//"log"
+)
+
+func createStudent(ctx context.Context) (models.Student, error) {
+	var student models.Student
+	student.FirstName = "Darla"
+	student.LastName = "leach"
+	student.Email = "darlaleach@stockpost.com"
+	student.University = "Rose-Hulman Institute of Technology"
+	student.Major = "Computer Engineering"
+	student.GradYear = "2017"
+	student.WorkStatus = "US Citizen"
+	student.HomeState = "West Virginia"
+	student.Gender = "female"
+	student.Skills = []models.Skill{{Name: "SQL", Category: "Database"}, {Name: "HTML", Category: "Frontend"}}
+	student.Github = "https://github.com/xniccum"
+	student.Linkin = ""
+	student.PersonalSite = ""
+	student.Interests = []string{"Product Management", "Software Engineer- Middle-tier Dev."}
+	student.Grade = 5
+	student.Status = "Stage 1 Approved"
+	student.Resume = "public/data_mocks/sample.pdf"
+	student.Active = true
+
+	key := datastore.NewIncompleteKey(ctx, "Student", nil)
+	key, err := datastore.Put(ctx, key, &student)
+	if err != nil {
+		return models.Student{}, err
+	}
+	// time.Sleep(time.Millisecond * 500)
+
+	return student, nil
+}
+
+/*
+	Creates students where each status is represented as many times as eachStatus
+ */
+func createStudentsWithEqualStatus(ctx context.Context, eachStatus int) ([]*datastore.Key, error) {
+	statuses := [...]string{"Rejected (Stage 1)", "Rejected (Stage 2)", "Rejected (Stage 3)",
+				"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
+	var keys []*datastore.Key
+	for i := 0; i < len(statuses); i++ {
+		var student models.Student
+		student.FirstName = "Darla"
+		student.LastName = "leach"
+		student.Email = "darlaleach@stockpost.com"
+		student.University = "Rose-Hulman Institute of Technology"
+		student.Major = "Computer Engineering"
+		student.GradYear = "2017"
+		student.WorkStatus = "US Citizen"
+		student.HomeState = "West Virginia"
+		student.Gender = "female"
+		student.Skills = []models.Skill{{Name: "SQL", Category: "Database"}, {Name: "HTML", Category: "Frontend"}}
+		student.Github = "https://github.com/xniccum"
+		student.Linkin = ""
+		student.PersonalSite = ""
+		student.Interests = []string{"Product Management", "Software Engineer- Middle-tier Dev."}
+		student.Grade = 5
+		student.Status = statuses[i]
+		student.Resume = "public/data_mocks/sample.pdf"
+		student.Active = true
+
+		for j:=0; j<eachStatus; j++ {
+			key := datastore.NewIncompleteKey(ctx, "Student", nil)
+			key, err := datastore.Put(ctx, key, &student)
+			keys = append(keys, key)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+	return keys, nil
+}
+
+func TestDecisionList(t *testing.T) {
+	ctx, done, err := aetest.NewContext()
+	if !assert.Nil(t, err, "Error instantiating context") {
+		t.Fatal(err)
+	}
+	defer done()
+	for i:= 0; i < 10; i++ {
+		createStudent(ctx)
+	}
+	time.Sleep(time.Millisecond * 500)
+	students, err := services.GetStudentDecisionList(ctx, nil)
+	if !assert.Nil(t, err, "Error getting decision list") {
+		t.Fatal(err)
+	}
+	json.NewEncoder(os.Stdout).Encode(students)
+}
+
+func TestStatusList(t *testing.T) {
+	ctx, done, err := aetest.NewContext()
+	if !assert.Nil(t, err, "Error instantiating context") {
+		t.Fatal(err)
+	}
+	defer done()
+	createStudentsWithEqualStatus(ctx, 2)
+	time.Sleep(time.Millisecond * 500)
+	statuses := [...]string{"Rejected (Stage 1)", "Rejected (Stage 2)", "Rejected (Stage 3)",
+				"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
+	for i := 0; i < len(statuses); i++ {
+		students, err := services.GetStudentsAtLeastWithStatus(ctx, statuses[i])
+		if !assert.Nil(t, err, "Error getting status list") {
+			t.Fatal(err)
+		}
+		if !assert.Equal(t, 2 * (len(statuses) - i ), len(students),
+			"Invalid number of students returned in status query") {
+			t.Fatal()
+		}
+	}
+}
+
+func TestMoveStudentsToStatus(t *testing.T) {
+	ctx, done, err := aetest.NewContext()
+	if !assert.Nil(t, err, "Error instantiating context") {
+		t.Fatal(err)
+	}
+	defer done()
+	keys, err := createStudentsWithEqualStatus(ctx, 2)
+	if !assert.Nil(t, err, "Error creating students") {
+		t.Fatal(err)
+	}
+	time.Sleep(time.Millisecond * 500)
+	statuses := [...]string{"Rejected (Stage 1)", "Rejected (Stage 2)", "Rejected (Stage 3)",
+				"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
+	var testKeys []*datastore.Key
+	for i := 0; i < len(statuses); i++ {
+		testKeys = append(testKeys, keys[2*i])
+	}
+	for i := 0; i < len(statuses); i++ {
+		if i+1 < len(statuses) {
+			err := services.MoveStudentsToStatus(ctx, testKeys, statuses[i+1])
+			if !assert.Nil(t, err, "Error Updating Student Statuses") {
+				t.Fatal(err)
+			}
+		}
+		time.Sleep(time.Millisecond * 500)
+		students, err := services.GetStudentsAtLeastWithStatus(ctx, statuses[i])
+		if !assert.Nil(t, err, "Error getting status list") {
+			t.Fatal(err)
+		}
+		if !assert.Equal(t, 14 - i, len(students),
+			"Invalid number of students returned in status query") {
+			t.Fatal()
+		}
+	}
+}
 //
 //import (
 //	//"os"

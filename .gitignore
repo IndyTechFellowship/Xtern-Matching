@@ -40,3 +40,9 @@ core/node_modules
 *.zip
 .DS_Store
 /core/environments/development/cloudstore-dev.json
+
+# manual testing outputs
+tests/manual/*
+!tests/manual/.gitkeep
+
+core/index.yaml
