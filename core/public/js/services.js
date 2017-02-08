@@ -420,6 +420,43 @@
             };
 
     }])
+    .service('DecisionBoardService',['$http', function ($http) {
+        var self = this;
+        self.phase1data = null;
+        
+        self.getPhaseOne = function(callback, refresh){
+            if(!refresh && self.phase1data){
+                callback(self.phase1data);
+                return;
+            }
+            $http({
+                method: 'GET',
+                url: host + "student/light",
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer '+getToken('auth')
+                }
+            }).then(function (data) {
+                self.phase1data = data.data;
+                //TEMP FOR DISPLAY, REMOVE BEFORE DELIVERY
+                var ethnicityWeightedOptions = ['White', 'White','White', 'Hispanic or Latino','Hispanic or Latino', 'Black or African American', 'Native American or American Indian', 'Asian or Pacific Islander'];
+                self.phase1data.forEach(function(e) {
+                    if(e.grade == 0 ){
+                        e.grade =Math.round((Math.random() * 5 + Math.random() * 5)*100)/100;
+                    };
+                    if(!e.ethnicity){
+                        e.ethnicity = ethnicityWeightedOptions[Math.floor(Math.random()*ethnicityWeightedOptions.length)];
+                    };
+                });
+                callback(self.phase1data);
+            }, function errorCallback(response) {
+                console.log('error occured: ', response);
+                console.log('Here: '+getToken('auth'));
+                callback('','err');
+            });
+        };
+    }])
         .service('ResumeService',['$http', function ($http) {
         var self = this;
         

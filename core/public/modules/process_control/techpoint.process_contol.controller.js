@@ -1,6 +1,6 @@
 angular.module('Xtern')
     // .controller('TechPointProcessControl', ['$scope', '$rootScope', '$state', 'AccountControlService', 'rzModule' , function ($scope, $rootScope, $state, AccountControlService, rzModule) {
-    .controller('TechPointProcessControl', ['$scope', '$rootScope', '$state', 'AccountControlService', function ($scope, $rootScope, $state, AccountControlService) {
+    .controller('TechPointProcessControl', ['$scope', '$rootScope', '$state', 'AccountControlService','DecisionBoardService', function ($scope, $rootScope, $state, AccountControlService,DecisionBoardService) {
         var self = this;
         $scope.showDecisionboard = true;
         $scope.showInstructorStats = false;
@@ -22,8 +22,7 @@ angular.module('Xtern')
                     step: 0.5,
                     precision: 1,
                     onChange: function (sliderId, modelValue, highValue, pointerType) {
-                        phase1FilterLoad()
-                        console.log(sliderId, modelValue, highValue, pointerType);
+                        phase1FilterLoad()                       
                     }
                 }
             },
@@ -68,7 +67,7 @@ angular.module('Xtern')
 
         var phase1FilterLoad = function () {
             $scope.phase1.list = $scope.phase1.fullList.filter(function (val) {
-                return val["score"] >= $scope.phase1.slider.value;
+                return val["grade"] >= $scope.phase1.slider.value;
             });
             // console.log(list);
             // $scope.phase1.list = $scope.phase1.fullList;
@@ -89,7 +88,7 @@ angular.module('Xtern')
         };
 
         var phase1HistLoad = function (metadata) {
-            var histData = renderHistogramData(metadata, 'score');
+            var histData = renderHistogramData(metadata, 'grade');
             $scope.phase1.histogram.data = [histData.values];
             $scope.phase1.histogram.labels = histData.keys;
             console.log($scope.phase1.histogram);
@@ -169,15 +168,19 @@ angular.module('Xtern')
             return output;
         };
 
+        $scope.refreshPhaseOne = function(hardReload){
+            DecisionBoardService.getPhaseOne(function(list){
+                $scope.phase1.fullList = list;
+                phase1HistLoad(list);
+                phase1FilterLoad();
+            },hardReload);
+        }
 
         var setup = function () {
             AccountControlService.getOrganizations(function (organizations) {
                 $scope.companyList = organizations;
             });
-
-            $scope.phase1.fullList = DECISION_BOARD_LIST;
-            phase1HistLoad(DECISION_BOARD_LIST);
-            phase1FilterLoad();
+            $scope.refreshPhaseOne(false);
 
             $('.ui.sticky').sticky({context: '#processBoard', pushing: true});
         };
