@@ -3,6 +3,19 @@
     display: block;
     padding-top: 2em;
 }
+
+.vertical-half-spacer{
+    width: 100%;
+    display: block;
+    padding-top: 1em;
+}
+
+.vertical-quater-spacer{
+    width: 100%;
+    display: block;
+    padding-top: 0.5em;
+}
+
 h4.ui.header {
     padding-top: .5em;
 }

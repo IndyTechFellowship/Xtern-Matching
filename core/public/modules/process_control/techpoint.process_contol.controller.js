@@ -179,6 +179,7 @@ angular.module('Xtern')
             phase1HistLoad(DECISION_BOARD_LIST);
             phase1FilterLoad();
 
+            $('.ui.sticky').sticky({context: '#processBoard', pushing: true});
         };
 
         $scope.$on('$viewContentLoaded', function (evt) {
