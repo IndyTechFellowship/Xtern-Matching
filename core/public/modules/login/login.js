@@ -1,4 +1,4 @@
-
+'use strict';
 function setToken(token, type) {
     //localStorage.setItem('token', token);
     sessionStorage.setItem(type, token);
@@ -24,83 +24,84 @@ function removeToken(token){
 }
 
 var isLoggedInTechPoint = function ($q) {
-    //TODO change this to type
+    var errorObject ={};
     var role = getToken("organization");
     if (!role) {
-        var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
+        errorObject = { code: 'NOT_AUTHENTICATED_REVIEWER' };
         $q.reject(errorObject);
         return $q.reject(errorObject);
     }
     else if(role =="admin"){
-        return;
+        return null;
     }
     else if (role == "Techpoint") {
-        return;
+        return null;
     }
-    else if(role == "Instructor"){
-        var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' }
+    else if(role == "Reviewers"){
+        errorObject = { code: 'ALREADY_AUTHENTICATED_REVIEWER' };
         return $q.reject(errorObject);
     }
     else if(role == "Salesforce"){
-        var errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
+        errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);
     }
     else{
-        var errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
+        errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
         return $q.reject(errorObject);
     }
 };
 
-var isLoggedInInstructor = function ($q) {
+var isLoggedInReviewer = function ($q) {
     var role = getToken("role");
+    var errorObject ={};
     if (!role) {
-        var errorObject = { code: 'NOT_AUTHENTICATED_INSTRUCTOR' };
+        errorObject = { code: 'NOT_AUTHENTICATED_REVIEWER' };
         return $q.reject(errorObject);
     }
     else if(role =="admin"){
-        return;
+        return null;
     }
     else if (role == "TechPoint") {
-        var errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
+        errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
         return $q.reject(errorObject);      
     }
     else if(role == "Company"){
-        var errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
+        errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);        
     }
-    else if(role == "Instructor"){
-        return;      
+    else if(role == "Reviewers"){
+        return null;
     }
     else{
-        var errorObject = { code: 'NOT_AUTHENTICATED_INSTRUCTOR' };
+        errorObject = { code: 'NOT_AUTHENTICATED_INSTRUCTOR' };
         return $q.reject(errorObject);
     }
 };
 
 var isLoggedInCompany = function ($q) {
-    //TODO change this to kind
     var role = getToken("organization");
+    var errorObject ={};
     if (!role) {
-        var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
+        errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);
 
     }
     else if(role =="admin"){
-        return;
+        return null;
     }
     else if (role == "Techpoint") {
-        var errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
+        errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
         return $q.reject(errorObject);
     }
-    else if(role == "Instructor"){
-        var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' };
+    else if(role == "Reviewers"){
+        errorObject = { code: 'ALREADY_AUTHENTICATED_REVIEWER' };
         return $q.reject(errorObject);
     }
     else if(role == "Salesforce"){
-        return;
+        return null;
     }
     else{
-        var errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
+        errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);
     }
 };
@@ -122,8 +123,8 @@ var isLoggedIn = function ($q, code) {
         var errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);        
     }
-    else if(role == "Instructor"){
-        var errorObject = { code: 'ALREADY_AUTHENTICATED_INSTRUCTOR' };
+    else if(role == "Reviewers"){
+        var errorObject = { code: 'ALREADY_AUTHENTICATED_REVIEWER' };
         return $q.reject(errorObject);        
     }
 };

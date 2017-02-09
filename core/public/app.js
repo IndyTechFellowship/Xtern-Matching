@@ -123,7 +123,7 @@
                 url: "/reviewer",
                 abstract: true,
                 templateUrl: "public/reviewer/partials/reviewer.html",
-                controller: 'CompanyMain'
+                controller: 'ReviewerMain'
             })
             .state('reviewer.login', {
                 url: "/login",
@@ -141,7 +141,7 @@
                 controller: 'ReviewerStudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        return isLoggedIn($q,'$q');
+                        return isLoggedInReviewer($q);
                     }]
                 }
             })
@@ -151,7 +151,7 @@
                 controller: 'ReviewerDashboardCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        return isLoggedIn($q,'$q');
+                        return isLoggedInReviewer($q, 'ALREADY_AUTHENTICATED_REVIEWER');
                     }]
                 }
             });
