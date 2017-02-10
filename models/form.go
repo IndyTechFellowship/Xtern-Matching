@@ -2,5 +2,7 @@ package models
 
 type Form struct {
 	Name string 			`json:"name"`
-	Aliases map[string]interface{} 	`json:"aliases"`
+	Year string			`json:"year"`
+	Active bool			`json:"active"`
+	Aliases []string		`json:"aliases"`
 }
