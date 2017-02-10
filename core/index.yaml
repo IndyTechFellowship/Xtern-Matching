@@ -10,6 +10,23 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: Student
+  properties:
+  - name: FirstName
+  - name: Gender
+  - name: GradYear
+  - name: Grade
+  - name: LastName
+
+- kind: Student
+  properties:
+  - name: Status
+  - name: FirstName
+  - name: Gender
+  - name: GradYear
+  - name: Grade
+  - name: LastName
+
 - kind: User
   properties:
   - name: Email

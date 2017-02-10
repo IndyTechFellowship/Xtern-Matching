@@ -21,6 +21,7 @@ import (
 	// "google.golang.org/appengine/file"
 	// "fmt"
 	"google.golang.org/appengine/urlfetch"
+	//"fmt"
 )
 
 func GetStudents(ctx context.Context, parent *datastore.Key) ([]models.Student, []*datastore.Key, error) {
@@ -170,4 +171,84 @@ func addResume(ctx context.Context, studentId int64, file io.Reader) (string, er
 	}
 
 	return res.MediaLink, nil
+}
+
+/*
+	Array Mapping
+	firstName 		-> 0
+	lastName  		-> 1
+	email  			-> 2
+	university  		-> 3
+	major	  		-> 4
+	gradYear  		-> 5
+	workStatus  		-> 6
+	gender  		-> 7
+	skills  		-> 8
+	githubUrl  		-> 9
+	linkedinUrl  		-> 10
+	personalWebiteUrl 	-> 11
+	interestedIn  		-> 12
+	resume			-> 13
+	homeState		-> 14
+	status  		-> 15
+	active			-> 16
+	grade			-> 17
+*/
+func AddMappedStudent(ctx context.Context, mapping []string, data map[string]interface{}) (int, error) {
+	var student models.Student
+	var err error
+
+	for i := 0; i < 16; i++ {
+		if i == 8 || i == 12 {
+			continue
+		} else if data[mapping[i]] == nil {
+		data[mapping[i]] = ""
+		}
+	}
+	student.FirstName = data[mapping[0]].(string)
+	student.LastName = data[mapping[1]].(string)
+	student.Email = data[mapping[2]].(string)
+	student.University = data[mapping[3]].(string)
+	student.Major = data[mapping[4]].(string)
+	student.GradYear = data[mapping[5]].(string)
+	student.WorkStatus = data[mapping[6]].(string)
+	student.Gender = data[mapping[7]].(string)
+
+	if data[mapping[8]] != nil {
+		skills := data[mapping[8]].([]interface{})
+		student.Skills = make([]models.Skill, len(skills))
+		for i:=0; i < len(skills); i++ {
+			student.Skills[i].Name = skills[i].(map[string]interface{})["name"].(string)
+			student.Skills[i].Name = skills[i].(map[string]interface{})["category"].(string)
+		}
+	}
+
+	student.Github = data[mapping[9]].(string)
+	student.Linkin = data[mapping[10]].(string)
+	student.PersonalSite = data[mapping[11]].(string)
+	if data[mapping[12]] != nil {
+		interests := data[mapping[12]].([]interface{})
+		student.Interests = make([]string, len(interests))
+		for i:=0; i < len(interests); i++ {
+			student.Interests[i] = interests[i].(string)
+		}
+	}
+	student.Resume = data[mapping[13]].(string)
+	student.HomeState = data[mapping[14]].(string)
+	student.Status = data[mapping[15]].(string)
+	if data[mapping[16]] == nil {
+		student.Active = true
+	} else {
+		student.Active, err = strconv.ParseBool(data[mapping[16]].(string))
+		if err != nil {
+			return http.StatusInternalServerError, err
+		}
+	}
+	if data[mapping[17]] == nil {
+		student.Grade = 0
+	} else {
+		student.Grade = data[mapping[17]].(int)
+	}
+
+	return NewStudent(ctx, student)
 }

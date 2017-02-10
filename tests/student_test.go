@@ -4,9 +4,14 @@ import (
 	//"os"
 
 	"Xtern-Matching/models"
-
+	"Xtern-Matching/handlers/services"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
+	"testing"
+	"encoding/json"
+	"github.com/stretchr/testify/assert"
+	"google.golang.org/appengine/aetest"
+	"os"
 )
 
 func createStudent(ctx context.Context) (models.Student, error) {
@@ -38,6 +43,105 @@ func createStudent(ctx context.Context) (models.Student, error) {
 	// time.Sleep(time.Millisecond * 500)
 
 	return student, nil
+}
+
+func TestAddMappedStudent(t *testing.T) {
+	ctx, done, err := aetest.NewContext()
+	if !assert.Nil(t, err, "Error instantiating context") {
+		t.Fatal(err.Error())
+	}
+	defer done()
+
+	studentJson := `{
+		"firstName": "Alison",
+			"lastName": "Hurley",
+			"email": "alisonhurley@retrack.com",
+			"university": "Rose-Hulman Institute of Technology",
+			"major": "Design",
+			"gradYear": "2017",
+			"workStatus": "US Citizen",
+			"gender": "female",
+			"skills": [{
+			"name": "C#",
+			"category": "General"
+			},
+			{
+			"name": ".Net",
+			"category": "Full-Stack"
+			}],
+			"githubUrl": "https://github.com/Sp4rkfun",
+			"linkedinUrl": "",
+			"personalWebiteUrl": "",
+			"interestedIn": [
+		"Security",
+			"Product Management",
+			"Software Engineer- Middle-tier Dev."
+		],
+		"status": "Remaining",
+			"interestedInEmail": "true",
+			"homeState": "Delaware"
+	}`
+	//var studentI map[string]interface{}
+	/*
+	Array Mapping
+	firstName 		-> 0
+	lastName  		-> 1
+	email  			-> 2
+	university  		-> 3
+	major	  		-> 4
+	gradYear  		-> 5
+	workStatus  		-> 6
+	gender  		-> 7
+	skills  		-> 8
+	githubUrl  		-> 9
+	linkedinUrl  		-> 10
+	personalWebiteUrl 	-> 11
+	interestedIn  		-> 12
+	resume			-> 13
+	homeState		-> 14
+	status  		-> 15
+	active			-> 16
+	grade			-> 17
+*/
+	studentMapping := []string{
+	 "firstName",
+	 "lastName",
+	 "email",
+	 "university",
+	 "major",
+	 "gradYear",
+	 "workStatus",
+	 "gender",
+	 "skills",
+	 "githubUrl",
+	 "linkedinUrl",
+	 "personalWebiteUrl",
+	 "interestedIn",
+	 "resume",
+	 "homeState",
+	 "status",
+	 "active",
+	 "grade"}
+	//var studentMapping []string
+	//err = json.Unmarshal([]byte(studentMapJSON), &studentMapping)
+	//if !assert.Nil(t, err, "Error Unmarshaling Student mapping") {
+	//	t.Fatal(err.Error())
+	//}
+	var student map[string]interface{}
+	err = json.Unmarshal([]byte(studentJson), &student)
+	if !assert.Nil(t, err, "Error Unmarshaling Student JSON") {
+		t.Fatal(err.Error())
+	}
+	_, err = services.AddMappedStudent(ctx, studentMapping, student)
+	if !assert.Nil(t, err, "Error Adding Mapped Student") {
+		t.Fatal(err.Error())
+	}
+	students, _, _ := services.GetStudents(ctx, nil)
+	if !assert.Equal(t, 1, len(students),
+		"Incorrect number of mapped students returned") {
+		t.Fatal()
+	}
+	json.NewEncoder(os.Stdout).Encode(students)
 }
 
 //
