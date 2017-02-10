@@ -82,32 +82,51 @@ func TestAddMappedStudent(t *testing.T) {
 			"homeState": "Delaware"
 	}`
 	//var studentI map[string]interface{}
-	studentMapJSON := `{
-	 "firstName" : "firstName",
-	 "lastName" : "lastName",
-	 "email" : "email",
-	 "university" : "university",
-	 "major" : "major",
-	 "gradYear" : "gradYear",
-	 "workStatus" : "workStatus",
-	 "gender" : "gender",
-	 "skills" : "skills",
-	 "githubUrl" : "githubUrl",
-	 "linkedinUrl" : "linkedinUrl",
-	 "personalWebsiteUrl" : "personalWebiteUrl",
-	 "interests" : "interests",
-	 "interests" : "interestedIn",
-	 "resume" : "resume",
-	 "grade" : "grade",
-	 "status" : "status",
-	 "active" : "active",
-	 "homeState" : "homeState"
-	}`
-	var studentMapping map[string]string
-	err = json.Unmarshal([]byte(studentMapJSON), &studentMapping)
-	if !assert.Nil(t, err, "Error Unmarshaling Student mapping") {
-		t.Fatal(err.Error())
-	}
+	/*
+	Array Mapping
+	firstName 		-> 0
+	lastName  		-> 1
+	email  			-> 2
+	university  		-> 3
+	major	  		-> 4
+	gradYear  		-> 5
+	workStatus  		-> 6
+	gender  		-> 7
+	skills  		-> 8
+	githubUrl  		-> 9
+	linkedinUrl  		-> 10
+	personalWebiteUrl 	-> 11
+	interestedIn  		-> 12
+	resume			-> 13
+	homeState		-> 14
+	status  		-> 15
+	active			-> 16
+	grade			-> 17
+*/
+	studentMapping := []string{
+	 "firstName",
+	 "lastName",
+	 "email",
+	 "university",
+	 "major",
+	 "gradYear",
+	 "workStatus",
+	 "gender",
+	 "skills",
+	 "githubUrl",
+	 "linkedinUrl",
+	 "personalWebiteUrl",
+	 "interestedIn",
+	 "resume",
+	 "homeState",
+	 "status",
+	 "active",
+	 "grade"}
+	//var studentMapping []string
+	//err = json.Unmarshal([]byte(studentMapJSON), &studentMapping)
+	//if !assert.Nil(t, err, "Error Unmarshaling Student mapping") {
+	//	t.Fatal(err.Error())
+	//}
 	var student map[string]interface{}
 	err = json.Unmarshal([]byte(studentJson), &student)
 	if !assert.Nil(t, err, "Error Unmarshaling Student JSON") {
