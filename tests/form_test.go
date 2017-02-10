@@ -15,7 +15,7 @@ func TestFormQuery(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer done()
-	form := models.Form{"NewForm", "2017", true}
+	form := models.Form{"NewForm", "2017", true, []string{}}
 	key, err := services.AddForm(ctx, form)
 	if !assert.Nil(t, err, "Error creating form") {
 		t.Fatal(err)
