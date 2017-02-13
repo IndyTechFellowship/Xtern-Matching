@@ -52,7 +52,7 @@ var isLoggedInTechPoint = function ($q) {
 };
 
 var isLoggedInReviewer = function ($q) {
-    var role = getToken("role");
+    var role = getToken("organization");
     var errorObject ={};
     if (!role) {
         errorObject = { code: 'NOT_AUTHENTICATED_REVIEWER' };

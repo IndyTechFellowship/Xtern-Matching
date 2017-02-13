@@ -6,6 +6,12 @@ angular.module('Xtern')
         $rootScope.$on('$stateChangeStart',
             function (event, toState, toParams, fromState, fromParams, options) {
                 $scope.loggedIn = !!getToken("organization");
+                if (toState.name == "reviewer.profile") {
+                    $('#profile').show();
+                }
+                else {
+                    $('#profile').hide();
+                }
             });
 
         $scope.logout = function () {
