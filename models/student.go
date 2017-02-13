@@ -1,6 +1,8 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 // csv:"-" to exclude export
 type Student struct {
@@ -23,6 +25,7 @@ type Student struct {
 	Active       bool     `json:"active"`
 	HomeState    string   `json:"homeState"`
 	Ethnicity    string   `json:"ethnicity"`
+	ReviewerGrades	[]ReviewerGrade	`json:"reviewerGrades"`
 	//Details map[string]interface{}	`json:"details"`
 	//EmailIntrest string 	`json:"interestedInEmail"`
 }
@@ -40,6 +43,7 @@ type StudentDecisionQuery struct {
 	Gender       string   `json:"gender"`
 	WorkStatus   string   `json:"workStatus"`
 	Ethnicity    string   `json:"ethnicity"`
+	ReviewerGrades	[]ReviewerGrade	`json:"reviewerGrades"`
 }
 
 type StudentDecision StudentDecisionQuery
@@ -58,7 +62,15 @@ type Skill struct {
 	Name     string `json:"name"`
 	Category string `json:"category"`
 }
+type ReviewerGrade struct {
+	Reviewer	int64 `json:"reviewer"`
+	Grade 		int `json:"grade"`
+}
 
 func (skill Skill) MarshalCSV() ([]byte, error) {
 	return []byte(skill.Name + ": " + skill.Category), nil
+}
+
+func (grade ReviewerGrade) MarshalCSV() ([]byte, error) {
+	return []byte(string(grade.Grade)), nil
 }

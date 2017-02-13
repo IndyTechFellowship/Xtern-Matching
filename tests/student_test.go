@@ -77,6 +77,10 @@ func createStudentsWithEqualStatus(ctx context.Context, eachStatus int) ([]*data
 
 		for j:=0; j<eachStatus; j++ {
 			key := datastore.NewIncompleteKey(ctx, "Student", nil)
+			if j > 0 {
+				student.ReviewerGrades =
+					append(student.ReviewerGrades, models.ReviewerGrade{0, 5})
+			}
 			key, err := datastore.Put(ctx, key, &student)
 			keys = append(keys, key)
 			if err != nil {
@@ -94,7 +98,10 @@ func TestDecisionList(t *testing.T) {
 	}
 	defer done()
 	for i:= 0; i < 10; i++ {
-		createStudent(ctx)
+		_, err = createStudent(ctx)
+		if !assert.Nil(t, err, "Error creating student") {
+			t.Fatal(err)
+		}
 	}
 	time.Sleep(time.Millisecond * 500)
 	students, err := services.GetStudentDecisionList(ctx, nil)
@@ -102,6 +109,24 @@ func TestDecisionList(t *testing.T) {
 		t.Fatal(err)
 	}
 	json.NewEncoder(os.Stdout).Encode(students)
+}
+
+func TestReviewedStudents(t *testing.T) {
+	ctx, done, err := aetest.NewContext()
+	if !assert.Nil(t, err, "Error instantiating context") {
+		t.Fatal(err)
+	}
+	defer done()
+	createStudentsWithEqualStatus(ctx, 2)
+	time.Sleep(time.Millisecond * 500)
+	students, err := services.GetReviewedStudents(ctx, nil)
+	if !assert.Nil(t, err, "Error getting decision list") {
+		t.Fatal(err)
+	}
+	if !assert.Equal(t, 7, len(students),
+		"Invalid number of students returned in reviewed query") {
+		t.Fatal()
+	}
 }
 
 func TestStatusList(t *testing.T) {
