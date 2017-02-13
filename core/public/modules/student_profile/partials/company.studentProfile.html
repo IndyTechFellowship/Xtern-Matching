@@ -15,21 +15,7 @@
                         <div ng-click="addStudentToCompany(studentData.key)" class="ui icon basic button fluid blue">
                             <i class="add user icon"></i> Recruit
                         </div>
-                        <div class="ui header">
-                            Comments
-                        </div>
-                        <div class="ui fluid card">
-                            <div class="ui form">
-                                <div class="field">
-                                    <textarea placeholder="Enter a new comment" ng-model="commentMessage">{{commentMessage}}</textarea>
-                                </div>
-                            </div>
-                            <button class="ui bottom attached teal button" ng-click="addComment(studentKey)">Post Comment</button>
-                        </div>
-
-                        <div class="ui fluid cards" id="commentCards">
-                            <student-profile-comment class="blurring dimmable ui fluid card" ng-repeat="comment in comments track by $index"></student-profile-comment>
-                        </div>
+                        <comment-panel></comment-panel>
                     </div>
                 </div>
 

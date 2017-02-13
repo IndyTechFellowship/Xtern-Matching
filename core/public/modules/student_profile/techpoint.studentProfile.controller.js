@@ -12,36 +12,6 @@ angular.module('Xtern')
             'Rejected (Stage 3)'
         ];
         $scope.r1GradeOptions = [];
-        $scope.comments = [];
-        $scope.commentMessage = "";
-
-        $scope.addComment = function(studentKey) {
-            if($scope.commentMessage === "") {
-                //TODO do something
-            } else {
-                ProfileService.addComment(studentKey,$scope.commentMessage, function (comment, err) {
-                    if(!err) {
-                        $scope.comments.push(comment);
-                        $scope.commentMessage = "";
-                    } else {
-
-                    }
-                });
-            }
-        };
-
-        $scope.removeComment = function(key) {
-            ProfileService.removeComment(key, function (err) {
-                if(err) {
-                    //error
-                } else {
-                    //remove comment to the active scope
-                    $scope.comments = $scope.comments.filter(function (comment) {
-                        return comment.key !== key;
-                    });
-                }
-            });
-        };
 
         $scope.selectStatus = function(option) {
             ProfileService.setStatus($scope.studentKey,option, function (err) {
@@ -56,14 +26,7 @@ angular.module('Xtern')
         };
 
         $scope.$on('$viewContentLoaded', function (evt) {
-            $scope.studentKey = $stateParams.key;
-            ProfileService.getComments($scope.studentKey, function (comments,err) {
-                if(err) {
-                    //error
-                } else {
-                    $scope.comments = comments;
-                }
-            });
+            $scope.studentKey = $stateParams.key
             $('.ui.sticky').sticky({
                 context: '#example1'
             });

@@ -36,18 +36,17 @@ func AddComment(ctx context.Context, studentKey *datastore.Key, message string, 
 	return comment,key,nil
 }
 
-func EditComment(ctx context.Context, commentKey *datastore.Key, message string) error {
-
+func EditComment(ctx context.Context, commentKey *datastore.Key, message string) (models.Comment,error) {
 	var comment models.Comment
 	err := datastore.Get(ctx, commentKey, &comment)
 	if err != nil {
-		return err
+		return models.Comment{}, err
 	}
 	comment.Message = message
 	if _, err := datastore.Put(ctx, commentKey, &comment); err != nil {
-		return err
+		return models.Comment{}, err
 	}
-	return nil
+	return comment, nil
 }
 
 func DeleteComment(ctx context.Context, commentKey *datastore.Key, author *datastore.Key) error {

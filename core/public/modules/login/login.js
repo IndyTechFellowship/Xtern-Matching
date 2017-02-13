@@ -9,21 +9,18 @@ function getToken(tokenName) {
 }
 
 function logout() {
-    var tokens = ['auth', 'role', 'organization', 'company', 'jwtToken'];
+    let tokens = ['auth', 'role', 'organization', 'company', 'jwtToken'];
     tokens.forEach(function(token){
         removeToken(token);
     });
-}
-
-function getJwtToken(){
-    sessionStorage.getItem("auth");
+    sessionStorage.removeItem("userKey");
 }
 
 function removeToken(token){
     sessionStorage.removeItem(token)
 }
 
-var isLoggedInTechPoint = function ($q) {
+let isLoggedInTechPoint = function ($q) {
     //TODO change this to type
     var role = getToken("organization");
     if (!role) {

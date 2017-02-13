@@ -62,8 +62,7 @@ func AddComment(w http.ResponseWriter,r *http.Request) {
 
 	message :=  dat["message"].(string)
 
-	user := context.Get(r, "user")
-	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+	mapClaims := context.Get(r, "user").(*jwt.Token).Claims.(jwt.MapClaims)
 	author, err := datastore.DecodeKey(mapClaims["key"].(string))
 	if err != nil {
 		http.Error(w, err.Error(), 500)
@@ -75,10 +74,11 @@ func AddComment(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
+
+	w.WriteHeader(http.StatusCreated)
 	response := make(map[string]interface{});
 	response["key"] = key;
 	response["comment"] = comment;
-	w.WriteHeader(http.StatusCreated)
 	data, _ := json.Marshal(response)
 	w.Write(data)
 }
@@ -101,10 +101,18 @@ func EditComment(w http.ResponseWriter,r *http.Request) {
 	}
 
 	message := dat["message"].(string)
-	err = services.EditComment(ctx, commentKey, message); if err != nil {
+	comment, err := services.EditComment(ctx, commentKey, message)
+	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
+
+	w.WriteHeader(http.StatusCreated)
+	response := make(map[string]interface{});
+	response["key"] = commentKey;
+	response["comment"] = comment;
+	data, _ := json.Marshal(response)
+	w.Write(data)
 }
 
 func DeleteComment(w http.ResponseWriter,r *http.Request) {

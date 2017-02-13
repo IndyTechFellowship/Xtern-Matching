@@ -1,10 +1,14 @@
 angular.module('Xtern')
+    .directive('commentPanel', function() {
+        return {
+            restrict: 'E',
+            templateUrl: 'public/modules/student_profile/comments/commentPanel.html',
+            controller: 'CommentCtrl'
+        };
+    })
     .directive('studentProfileComment', function() {
         return {
             restrict: 'E',
-            scope: {
-                comment: '='
-            },
             templateUrl: 'public/modules/student_profile/comments/comment.html',
             controller: 'CommentCtrl'
         };

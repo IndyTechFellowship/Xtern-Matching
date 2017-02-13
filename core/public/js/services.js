@@ -14,7 +14,7 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    let student = cleanStudents(data.data);
+                    let student = data.data;
                     student.key = key;
                     callback(student);
                 }, function errorCallback(err) {
@@ -104,7 +104,27 @@
                     callback(null, 'err');
                 });
             };
-
+            this.editComment = function(key ,text, callback) {
+                $http({
+                    method: 'PUT',
+                    url: "comment/" + key,
+                    host: host,
+                    data: {
+                        "message": text
+                    },
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    let comment = data.data.comment;
+                    comment.key = data.data.key;
+                    callback(comment);
+                }, function errorCallback(err) {
+                    callback(null,err);
+                });
+            };
             this.removeComment = function(commentKey, callback){
             $http({
                 method: 'DELETE',
@@ -386,6 +406,7 @@
                    // setToken(data.data.token);
                    setToken(data.data['token'], "auth");
                    setToken(data.data.organizationName, "organization");
+                   sessionStorage.setItem("userKey", data.data.userKey);
                    callback(data.data['token'],data.data.organizationName);
                 }, function errorCallback(response) {
                     console.log('error occured: ' + response);
@@ -399,25 +420,4 @@
             };
 
     }])
-        .service('ResumeService',['$http', function ($http) {
-            let self = this;
-        
-            self.uploadResume = function(id){
-                var fd = new FormData();
-                fd.append('file', document.getElementById("file").files[0]);
-                $http.post(host + "student/resume/" + id, fd,{
-                    headers: {
-                        'Content-Type': undefined,
-                        'Accept': "application/json",
-                        'Authorization': 'bearer ' + getToken('auth')
-                    }
-                })
-                .success(function () {
-                    console.log("Upload successful")
-                }).error(function(response) {
-                    console.log('error occured: ', response);
-                    console.log('Here: '+getToken('auth'));
-                });
-            };
-    }]);
 })();

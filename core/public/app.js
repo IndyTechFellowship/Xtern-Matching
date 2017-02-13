@@ -170,9 +170,3 @@ var rowClass = function (data, key) {
     return data;
 };
 
-var cleanStudents = function (student) {
-    //student.interestedIn = removedDuplicates(student.interestedIn);
-    //student.languages = removedDuplicates(student.interestedIn);
-    return student;
-};
-

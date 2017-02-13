@@ -16,7 +16,7 @@ import (
 func GetStudents(ctx context.Context, parent *datastore.Key) ([]models.Student, []*datastore.Key, error) {
 	q := datastore.NewQuery("Student")
 	if parent != nil {
-		q = datastore.NewQuery("Student").Ancestor(parent)
+		q = datastore.NewQuery("Student")
 	}
 	var students []models.Student
 	keys, err := q.GetAll(ctx, &students)

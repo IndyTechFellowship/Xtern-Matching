@@ -80,18 +80,15 @@ func GetUsers(ctx context.Context, org *datastore.Key) ([]models.User, []*datast
 }
 
 func GetUser(ctx context.Context, userKey *datastore.Key) (models.User, error){
-	//userKey := datastore.NewKey(ctx, "User", "", _id, nil)
 	var user models.User
 	err := datastore.Get(ctx, userKey, &user)
 	if err != nil {
 		return models.User{}, err
 	}
-	// TODO clear password
 	return user, err
 }
 
 func EditUser(ctx context.Context, userKey *datastore.Key, name string, email string, password string) error {
-	//userKey := datastore.NewKey(ctx, "User", "", user.Id, nil)
 	var user models.User
 	err := datastore.Get(ctx, userKey, &user)
 	if err != nil {
