@@ -17,7 +17,7 @@ angular.module('Xtern').controller('ReviewerDashboardCtrl', function($scope, $st
             }
             return true;
         });
-        console.log($scope.summaryData, $scope.rawData, $scope.filters);
+        $scope.personsCount = $scope.summaryData.length;
     };
 
     $scope.tableHeaders = [
