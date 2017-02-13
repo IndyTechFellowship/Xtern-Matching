@@ -6,6 +6,20 @@ angular.module('Xtern').controller('ReviewerDashboardCtrl', function($scope, $st
     $scope.rawData = null;
     $scope.personsCount = 0;
 
+    $scope.filters ={
+        graded: false
+    };
+
+    $scope.change = function(){        
+        $scope.summaryData = $scope.rawData.filter(function(row){
+            if($scope.filters.graded && row.currentReviewerGrade){
+                return false;
+            }
+            return true;
+        });
+        console.log($scope.summaryData, $scope.rawData, $scope.filters);
+    };
+
     $scope.tableHeaders = [
         {title: 'Name', displayProperty:'name', sortPropertyName: 'name', asc: true},
         {title: 'Your Grade', displayProperty:'currentReviewerGrade', sortPropertyName: 'sortReviewerGrade', asc: true}
