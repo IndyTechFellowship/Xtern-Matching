@@ -20,26 +20,20 @@
         <table class="ui striped selectable sortable table">
             <thead>
                 <tr>
-                    <th>
-                        Name
-                    </th>
-                    <th>
-                        Your Grade
+                    <th ng-repeat="header in tableHeaders" ng-click="sort(header)" class="sorted">
+                        {{header.title}}
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="student in summaryData" ng-click="rowClick(student.key)" class="clickable">
-                    <td>
-                        <div>{{student.firstName}} {{student.lastName}}</div>
-                    </td>
-                    <td>
-                        <div>{{student.currentReviewerGrade}}</div>
+                    <td ng-repeat="header in tableHeaders">
+                        {{student[header.displayProperty]}}
                     </td>
                 </tr>
             </tbody>
         </table>
-        <div class="cube">
+        <div class="cube" ng-hide="summaryData"> 
           <img class="side" src="/public/images/xtern-x.png" alt="Smiley face" height="150" width="150"></img>
       </div>
   </div>
