@@ -40,28 +40,28 @@ func Login(ctx context.Context, email string, password string) ([]byte, error) {
 	return []byte(""), errors.New("Wrong Password")
 }
 
-func Register(ctx context.Context, organizationKey *datastore.Key, user models.User) (int,error) {
+func Register(ctx context.Context, organizationKey *datastore.Key, user models.User) (int, *datastore.Key,error) {
 	count, err := datastore.NewQuery("User").Ancestor(organizationKey).Filter("Email =", user.Email).Count(ctx)
 	if err != nil {
 		log.Printf("Error querying organizations: bad key: %v\n", organizationKey)
-		return http.StatusInternalServerError, err
+		return http.StatusInternalServerError, nil, err
 	} else if count != 0 {
-		return http.StatusBadRequest, errors.New("User already exist")
+		return http.StatusBadRequest, nil, errors.New("User already exist")
 	} else {
 		//Hash Password
 		pass, err := bcrypt.GenerateFromPassword([]byte(user.Password),14)
 		if err != nil {
 			log.Println("Error hashing user password in registration")
-			return http.StatusInternalServerError, err
+			return http.StatusInternalServerError, nil, err
 		}
 		user.Password = string(pass)
 
 		key := datastore.NewIncompleteKey(ctx, "User", organizationKey)
 		if _, err := datastore.Put(ctx, key, &user); err != nil {
 			log.Println("Error inserting user into Database")
-			return http.StatusInternalServerError, err
+			return http.StatusInternalServerError, nil, err
 		}
-		return http.StatusCreated, nil
+		return http.StatusCreated, key, nil
 	}
 }
 

@@ -65,7 +65,6 @@ func RemoveStudentFromOrganization(ctx context.Context, orgKey *datastore.Key, s
 }
 
 func MoveStudentInOrganization(ctx context.Context, orgKey *datastore.Key, studentKey *datastore.Key, pos int) (int64,error)  {
-	//orgKey := datastore.NewKey(ctx, "Company", "", companyId, nil)
 	var org models.Organization
 	if err := datastore.Get(ctx, orgKey, &org); err != nil {
 		return http.StatusInternalServerError, err

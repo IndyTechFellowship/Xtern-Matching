@@ -7,26 +7,18 @@ import (
 	//"testing"
 	//"google.golang.org/appengine/aetest"
 	"Xtern-Matching/models"
+	"github.com/stretchr/testify/assert"
+	"Xtern-Matching/handlers/services"
+	"testing"
+	"google.golang.org/appengine/aetest"
+	"net/http"
+	"time"
 )
 
-//
-//import (
-//	"Xtern-Matching/handlers/services"
-//	"Xtern-Matching/models"
-//	"net/http"
-//	"testing"
-//	"time"
-//
-//	"github.com/stretchr/testify/assert"
-//	"google.golang.org/appengine/aetest"
-//)
-//
 func GetUser1() models.User {
 	user1 := models.User{}
 	user1.Email = "xniccum@gmail.com"
 	user1.Password = "admin1"
-	//user1.Organization = "Xtern"
-	//user1.Role = "admin"
 	return user1
 }
 
@@ -34,35 +26,39 @@ func GetUser2() models.User {
 	user2 := models.User{}
 	user2.Email = "samael@work.com"
 	user2.Password = "work"
-	//user2.Organization = "Xtern"
-	//user2.Role = "company"
 	return user2
 }
-//
-//func TestRegister(t *testing.T) {
-//	ctx, done, err := aetest.NewContext()
-//	if !assert.Nil(t, err, "Error instantiating context") {
-//		t.Fatal(err)
-//	}
-//	defer done()
-//	user1 := GetUser1()
-//	user2 := GetUser2()
-//
-//	responseStatus, err := services.Register(ctx, user1)
-//	if !assert.Equal(t, responseStatus, http.StatusCreated, "Failed to register user1") {
-//		t.Fatal()
-//	}
-//	responseStatus, err = services.Register(ctx, user2)
-//	if !assert.Equal(t, responseStatus, http.StatusCreated, "Failed to register user2") {
-//		t.Fatal()
-//	}
-//
-//	responseStatus, err = services.Register(ctx, user1)
-//	if !assert.Equal(t, responseStatus, http.StatusBadRequest, "User1 already exists") {
-//		t.Fatal()
-//	}
-//}
-//
+
+func TestRegister(t *testing.T) {
+	ctx, done, err := aetest.NewContext()
+	if !assert.Nil(t, err, "Error instantiating context") {
+		t.Fatal(err)
+	}
+	defer done()
+	user1 := GetUser1()
+	user2 := GetUser2()
+
+	orgKey, err := services.NewOrganization(ctx, "Dara Biosciences")
+	time.Sleep(time.Millisecond * 500)
+	if !assert.Nil(t, err, "Error creating Organization") {
+		t.Fatal(err)
+	}
+
+	responseStatus, _, err := services.Register(ctx, orgKey, user1)
+	if !assert.Equal(t, responseStatus, http.StatusCreated, "Failed to register user1") {
+		t.Fatal()
+	}
+	responseStatus, _, err = services.Register(ctx, orgKey, user2)
+	if !assert.Equal(t, responseStatus, http.StatusCreated, "Failed to register user2") {
+		t.Fatal()
+	}
+
+	responseStatus, _, err = services.Register(ctx, orgKey, user1)
+	if !assert.Equal(t, responseStatus, http.StatusBadRequest, "User1 already exists") {
+		t.Fatal()
+	}
+}
+
 //func TestLogin(t *testing.T) {
 //	ctx, done, err := aetest.NewContext()
 //	if !assert.Nil(t, err, "Error instantiating context") {

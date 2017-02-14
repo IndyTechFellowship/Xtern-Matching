@@ -153,7 +153,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 
-	responseStatus, err := services.Register(ctx, orgKey, user)
+	responseStatus, _, err := services.Register(ctx, orgKey, user)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return

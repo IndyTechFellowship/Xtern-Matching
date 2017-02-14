@@ -154,6 +154,56 @@ func TestGet(t *testing.T) {
 
 }
 
+func TestStatusUpdate(t *testing.T)  {
+	ctx, done, err := aetest.NewContext()
+	if !assert.Nil(t, err, "Error instantiating context") {
+		t.Fatal(err)
+	}
+	defer done()
+	student := GetStudent1()
+	key, err := services.NewStudent(ctx, student)
+	if !assert.Nil(t, err, "Error creating student") {
+		t.Fatal(err)
+	}
+	err = services.SetStatus(ctx, key, "Undecided")
+	if !assert.Nil(t, err, "Error updating status") {
+		t.Fatal(err)
+	}
+	time.Sleep(time.Millisecond * 500)
+	student, err = services.GetStudent(ctx, key)
+	if !assert.Nil(t, err, "Error getting student") {
+		t.Fatal(err)
+	}
+	if !assert.Equal(t, "Undecided", student.Status, "Error in status persistence") {
+		t.Fatal(err)
+	}
+}
+
+func TestGradeUpdate(t *testing.T)  {
+	ctx, done, err := aetest.NewContext()
+	if !assert.Nil(t, err, "Error instantiating context") {
+		t.Fatal(err)
+	}
+	defer done()
+	student := GetStudent1()
+	key, err := services.NewStudent(ctx, student)
+	if !assert.Nil(t, err, "Error creating student") {
+		t.Fatal(err)
+	}
+	err = services.SetGrade(ctx, key, 9.0)
+	if !assert.Nil(t, err, "Error updating grade") {
+		t.Fatal(err)
+	}
+	time.Sleep(time.Millisecond * 500)
+	student, err = services.GetStudent(ctx, key)
+	if !assert.Nil(t, err, "Error getting student") {
+		t.Fatal(err)
+	}
+	if !assert.Equal(t,9.0, student.Grade, "Error in grade persistence") {
+		t.Fatal(err)
+	}
+}
+
 //func TestResumePost(t *testing.T) {		 func TestResumePost(t *testing.T) {
 //	// Due to current dependecy credentials, turning off this test until better alternative can be found		 	// Due to current dependecy credentials, turning off this test until better alternative can be found
 //	//ctx, done, err := aetest.NewContext()		 	//ctx, done, err := aetest.NewContext()
