@@ -1,6 +1,7 @@
+'use strict';
 angular.module('Xtern')
-    .controller('TechpointLogin',['$scope','$state','AuthService','TechPointDashboardService', function($scope, $state, AuthService) {
-        var formConfig = function() {
+    .controller('TechpointLogin', ['$scope', '$state', 'AuthService', 'TechPointDashboardService', function ($scope, $state, AuthService) {
+        var formConfig = function () {
             $('#techpointLogin').form({
                 fields: {
                     email: {
@@ -30,53 +31,40 @@ angular.module('Xtern')
                         ]
                     }
                 },
-                onSuccess: function(event, fields) {
-                    if(event)
+                onSuccess: function (event, fields) {
+                    if (event)
                         event.preventDefault();
                     authenticate(fields);
                     return false;
                 },
-                onFailure: function(formErrors, fields) {    
+                onFailure: function (formErrors, fields) {
                     return false;
                 }
             });
         };
         formConfig();
 
-        $scope.login = function() {
+        $scope.login = function () {
             $('#techpointLogin').form('validate form');
         };
-        var authenticate = function(fields) {
+        var authenticate = function (fields) {
             $('#techpointLogin .ui.button').addClass("disabled");
-            AuthService.login(fields.email, fields.password, function(token, org, err) {
+            AuthService.login(fields.email, fields.password, function (token, org, err) {
                 if (err) {
                     $('#techpointLogin .ui.error.message').html(
                         '<ui class="list"><li>Invalid Username or Password</li></ui>'
                     ).show();
                     $('#techpointLogin .ui.button').removeClass("disabled");
                 } else {
-                    console.log('Login Success '+org);
-                    setToken(false,'isCompany');
+                    console.log('Login Success ' + org);
+                    setToken(false, 'isCompany');
                     $scope.isCompany = false;
                     $state.go('techpoint.dashboard');
-                    // AuthService.renderTokens(function(token, err) {
-                    //     if (err) {
-                    //         console.log('Render Token unsuccessful', err);
-                    //         $('#techpointLogin .ui.error.message').html(
-                    //             '<ui class="list"><li>A server error occured</li></ui>'
-                    //         ).show();
-                    //     } else {
-                    //         // console.log('Login Success');
-                    //         $scope.isCompany = false;
-                    //         $state.go('techpoint.dashboard');
-                    //     }
-                    // });
-
                 }
             });
         };
 
-        $scope.$on('$viewContentLoaded', function(event, viewConfig) {
+        $scope.$on('$viewContentLoaded', function (event, viewConfig) {
             formConfig();
         });
     }]);

@@ -1,5 +1,6 @@
+'use strict';
 angular.module('Xtern')
-    .controller('TechPointMain', ['$scope', '$rootScope', '$state', 'TechPointDashboardService', 'AuthService', function($scope, $rootScope, $state, TechPointDashboardService, AuthService){
+    .controller('TechPointMain', ['$scope', '$rootScope', '$state', 'AuthService', function($scope, $rootScope, $state, AuthService){
         $scope.loggedIn = !!getToken("organization");
         //$scope.loggedIn = isLoggedInTechPoint();
         //$scope.isCompany = false;

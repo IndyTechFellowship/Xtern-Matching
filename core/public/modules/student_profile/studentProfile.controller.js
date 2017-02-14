@@ -1,5 +1,6 @@
+'use strict';
 angular.module('Xtern')
-    .controller('StudentProfileCtrl', function($scope, $location, ProfileService, CompanyService, $stateParams) {
+    .controller('StudentProfileCtrl', function($scope) {
     $('.ui.dropdown').dropdown();//activites semantic dropdowns
 
     $scope.comment = {};

@@ -1,5 +1,8 @@
+'use strict';
 (function () {
-    var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable", "DataManager", "ngSanitize"]);//ngSanitize
+    var angular = require('angular');
+    var router = require('ui.router');
+    var app = angular.module('Xtern', ["DataManager"]);//ngSanitize "ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize"
 
     app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
         // $locationProvider.html5Mode(true);
@@ -11,7 +14,7 @@
         $urlRouterProvider.when('/reviewer/', '/reviewer/login');
         $urlRouterProvider.otherwise("/techpoint/login");
         $stateProvider
-            //Techpoint
+        //Techpoint
             .state('techpoint', {
                 url: "/techpoint",
                 abstract: true,
@@ -24,17 +27,17 @@
                 controller: 'TechPointDashboardCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                       return isLoggedInTechPoint($q);
+                        return isLoggedInTechPoint($q);
                     }]
                 }
             })
-            .state('techpoint.accounts',{
-                url:"/accounts",
+            .state('techpoint.accounts', {
+                url: "/accounts",
                 templateUrl: "public/modules/account_control/partials/accounts.html",
                 controller: 'TechPointAccountCtrl',
                 resolve: {
-                    security: ['$q', function($q){
-                       return isLoggedInTechPoint($q);
+                    security: ['$q', function ($q) {
+                        return isLoggedInTechPoint($q);
                     }]
                 }
             })
@@ -44,17 +47,17 @@
                 controller: 'TechPointStudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                       return isLoggedInTechPoint($q);
+                        return isLoggedInTechPoint($q);
                     }]
                 }
             })
-            .state('techpoint.reviewerControls',{
-                url:"/reviewerControls",
+            .state('techpoint.reviewerControls', {
+                url: "/reviewerControls",
                 templateUrl: "public/modules/reviewer_controls/partials/reviewerControls.html",
                 controller: 'TechPointReviewerCtrl',
                 resolve: {
-                    security: ['$q', function($q){
-                       return isLoggedInTechPoint($q);
+                    security: ['$q', function ($q) {
+                        return isLoggedInTechPoint($q);
                     }]
                 }
             })
@@ -64,7 +67,7 @@
                 controller: 'TechpointLogin',
                 resolve: {
                     security: ['$q', function ($q) {
-                        return isLoggedIn($q,'ALREADY_AUTHENTICATED_TECHPOINT');
+                        return isLoggedIn($q, 'ALREADY_AUTHENTICATED_TECHPOINT');
                     }]
                 }
             })
@@ -88,7 +91,7 @@
             })
             .state('company.recruting', {
                 url: "/recruting",
-                templateUrl: "public/company/partials/company.recruting.html",
+                templateUrl: "public/modules/recruting/partials/company.recruting.html",
                 //resolve: { authenticate: authenticate }
                 controller: 'CompanyRecruiting',
                 resolve: {
@@ -114,7 +117,7 @@
                 controller: 'CompanyLogin',
                 resolve: {
                     security: ['$q', function ($q) {
-                        return isLoggedIn($q,'ALREADY_AUTHENTICATED_COMPANY');
+                        return isLoggedIn($q, 'ALREADY_AUTHENTICATED_COMPANY');
                     }]
                 }
             })
@@ -131,7 +134,7 @@
                 controller: 'ReviewerLogin',
                 resolve: {
                     security: ['$q', function ($q) {
-                        return isLoggedIn($q,'ALREADY_AUTHENTICATED_REVIEWER');
+                        return isLoggedIn($q, 'ALREADY_AUTHENTICATED_REVIEWER');
                     }]
                 }
             })

@@ -1,5 +1,6 @@
+'use strict';
 angular.module('Xtern')
-    .controller('MissionControl', ['$scope', '$state','TechPointDashboardService', function ($scope, $state, TechPointDashboardService) {
+    .controller('MissionControl', ['$scope', '$state', 'TechPointDashboardService', function ($scope, $state, TechPointDashboardService) {
         //Params from the parent
         var STARTCHARTSANDSTATS = $scope.startchartsandchats;
         var STARTFILTERS = $scope.startfilters;
@@ -12,22 +13,10 @@ angular.module('Xtern')
         $scope.personsCount = 0;
 
 
-        //DataLoad
-        // $scope.$watch('data', function (newVal, oldval) {
-        //     if (newVal)
-        //         dataLoad(newVal);
-        // }, true);
-
         var dataLoad = function (data, keys) {
-            // $scope.summaryData = $.map(data, function (person) {
-            //     return rowClass(person)
-            // });
-            // $scope.rawData = $.map(data, function (person) {
-            //     return rowClass(person)
-            // });
-            let students = [];
-            for(var i = 0; i < data.length; i++) {
-                students[i] = rowClass(data[i],keys[i]);
+            var students = [];
+            for (var i = 0; i < data.length; i++) {
+                students[i] = rowClass(data[i], keys[i]);
             }
             $scope.summaryData = students;
             $scope.rawData = students;
@@ -37,9 +26,6 @@ angular.module('Xtern')
 
             $('.ui.dropdown').dropdown();//activates semantic drowpdowns
         };
-
-
-
 
         //Graph Stuff
         var generateChartAndStatus = function (jsonArray) {
@@ -273,16 +259,6 @@ angular.module('Xtern')
             refreshCharts();
             $scope.personsCount = $scope.summaryData.length;
         };
-        $scope.clearAllFilters = function () {
-            $scope.filterData.Selected.Universities.length = 0;
-            $scope.filterData.Selected.Technologies.length = 0;
-            $scope.filterData.Selected.Name.length = 0;
-            $scope.filterData.Selected.Major.length = 0;
-            $scope.filterData.Selected.WorkStatus.length = 0;
-            $scope.filterData.Selected.Interests.length = 0;
-            $scope.filterData.Selected.Status.length = 0;
-            $scope.filterTable();
-        };
 
         //DataLoad
         //Table Click
@@ -290,9 +266,9 @@ angular.module('Xtern')
             $state.go(PATH + '.profile', {key: key});
         };
 
-        var run = function(data, keys){
+        var run = function (data, keys) {
             generateChartAndStatus(STARTCHARTSANDSTATS);
-            setTableHeaders(TABLEHEADERS);            
+            setTableHeaders(TABLEHEADERS);
             generateFilterObjects(STARTFILTERS);
             dataLoad(data, keys);
 
@@ -300,12 +276,10 @@ angular.module('Xtern')
             $('.ui.accordion').accordion();
         };
 
-
-
         TechPointDashboardService.queryUserSummaryData(function (data, keys) {
             $scope.DATA = data;
             //$scope.KEYS = keys;
-            run(data,keys);
+            run(data, keys);
         });
 
     }]);

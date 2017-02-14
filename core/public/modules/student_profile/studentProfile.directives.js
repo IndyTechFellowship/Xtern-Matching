@@ -1,5 +1,6 @@
+'use strict';
 angular.module('Xtern')
-    .directive('studentProfileComment', function() {
+    .directive('studentProfileComment', function () {
         return {
             restrict: 'E',
             templateUrl: 'public/modules/student_profile/comments/comment.html',
@@ -16,7 +17,7 @@ angular.module('Xtern')
             controller: 'TechLabelsCtrl'
         };
     })
-    .directive('studentDataPage', function() {
+    .directive('studentDataPage', function () {
         return {
             restrict: 'E',
             templateUrl: 'public/modules/student_profile/partials/studentDataPage.html',

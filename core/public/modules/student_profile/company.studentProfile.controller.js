@@ -1,6 +1,7 @@
+'use strict';
 angular.module('Xtern')
     .controller('CompanyStudentProfileCtrl', function($scope, $location, ProfileService, CompanyService, $stateParams) {
-  
+
     $scope.comment = {};
 
     var CompanyStudentProfileCtrlSetup = function(){

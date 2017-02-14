@@ -1,7 +1,6 @@
+'use strict';
 angular.module('Xtern')
     .controller('TechPointAccountCtrl', ['$scope', '$rootScope', '$state', 'AccountControlService', function ($scope, $rootScope, $state, AccountControlService) {
-        var self = this;
-
         $scope.techPointUsers = [];
         $scope.reviewerUsers = [];
         $scope.companyUsers = [];
@@ -27,8 +26,8 @@ angular.module('Xtern')
             };
 
             $scope.tableHeaders = [
-                { title: 'Name', sortPropertyName: 'name', displayPropertyName: 'name', asc: true },
-                { title: 'Email', sortPropertyName: 'email', displayPropertyName: 'email', asc: true }
+                {title: 'Name', sortPropertyName: 'name', displayPropertyName: 'name', asc: true},
+                {title: 'Email', sortPropertyName: 'email', displayPropertyName: 'email', asc: true}
             ];
 
             //Set up CompanyAbbr
@@ -64,16 +63,8 @@ angular.module('Xtern')
             $('#accountsModal').modal('show');
             resetUserForm(user);
             $('#accountModalform .error.message').empty();
-        }
+        };
 
-        var refreshAccounts = function (group, company, array) {
-            AccountControlService.getUsers(group, company, function (data) {
-                array.length = 0; //We want to keep array refrences but replace all of the elements 
-                data.forEach(function (user) {
-                    array.push(user);
-                });
-            });
-        }
         var refreshAccounts = function (organizationKey, array) {
             AccountControlService.getUsers(organizationKey, function (users) {
                 array.length = 0; //We want to keep array refrences but replace all of the elements
@@ -83,7 +74,6 @@ angular.module('Xtern')
                 $scope.selectedGroup.selectedUsers = array;
             });
         };
-
 
         var swapActiveArray = function (group) {
             if (group == 'TechPoint') {
@@ -96,14 +86,14 @@ angular.module('Xtern')
             } else if (group == 'Reviewer') {
                 $scope.selectedGroup.selectedUsers = $scope.reviewerUsers;
                 $scope.companyList.forEach(function (company) {
-                    if (company.name == 'Reviewer' || company.name== 'Reviewers') {
+                    if (company.name == 'Reviewer' || company.name == 'Reviewers') {
                         refreshAccounts(company.key, $scope.reviewerUsers);
                     }
                 });
             }
             else if (group == 'Company') {
                 $scope.selectedGroup.selectedUsers = $scope.companyUsers;
-                if($scope.selectedGroup.activeCompany){
+                if ($scope.selectedGroup.activeCompany) {
                     refreshAccounts($scope.selectedGroup.activeCompany, $scope.companyUsers);
                 }
             } else {
@@ -113,15 +103,11 @@ angular.module('Xtern')
         };
 
         var submitUser = function (fields) {
-            //                 console.log('passed and submitting');
-            //     $scope.UserFormData.name = $scope.UserFormData.firstName + " " + $scope.UserFormData.lastName;
-            //     if ($scope.UserFormData.newUser) {
-            //         AccountControlService.addUser($scope.UserFormData, function () {
             fields.name = fields.firstName + " " + fields.lastName;
             if (!fields.key) {
                 if (fields.role != 'Company') {
                     fields.organization = fields.role;
-                };
+                }
                 AccountControlService.addUser(fields, function (data) {
 
                     $scope.selectedGroup.refresh();
@@ -144,8 +130,12 @@ angular.module('Xtern')
             var prop = header.sortPropertyName;
             var asc = header.asc;
             header.asc = !header.asc;
-            var ascSort = function (a, b) { return a[prop] < b[prop] ? -1 : a[prop] > b[prop] ? 1 : 0; };
-            var descSort = function (a, b) { return ascSort(b, a); };
+            var ascSort = function (a, b) {
+                return a[prop] < b[prop] ? -1 : a[prop] > b[prop] ? 1 : 0;
+            };
+            var descSort = function (a, b) {
+                return ascSort(b, a);
+            };
             var sortFunc = asc ? ascSort : descSort;
             $scope.techPointUsers.sort(sortFunc);
         };
@@ -258,7 +248,7 @@ angular.module('Xtern')
 
         $scope.showCompanyDropdown = function () {
             $('#companyDropdown').show();
-        }
+        };
 
         var setSelectOptions = function () {
             $('.role.dropdown').dropdown({

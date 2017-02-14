@@ -1,3 +1,4 @@
+'use strict';
 angular.module('Xtern')
     .controller('StudentDataPageCtrl', function($scope, $location, ProfileService, $stateParams) {
     $scope.studentData = null;
