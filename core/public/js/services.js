@@ -268,23 +268,18 @@
     }])
         .service('ReviewerDashboardService',['$http', function ($http) {
             var self = this;
-            self.studentSummaryData = null;
-            self.studentKeys = null;
 
             self.queryReviewGroup = function(callback){
                 $http({
                     method: 'POST',
-                    url: host + "reviewer/getReviewGroupForReviewer",
+                    url: "reviewer/getReviewGroupForReviewer",
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
                         'Authorization': 'bearer '+getToken('auth')
                     }
                 }).then(function (data) {
-                    self.studentSummaryData = data.data.students;
-                    self.studentKeys = data.data.users.students;
-                    self.studentGrades = data.data.studentGrades;
-                    callback(self.studentSummaryData, self.studentKeys, self.studentGrades);
+                    callback(data.data.students, data.data.users.students, data.data.studentGrades);
                 }, function errorCallback(response) {
                     console.log('error occured: ', response);
                     callback('','err');
@@ -296,7 +291,7 @@
             self.getReviewerGradeForStudent = function(studentKey, callback){
                 $http({
                     method: 'GET',
-                    url: host + "reviewer/getReviewerGradeForStudent/" + studentKey,
+                    url: "reviewer/getReviewerGradeForStudent/" + studentKey,
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
@@ -314,7 +309,7 @@
             self.postReviewerGradeForStudent = function(studentKey, reviewerGrade){
                 $http({
                     method: 'POST',
-                    url: host + "reviewer/postReviewerGradeForStudent",
+                    url: "reviewer/postReviewerGradeForStudent",
                     data: {
                         "studentKey": studentKey,
                         "reviewerGrade": reviewerGrade
