@@ -1,18 +1,19 @@
-angular.module('Xtern').controller('ReviewerDashboardCtrl', function($scope, $state, ReviewerDashboardService, ReviewerProfileService){
-    PATH ='reviewer';
+'use strict';
+angular.module('Xtern').controller('ReviewerDashboardCtrl', function ($scope, $state, ReviewerDashboardService) {
+    var PATH = 'reviewer';
 
     $scope.isCompany = false;
     $scope.summaryData = null;
     $scope.rawData = null;
     $scope.personsCount = 0;
 
-    $scope.filters ={
+    $scope.filters = {
         graded: false
     };
 
-    $scope.change = function(){        
-        $scope.summaryData = $scope.rawData.filter(function(row){
-            if($scope.filters.graded && row.currentReviewerGrade){
+    $scope.change = function () {
+        $scope.summaryData = $scope.rawData.filter(function (row) {
+            if ($scope.filters.graded && row.currentReviewerGrade) {
                 return false;
             }
             return true;
@@ -21,23 +22,26 @@ angular.module('Xtern').controller('ReviewerDashboardCtrl', function($scope, $st
     };
 
     $scope.tableHeaders = [
-        {title: 'Name', displayProperty:'name', sortPropertyName: 'name', asc: true},
-        {title: 'Your Grade', displayProperty:'currentReviewerGrade', sortPropertyName: 'sortReviewerGrade', asc: true}
+        {title: 'Name', displayProperty: 'name', sortPropertyName: 'name', asc: true},
+        {title: 'Your Grade', displayProperty: 'currentReviewerGrade', sortPropertyName: 'sortReviewerGrade', asc: true}
     ];
 
     $scope.rowClick = function (key) {
         $state.go(PATH + '.profile', {key: key});
     };
 
+    console.log("queryReviewGroup");
     ReviewerDashboardService.queryReviewGroup(function (data, keys, grades) {
+        console.log("queryReviewGroupCallback");
+
         var students = [];
-        for(var i = 0; i < data.length; i++) {
-            students[i] = rowClass(data[i],keys[i]);
+        for (var i = 0; i < data.length; i++) {
+            students[i] = rowClass(data[i], keys[i]);
             students[i].name = students[i].firstName + " " + students[i].lastName;
-            if(grades[i] !== null && grades[i] > 0) {
+            if (grades[i] !== null && grades[i] > 0) {
                 students[i].currentReviewerGrade = grades[i];
                 students[i].sortReviewerGrade = grades[i];
-            }else if(grades[i]){
+            } else if (grades[i]) {
                 students[i].sortReviewerGrade = -1;
             }
         }

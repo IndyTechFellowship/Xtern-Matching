@@ -10,26 +10,19 @@
 
                     <div>
                         <div class="ui header">
-                            Recruting:
+                            Recruiting:
                         </div>
-                        <div ng-click="addStudentToCompany(studentData.key)" class="ui icon basic button fluid blue">
-                            <i class="add user icon"></i> Recruit
-                        </div>
-                        <div class="ui header">
-                            Comments:
-                        </div>
-                        <div class="ui fluid card">
-                            <div class="ui form">
-                                <div class="field">
-                                    <textarea placeholder="Enter a new comment" ng-model="comment.text"></textarea>
-                                </div>
+
+                        <div ng-switch on="!isStudentApplicant">
+                            <div ng-switch-when="true" ng-click="addStudent()" class="ui icon basic button fluid blue animate-switch">
+                                <i class="add user icon"></i> Recruit
                             </div>
-                            <button class="ui bottom attached teal button" ng-click="addComment()">Post Comment</button>
+
+                            <div ng-switch-when="false" ng-click="removeStudent()" class="ui icon basic button fluid red animate-switch">
+                                <i class="add user icon"></i> Remove
+                            </div>
                         </div>
-                        
-                        <div class="ui fluid cards" id="commentCards">
-                            <student-profile-comment class="blurring dimmable ui fluid card" ng-repeat="comment in studentData.comments track by $index"></student-profile-comment>
-                        </div>
+                        <comment-panel></comment-panel>
                     </div>
                 </div>
 
@@ -39,27 +32,16 @@
     </div>
 </div>
 
-<!--Can Uncomment for testing-->
-<!-- <div class="ui container">
-    <form class="ui form" ng-controller="UploadCtrl as ctrl" enctype="multipart/form-data">
-
-        <label for="file">File:</label>
-        <input id="file" name="file" type="file"></input>
-
-        <input type="submit" ng-click="ctrl.uploadResume(4505248894812160);"></input>
-
-    </form>
-</div> -->
 <div class="vertical-spacer"></div>
 
-<script src="node_modules/pdfjs-dist/build/pdf.js">
+<script src="node_modules/pdfjs-dist/build/pdf.js"></script>
 
 <script src="public/js/pdfobject.js"></script>
 <style>
     #the-canvas {
         height: 700px;
     }
-    
+
     .pdfobject {
         border: 1px solid #666;
     }

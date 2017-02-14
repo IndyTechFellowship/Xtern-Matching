@@ -174,6 +174,7 @@ angular.module('Xtern')
 
         $scope.refreshPhaseOne = function(hardReload){
             DecisionBoardService.getPhaseOne(function(list){
+                console.log("student list", list);
                 $scope.phase1.fullList = list;
                 phase1HistLoad(list);
                 phase1FilterLoad();

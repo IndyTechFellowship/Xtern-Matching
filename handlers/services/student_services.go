@@ -4,26 +4,21 @@ import (
 	"Xtern-Matching/models"
 	"archive/zip"
 	"io"
-	"log"
 	"net/http"
 	"Xtern-Matching/handlers/services/csv"
 	"os"
-	"strconv"
 	"golang.org/x/net/context"
-	"golang.org/x/oauth2/google"
-	"google.golang.org/api/storage/v1"
 	"google.golang.org/appengine/datastore"
 	"bytes"
 	"google.golang.org/appengine/urlfetch"
 )
 
-
 func StudentToStudentDecision(students []models.Student, keys []*datastore.Key) []models.StudentDecision {
 	var studentDecisions []models.StudentDecision = make([]models.StudentDecision, len(students))
-	for i:=0; i < len(students); i++ {
+	for i := 0; i < len(students); i++ {
 		student := students[i]
 		studentDecisions[i] = models.StudentDecision{keys[i].IntID(), student.FirstName, student.LastName,
-		student.GradYear, student.Grade, student.Gender, student.WorkStatus, student.Ethnicity, student.ReviewerGrades}
+			student.GradYear, student.Grade, student.Gender, student.WorkStatus, student.Ethnicity, student.ReviewerGrades}
 	}
 	return studentDecisions
 }
@@ -37,11 +32,9 @@ func GetStudentDecisionList(ctx context.Context, parent *datastore.Key) ([]model
 	return StudentToStudentDecision(students, keys), nil
 }
 
-
-
 func GetStudentsAtLeastWithStatus(ctx context.Context, status string) ([]models.StudentDecision, error) {
 	statuses := [...]string{"Rejected (Stage 1)", "Rejected (Stage 2)", "Rejected (Stage 3)",
-				"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
+		"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
 	query := datastore.NewQuery("Student")
 	var students []models.StudentDecision
 	for i := 0; i < len(statuses); i++ {
@@ -70,9 +63,9 @@ func GetStudentsAtLeastWithStatus(ctx context.Context, status string) ([]models.
 	return students, nil
 }
 
-func MoveStudentsToStatus(ctx context.Context, keys []*datastore.Key,status string) (error) {
+func MoveStudentsToStatus(ctx context.Context, keys []*datastore.Key, status string) (error) {
 	statuses := [...]string{"Rejected (Stage 1)", "Rejected (Stage 2)", "Rejected (Stage 3)",
-				"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
+		"Undecided", "Stage 1 Approved", "Stage 2 Approved", "Stage 3 Approved"}
 	query := datastore.NewQuery("Student")
 
 	for i := 0; i < len(statuses); i++ {
@@ -90,7 +83,7 @@ func MoveStudentsToStatus(ctx context.Context, keys []*datastore.Key,status stri
 			return err
 		}
 		if students != nil {
-			for i :=0; i < len(students); i++ {
+			for i := 0; i < len(students); i++ {
 				for j := 0; j < len(keys); j++ {
 					if keys[j].Equal(qKeys[i]) {
 						students[i].Status = status
@@ -117,10 +110,14 @@ func GetReviewedStudents(ctx context.Context, parent *datastore.Key) ([]models.S
 	return filteredStudents, nil
 }
 
+
+/*
+Gets all students in the database.
+*/
 func GetStudents(ctx context.Context, parent *datastore.Key) ([]models.Student, []*datastore.Key, error) {
 	q := datastore.NewQuery("Student")
 	if parent != nil {
-		q = datastore.NewQuery("Student").Ancestor(parent)
+		q = datastore.NewQuery("Student")
 	}
 	var students []models.Student
 	keys, err := q.GetAll(ctx, &students)
@@ -169,7 +166,6 @@ func ExportResumes(ctx context.Context, students []models.Student) (*bytes.Buffe
 }
 
 func GetStudent(ctx context.Context, studentKey *datastore.Key) (models.Student, error) {
-	//studentKey := datastore.NewKey(ctx, "Student", "", _id, nil)
 	var student models.Student
 	err := datastore.Get(ctx, studentKey, &student)
 	if err != nil {
@@ -191,7 +187,6 @@ func ExportStudents(ctx context.Context) ([]byte, error) {
 }
 
 func NewStudent(ctx context.Context, student models.Student) (int, error) {
-
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
 	student.Active = true
 	student.ReviewerGrades = make([]models.ReviewerGrade, 0, 1)
@@ -222,49 +217,30 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 	return http.StatusCreated, nil
 }
 
-func addResume(ctx context.Context, studentId int64, file io.Reader) (string, error) {
-	var bucketName string
-	var projectID string
-	if os.Getenv("XTERN_ENVIRONMENT") != "production" {
-		bucketName = "xtern-matching-143216.appspot.com" //DEV Server
-		projectID = "xtern-matching-143216"
-	} else {
-		bucketName = "xtern-matching.appspot.com"
-		projectID = "xtern-matching"
-	}
-
-	client, err := google.DefaultClient(ctx, storage.DevstorageFullControlScope)
+func SetStatus(ctx context.Context, studentKey *datastore.Key, status string) error {
+	var student models.Student
+	err := datastore.Get(ctx, studentKey, &student)
 	if err != nil {
-		log.Println("Error getting storage client")
-		return "", err
+		return err
 	}
-	service, err := storage.New(client)
+	student.Status = status
+	_, err = datastore.Put(ctx, studentKey, &student)
 	if err != nil {
-		log.Println("Error getting storage service")
-		return "", err
+		return err
 	}
+	return nil
+}
 
-	//Access Bucket and see if it exists
-	if _, err := service.Buckets.Get(bucketName).Do(); err == nil {
-		log.Printf("Bucket %s already exists - skipping buckets.insert call.", bucketName)
-	} else {
-		// Create a bucket.
-		if res, err := service.Buckets.Insert(projectID, &storage.Bucket{Name: bucketName}).Do(); err == nil {
-			log.Printf("Created bucket %v at location %v\n\n", res.Name, res.SelfLink)
-		} else {
-			return "", err
-		}
+func SetGrade(ctx context.Context, studentKey *datastore.Key, grade float64) error {
+	var student models.Student
+	err := datastore.Get(ctx, studentKey, &student)
+	if err != nil {
+		return err
 	}
-
-	//Insert new resume copy
-	object := &storage.Object{Name: strconv.FormatInt(studentId, 10) + ".pdf"}
-	res, err := service.Objects.Insert(bucketName, object).Media(file).Do()
-	if err == nil {
-		log.Printf("Created object %v at location %v\n\n", res.Name, res.SelfLink)
-	} else {
-		log.Println("Error inserting into bucket")
-		return "", err
+	student.Grade = grade
+	_, err = datastore.Put(ctx, studentKey, &student)
+	if err != nil {
+		return err
 	}
-
-	return res.MediaLink, nil
+	return nil
 }

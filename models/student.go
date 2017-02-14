@@ -5,7 +5,6 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
-// csv:"-" to exclude export
 type Student struct {
 	FirstName    string   `json:"firstName"`
 	LastName     string   `json:"lastName"`
@@ -23,13 +22,11 @@ type Student struct {
 	Resume       string   `json:"resume"`
 
 	Grade        float64  `json:"grade"`
+	ReviewerGrades	[]ReviewerGrade	`json:"reviewerGrades"`
 	Status       string   `json:"status"`
 	Active       bool     `json:"active"`
 	HomeState    string   `json:"homeState"`
 	Ethnicity    string   `json:"ethnicity"`
-	ReviewerGrades	[]ReviewerGrade	`json:"reviewerGrades"`
-	//Details map[string]interface{}	`json:"details"`
-	//EmailIntrest string 	`json:"interestedInEmail"`
 }
 
 /*

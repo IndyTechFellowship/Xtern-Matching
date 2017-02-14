@@ -1,13 +1,14 @@
+'use strict';
 angular.module('Xtern')
-    .controller('StudentDataPageCtrl', function($scope, $location, ProfileService, $stateParams) {
+    .controller('StudentDataPageCtrl', function($rootScope, $scope, $location, ProfileService, $stateParams) {
     $scope.studentData = null;
 
-    ProfileService.getStudentData($stateParams.key, function(data) {
+    ProfileService.getStudent($stateParams.key, function(data) {
+        console.log("data page state params", $stateParams);
         $scope.studentData = data;
         $scope.studentData.key = $stateParams.key;
-        //PDFObject.embed(data.resume, "#example1");
-        //https://gist.github.com/fcingolani/3300351
         PDFJS.disableWorker = true;
+        //TODO make this loaded
         PDFJS.workerSrc = "node_modules/pdfjs-dist/build/pdf.worker.js";
 
         function renderPage(page) {
@@ -33,14 +34,10 @@ angular.module('Xtern')
         PDFJS.getDocument(data.resume).then(renderPages);
     });
 
-    var StudentDataPageCtrlSetup = function(){
-        $('.ui.dropdown').dropdown();
-        $('.ui.sticky').sticky({
-            context: '#example1'
-        });
-    };
-
-     $scope.$on('$viewContentLoaded', function (evt) {
-            StudentDataPageCtrlSetup();
+    $scope.$on('$viewContentLoaded', function (evt) {
+         $('.ui.dropdown').dropdown();
+         $('.ui.sticky').sticky({
+             context: '#example1'
+         });
     });
 });
