@@ -35,4 +35,4 @@ angular.module('Xtern')
         $scope.studentData.r1Grade = option;
     };
 
-})
+});

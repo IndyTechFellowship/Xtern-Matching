@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
     //Node Modules
     var angular = require('angular');
@@ -8,7 +9,10 @@
     require('chart.js');
     require('angular-chart.js');
     require('ng-sortable');
-    require('pdfjs-dist');
+    require('pdfjs-dist/build/pdf.worker.js');
+    require('pdfjs-dist/build/pdf.js');
+    require('pdfjs-dist/build/pdf.combined.js');
+    require('pdfjs-dist/build/pdf.worker.entry.js');
 
 
     var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize","DataManager"]);//ngSanitize "ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize"

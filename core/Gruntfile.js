@@ -4,8 +4,7 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         uglify: {
             options: {
-                banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-                '<%= grunt.template.today("yyyy-mm-dd") %> */'
+                mangle: false
             },
             my_target: {
                 files: {
@@ -20,9 +19,9 @@ module.exports = function(grunt) {
             },
             target: {
                 files: {
-                    'output.min.css': ['../node_modules/angular-centered/angular-centered.css',
-                        '../node_modules/angular-chart.js/dist/angular-chart.min.css',
-                        '../node_modules/ng-sortable/dist/ng-sortable.min.css',
+                    'output.min.css': ['node_modules/angular-centered/angular-centered.css',
+                        'node_modules/angular-chart.js/dist/angular-chart.min.css',
+                        'node_modules/ng-sortable/dist/ng-sortable.min.css',
                         'public/css/studentProfile.css',
                         'public/css/universal.css']
                 }
