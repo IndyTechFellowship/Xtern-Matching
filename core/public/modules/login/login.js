@@ -9,14 +9,11 @@ function getToken(tokenName) {
 }
 
 function logout() {
-    var tokens = ['auth', 'role', 'organization', 'company', 'jwtToken'];
+    let tokens = ['auth', 'role', 'organization', 'company', 'jwtToken'];
     tokens.forEach(function(token){
         removeToken(token);
     });
-}
-
-function getJwtToken(){
-    sessionStorage.getItem("auth");
+    sessionStorage.removeItem("userKey");
 }
 
 function removeToken(token){
@@ -108,23 +105,24 @@ var isLoggedInCompany = function ($q) {
 
 var isLoggedIn = function ($q, code) {
     var role = getToken("organization");
+    var errorObject ={};
     if (!role) {
         return;
     }
     else if(role =="admin"){
-        var errorObject = {code: code};
+        errorObject = {code: code};
         return $q.reject(errorObject);
     }
     else if (role == "TechPoint") {
-        var errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
+        errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
         return $q.reject(errorObject);   
     }
     else if(role == "Company"){
-        var errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
+        errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);        
     }
     else if(role == "Reviewers"){
-        var errorObject = { code: 'ALREADY_AUTHENTICATED_REVIEWER' };
+        errorObject = { code: 'ALREADY_AUTHENTICATED_REVIEWER' };
         return $q.reject(errorObject);        
     }
 };
