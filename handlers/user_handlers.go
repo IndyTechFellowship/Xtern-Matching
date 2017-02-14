@@ -7,6 +7,7 @@ import (
 	"Xtern-Matching/handlers/services"
 	"Xtern-Matching/models"
 	"google.golang.org/appengine/datastore"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"log"
 )
@@ -27,6 +28,21 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	token, err := jwt.Parse(string(tokenString), func(token *jwt.Token) (interface{}, error) {
+		return []byte("My Secret"), nil
+		});
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	orgKey, err := datastore.DecodeKey(token.Claims.(jwt.MapClaims)["org"].(string))
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	org, err := services.GetOrganization(ctx,orgKey)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -34,7 +50,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	dat = make(map[string]interface{})
 	dat["token"] = string(tokenString)
-	dat["organizationName"] = "Company"
+	if(org.Name != "Techpoint" && org.Name != "Reviewers") {
+		dat["organizationName"] = "Company"
+	} else {
+		dat["organizationName"] = org.Name
+	}
 	dat["userKey"] = token.Claims.(jwt.MapClaims)["key"].(string)
 
 	w.Header().Set("Content-Type", "application/json")

@@ -24,12 +24,9 @@ var isLoggedInTechPoint = function ($q) {
     var errorObject ={};
     var role = getToken("organization");
     if (!role) {
-        errorObject = { code: 'NOT_AUTHENTICATED_REVIEWER' };
+        errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
         $q.reject(errorObject);
         return $q.reject(errorObject);
-    }
-    else if(role =="admin"){
-        return null;
     }
     else if (role == "Techpoint") {
         return null;
@@ -55,10 +52,7 @@ var isLoggedInReviewer = function ($q) {
         errorObject = { code: 'NOT_AUTHENTICATED_REVIEWER' };
         return $q.reject(errorObject);
     }
-    else if(role =="admin"){
-        return null;
-    }
-    else if (role == "TechPoint") {
+    else if (role == "Techpoint") {
         errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
         return $q.reject(errorObject);      
     }
@@ -70,7 +64,7 @@ var isLoggedInReviewer = function ($q) {
         return null;
     }
     else{
-        errorObject = { code: 'NOT_AUTHENTICATED_INSTRUCTOR' };
+        errorObject = { code: 'NOT_AUTHENTICATED_REVIEWER' };
         return $q.reject(errorObject);
     }
 };
@@ -82,9 +76,6 @@ var isLoggedInCompany = function ($q) {
         errorObject = { code: 'NOT_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);
 
-    }
-    else if(role =="admin"){
-        return null;
     }
     else if (role == "Techpoint") {
         errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
