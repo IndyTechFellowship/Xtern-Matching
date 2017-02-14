@@ -1,4 +1,14 @@
 package tests
+
+import (
+	//"github.com/stretchr/testify/assert"
+	//"Xtern-Matching/handlers/services"
+	//"time"
+	//"testing"
+	//"google.golang.org/appengine/aetest"
+	"Xtern-Matching/models"
+)
+
 //
 //import (
 //	"Xtern-Matching/handlers/services"
@@ -11,23 +21,23 @@ package tests
 //	"google.golang.org/appengine/aetest"
 //)
 //
-//func GetUser1() models.User {
-//	user1 := models.User{}
-//	user1.Email = "xniccum@gmail.com"
-//	user1.Password = "admin1"
-//	user1.Organization = "Xtern"
-//	user1.Role = "admin"
-//	return user1
-//}
-//
-//func GetUser2() models.User {
-//	user2 := models.User{}
-//	user2.Email = "samael@work.com"
-//	user2.Password = "work"
-//	user2.Organization = "Xtern"
-//	user2.Role = "company"
-//	return user2
-//}
+func GetUser1() models.User {
+	user1 := models.User{}
+	user1.Email = "xniccum@gmail.com"
+	user1.Password = "admin1"
+	//user1.Organization = "Xtern"
+	//user1.Role = "admin"
+	return user1
+}
+
+func GetUser2() models.User {
+	user2 := models.User{}
+	user2.Email = "samael@work.com"
+	user2.Password = "work"
+	//user2.Organization = "Xtern"
+	//user2.Role = "company"
+	return user2
+}
 //
 //func TestRegister(t *testing.T) {
 //	ctx, done, err := aetest.NewContext()
@@ -193,13 +203,13 @@ package tests
 //		t.Fatal()
 //	}
 //	time.Sleep(time.Millisecond * 500)
-//	users, err := services.GetUsers(ctx, "Xtern", "admin")
-//	time.Sleep(time.Millisecond * 500)
-//	user = users[0]
-//	services.DeleteUser(ctx, user.Id)
-//	time.Sleep(time.Millisecond * 500)
-//	users, err = services.GetUsers(ctx, "Xtern", "admin")
-//	if !assert.Equal(t, 0, len(users), "Expected no users after deletion") {
-//		t.Fatal()
-//	}
+//	//users, err := services.GetUsers(ctx, "Xtern", "admin")
+//	//time.Sleep(time.Millisecond * 500)
+//	//user = users[0]
+//	//services.DeleteUser(ctx, user.Id)
+//	//time.Sleep(time.Millisecond * 500)
+//	//users, err = services.GetUsers(ctx, "Xtern", "admin")
+//	//if !assert.Equal(t, 0, len(users), "Expected no users after deletion") {
+//	//	t.Fatal()
+//	//}
 //}
