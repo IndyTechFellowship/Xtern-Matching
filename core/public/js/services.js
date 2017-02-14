@@ -22,6 +22,24 @@
                 });
             };
 
+            this.getStudentDataForIds = function(keys, callback){
+                $http({
+                    method: 'GET',
+                    url: "student/" + keys,
+                    host: host,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    var students = data.data;
+                    callback(students);
+                }, function errorCallback(err) {
+                    callback(null, err);
+                });
+            };
+
             this.setStatus = function (key, status, callback) {
                 $http({
                     method: 'PUT',
@@ -154,6 +172,24 @@
                     }
                 }).then(function (data) {
                     let organization = data.data;
+                    callback(organization);
+                }, function errorCallback(err) {
+                    callback(null, err);
+                });
+            };
+
+            self.getOrganizationCurrentFromLogin = function(callback){
+                $http({
+                    method: 'GET',
+                    url: "organization/current",
+                    host: host,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    var organization = data.data;
                     callback(organization);
                 }, function errorCallback(err) {
                     callback(null, err);

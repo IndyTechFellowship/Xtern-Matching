@@ -187,3 +187,26 @@ func MoveStudentInOrganization(w http.ResponseWriter,r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 }
+
+func GetCurrentOrganization(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	user := context.Get(r, "user")
+	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+	orgKey, err := datastore.DecodeKey(mapClaims["org"].(string))
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	company, err := services.GetOrganization(ctx, orgKey)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(company)
+}

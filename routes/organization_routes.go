@@ -8,6 +8,7 @@ import (
 func GetOrganizationRoutes(router *mux.Router) *mux.Router {
 	// router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/organization", handlers.GetOrganizations).Methods("GET").Name("GetOrganization")
+	router.HandleFunc("/organization/current", handlers.GetCurrentOrganization).Methods("GET").Name("GetCurrentOrganization")
 	router.HandleFunc("/organization", handlers.AddOrganization).Methods("POST").Name("AddOrganization")
 	router.HandleFunc("/organization/students", handlers.GetOrganizationStudents).Methods("GET").Name("GetOrganizationStudents")
 	router.HandleFunc("/organization/addStudent", handlers.AddStudentToOrganization).Methods("POST").Name("AddStudentToOrganization")
