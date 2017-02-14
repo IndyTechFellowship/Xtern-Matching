@@ -63,12 +63,12 @@ func AddStudent(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 
-	status, err := services.NewStudent(ctx, student)
+	_, err := services.NewStudent(ctx, student)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	w.WriteHeader(status)
+	w.WriteHeader(http.StatusCreated)
 }
 
 func SetGrade(w http.ResponseWriter, r *http.Request) {

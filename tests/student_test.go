@@ -1,8 +1,6 @@
 package tests
 
 import (
-	//"os"
-
 	"Xtern-Matching/models"
 
 	"golang.org/x/net/context"

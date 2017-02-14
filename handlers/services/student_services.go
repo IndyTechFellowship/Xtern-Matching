@@ -4,9 +4,7 @@ import (
 	"Xtern-Matching/models"
 	"archive/zip"
 	"io"
-	"net/http"
 	"Xtern-Matching/handlers/services/csv"
-	"os"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 	"bytes"
@@ -88,22 +86,22 @@ func ExportStudents(ctx context.Context) ([]byte, error) {
 	return output, nil
 }
 
-func NewStudent(ctx context.Context, student models.Student) (int, error) {
+func NewStudent(ctx context.Context, student models.Student) (*datastore.Key, error) {
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
 	student.Active = true
 	student.ReviewerGrades = make([]models.ReviewerGrade, 0, 1)
 
-	//TODO make this done in a single put
-	key, err := datastore.Put(ctx, key, &student)
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
+	////Kept for adding resume code later
+	//key, err := datastore.Put(ctx, key, &student)
+	//if err != nil {
+	//	return nil, err
+	//}
 
-	file, err := os.Open("public/sample.pdf")
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-	defer file.Close()
+	//file, err := os.Open("public/sample.pdf")
+	//if err != nil {
+	//	return http.StatusInternalServerError, err
+	//}
+	//defer file.Close()
 
 	/* resumeURL, err := addResume(ctx, key.IntID(), file)
 	if err != nil {
@@ -111,12 +109,11 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 		return http.StatusInternalServerError, err
 	} */
 	student.Resume = "http://localhost:8080/public/sample.pdf"//resumeURL
-
-	_, err = datastore.Put(ctx, key, &student)
+	key, err := datastore.Put(ctx, key, &student)
 	if err != nil {
-		return http.StatusInternalServerError, err
+		return nil, err
 	}
-	return http.StatusCreated, nil
+	return key, nil
 }
 
 func SetStatus(ctx context.Context, studentKey *datastore.Key, status string)  error {

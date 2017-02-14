@@ -37,7 +37,6 @@ func GetOrganizations(ctx context.Context) ([]models.Organization,[]*datastore.K
 }
 
 func AddStudentToOrganization(ctx context.Context, orgKey *datastore.Key, studentKey *datastore.Key) (int64,error)  {
-	//orgKey := datastore.NewKey(ctx, "Company", "", companyId, nil)
 	var org models.Organization
 	if err := datastore.Get(ctx, orgKey, &org); err != nil {
 		return http.StatusInternalServerError, err
@@ -52,7 +51,6 @@ func AddStudentToOrganization(ctx context.Context, orgKey *datastore.Key, studen
 }
 
 func RemoveStudentFromOrganization(ctx context.Context, orgKey *datastore.Key, studentKey *datastore.Key) error  {
-	//orgKey := datastore.NewKey(ctx, "Company", "", companyId, nil)
 	var org models.Organization
 	if err := datastore.Get(ctx, orgKey, &org); err != nil {
 		return err
@@ -80,12 +78,3 @@ func MoveStudentInOrganization(ctx context.Context, orgKey *datastore.Key, stude
 	}
 	return orgKey.IntID(), nil
 }
-
-//func GetOrganization(ctx context.Context, orgKey datastore.Key) (models.Organization,error) {
-//	//orgKey := datastore.NewKey(ctx, "Organization", "", _id, nil)
-//	var org models.Organization
-//	if err := datastore.Get(ctx, orgKey, &org); err != nil {
-//		return models.Organization{}, err
-//	}
-//	return org, nil
-//}
