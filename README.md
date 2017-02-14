@@ -93,54 +93,22 @@ Allows you to locally test pdfs.
  * Grab cloudstore.json from slack/dev_stuff
  * Set a new enviorment Variable GOOGLE_APPLICATION_CREDENTIALS to cloudstore.json path _(include the file)_
 
-##Set Up
-###Set Up Directories
-```bash
-# Obtain Project
-mkdir Combined\src
-cd Combined\src
-git clone https://github.com/Xtern-Matching/Combined.git
+## Set Up
+### Setup (Using Standalone Go App Engine SDK)
 
-#rename Combined to Xtern-Matching
-#Path should be ../Combined/src/Xtern-Matching/
-cd Xtern-Matching/core
-
-# Install Frond-End components
-npm install #installs all of the packages
-```
-
-###_Required Tools_
-_Install these first_
-
-1. [Node.js](https://nodejs.org/en/)
-2. [Git](https://desktop.github.com/)
-3. nodemon
-```bash
-npm install -g nodemon
-```
+1. Install NPM/Node.js from https://nodejs.org/en/download/
+2. Download Standalone SDK from https://cloud.google.com/appengine/docs/go/download
+3. Place extracted "go_appengine" folder anywhere.
+4. Add the path to the /go_appengine/gopath directory to a GOPATH environment variable.
+5. Add the path to the /go_appengine/goroot directory to a GOROOT environment variable
+6. Navigate to /go_appengine/gopath and create bin, pkg, and src directories.
+7. Navigate to /src/ directory and clone Git project.
+8. Nagigate to handlers, handlers/services, routes, models and run "goapp get" in each directory 
+9. Navigate to /Xtern-Matching/core/ and run "goapp get" and "npm install"
+10. Run npm start and navigate to localhost:8080 to view the app or localhost:8000 to view the Google Datastore manager.
 
 
-####Set Up Go
-1. [Install the Google App Engine GO SDK](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Go)
-2. Add go_appengine to your path variables
-3. Create a new Enviroment Variable GOPATH
-  * Set GOPATH to Combined 
-
-#### Alternate Go Setup
-[Install Google App Engine GO SDK](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Go)
-
-1. Download Go version of SDK
-2. Place SDK folder in place of choosing
-3. Set Add folder to one's PATH
-4. Set environment GOPATH to folder called gopath inside sdk
-5. Set environment GOROOT to folder called goroot inside sdk
-6. Navigate into the gopath folder, and create 3 folders: bin, pkg, and src
-7. Navigate into src folder and clone project
-
-
-
-
-###npm install errors
+#### npm install errors
 In the unlikely case Semantic UI has installation errors:
 ```bash
 npm install -g gulp
