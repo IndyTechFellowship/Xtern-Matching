@@ -1,6 +1,6 @@
-(function (){
-    let app = angular.module('DataManager',[]);
-	let host = location.host;
+'use strict';
+    var app = angular.module('DataManager',[]);
+	var host = "http://localhost:8080";
     app
         .service('ProfileService', ['$http', function ($http){
             this.getStudent = function(key, callback){
@@ -14,9 +14,27 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    let student = data.data;
+                    var student = data.data;
                     student.key = key;
                     callback(student);
+                }, function errorCallback(err) {
+                    callback(null, err);
+                });
+            };
+
+            this.getStudentDataForIds = function(keys, callback){
+                $http({
+                    method: 'GET',
+                    url: "student/" + keys,
+                    host: host,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    var students = data.data;
+                    callback(students);
                 }, function errorCallback(err) {
                     callback(null, err);
                 });
@@ -73,8 +91,8 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    let comments = data.data.comments;
-                    for(let i = 0;i < comments.length;i++) {
+                    var comments = data.data.comments;
+                    for(var i = 0;i < comments.length;i++) {
                         comments[i].key = data.data.keys[i];
                     }
                     callback(comments);
@@ -97,7 +115,7 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    let comment = data.data.comment;
+                    var comment = data.data.comment;
                     comment.key = data.data.key;
                     callback(comment);
                 }, function errorCallback(err) {
@@ -118,7 +136,7 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    let comment = data.data.comment;
+                    var comment = data.data.comment;
                     comment.key = data.data.key;
                     callback(comment);
                 }, function errorCallback(err) {
@@ -141,7 +159,7 @@
         };
     }])
         .service('CompanyService', ['$http', function ($http){
-            let self = this;
+            var self = this;
             self.getOrganizationData = function(key, callback){
                 $http({
                     method: 'GET',
@@ -153,7 +171,25 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    let organization = data.data;
+                    var organization = data.data;
+                    callback(organization);
+                }, function errorCallback(err) {
+                    callback(null, err);
+                });
+            };
+
+            self.getOrganizationCurrentFromLogin = function(callback){
+                $http({
+                    method: 'GET',
+                    url: "organization/current",
+                    host: host,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    var organization = data.data;
                     callback(organization);
                 }, function errorCallback(err) {
                     callback(null, err);
@@ -177,7 +213,7 @@
                     }
                     callback(students);
                 }, function errorCallback(response) {
-                    callback('', 'err');
+                    callback('', response);
                 });
             };
 
@@ -197,7 +233,7 @@
                 }).then(function (data) {
                     callback(data);
                 }, function errorCallback(response) {
-                    console.log('error occured: ', response );
+                    console.log('error occured: ', response);
                     callback('', 'err');
                 });
             };
@@ -223,14 +259,14 @@
                 });
             };
 
-            self.switchStudentsInWishList = function (studentKey, pos, callback) {
+            self.switchStudentsInWishList = function (studentKey1, studentKey2, callback) {
                 $http({
                     method: 'PUT',
-                    url: "organization/moveStudent",
+                    url: "organization/switchStudents",
                     host: host,
                     data: {
-                        "studentKey": studentKey,
-                        "position": pos
+                        "studentKey1": studentKey1,
+                        "studentKey2": studentKey2
                     },
                     headers: {
                         'Content-Type': "application/json",
@@ -244,10 +280,9 @@
                     callback('', 'err');
                 });
             };
-
-    }])
+        }])
         .service('TechPointDashboardService',['$http', function ($http) {
-            let self = this;
+            var self = this;
             self.queryUserSummaryData = function(callback){
                 $http({
                     method: 'GET',
@@ -269,44 +304,44 @@
         .service('ReviewerDashboardService',['$http', function ($http) {
             var self = this;
 
-            self.queryReviewGroup = function(callback){
+            self.queryReviewGroup = function (callback) {
                 $http({
                     method: 'POST',
                     url: "reviewer/getReviewGroupForReviewer",
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
-                        'Authorization': 'bearer '+getToken('auth')
+                        'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
                     callback(data.data.students, data.data.users.students, data.data.studentGrades);
                 }, function errorCallback(response) {
                     console.log('error occured: ', response);
-                    callback('','err');
+                    callback('', 'err');
                 });
             };
         }])
-        .service('ReviewerProfileService',['$http', function ($http) {
+        .service('ReviewerProfileService', ['$http', function ($http) {
             var self = this;
-            self.getReviewerGradeForStudent = function(studentKey, callback){
+            self.getReviewerGradeForStudent = function (studentKey, callback) {
                 $http({
                     method: 'GET',
                     url: "reviewer/getReviewerGradeForStudent/" + studentKey,
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
-                        'Authorization': 'bearer '+getToken('auth')
+                        'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
                     self.reviewerGrade = data.data.grade;
                     callback(data.data.grade);
                 }, function errorCallback(response) {
                     console.log('error occured: ', response);
-                    callback('','err');
+                    callback('', 'err');
                 });
             };
 
-            self.postReviewerGradeForStudent = function(studentKey, reviewerGrade){
+            self.postReviewerGradeForStudent = function (studentKey, reviewerGrade) {
                 $http({
                     method: 'POST',
                     url: "reviewer/postReviewerGradeForStudent",
@@ -317,7 +352,7 @@
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
-                        'Authorization': 'bearer '+getToken('auth')
+                        'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
                 }, function errorCallback(response) {
@@ -326,7 +361,7 @@
             };
         }])
         .service('AccountControlService',['$http', function ($http){
-            let self = this;
+            var self = this;
             self.getOrganizations = function(callback) {
                 var route = "organization";
                 $http({
@@ -336,16 +371,16 @@
                     headers: {
                         'Content-Type': "application/json",
                         'Accept': "application/json",
-                        'Authorization': 'bearer '+ getToken('auth')
+                        'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    for(var i = 0; i < data.data.organizations.length; i++) {
+                    for (var i = 0; i < data.data.organizations.length; i++) {
                         data.data.organizations[i].key = data.data.keys[i]
                     }
                     callback(data.data.organizations);
                 }, function errorCallback(response) {
                     console.log('error occured: ', response);
-                    callback('','err')
+                    callback('', 'err')
                 });
             };
             self.getUsers = function(orgKey,callback) {
@@ -455,13 +490,13 @@
                 }).then(function (data) {
                     callback(data);
                 }, function errorCallback(response) {
-                    console.log('error occured: ' ,  response);
+                    console.log('error occured: ', response);
                     callback('', 'err')
                 });
             };
     }])
         .service('AuthService',['$http', function ($http) {
-            let self = this;
+            var self = this;
             self.login = function(email,password,callback) {
                 $http({
                     method: 'POST',
@@ -483,72 +518,55 @@
                    callback(data.data['token'],data.data.organizationName);
                 }, function errorCallback(response) {
                     console.log('error occured: ', response);
-                    callback('','','err');
+                    callback('', '', 'err');
                 });
             };
-
             self.logout = function (callback) {
                 logout();
                 callback();
             };
-    }])
-        .service('ResumeService',['$http', function ($http) {
-        var self = this;
-        
-		self.uploadResume = function(id){
-			var fd = new FormData();
-			fd.append('file', document.getElementById("file").files[0]);
-			$http.post(host + "student/resume/" + id, fd,{
-                headers: {
-					'Content-Type': undefined,
-					'Accept': "application/json",
-                    'Authorization': 'bearer ' + getToken('auth')
-                }
-            })
-            .success(function () {
-            }).error(function(response) {
-                console.log('error occured: ', response);
-            });
-        };
-    }])
-    .service('TechPointReviewerControlService',['$http', function ($http) {
-        var self = this;
+        }])
+        .service('TechPointReviewerControlService', ['$http', function ($http) {
+            var self = this;
+            self.reviewGroups = null;
+            self.reviewGroupKeys = null;
 
-        self.createReviewGroups = function(minStudents, minReviewers, callback){
-            $http({
-                method: 'POST',
-                url: "reviewer/create",
-                data: {
-                    "minStudents": minStudents,
-                    "minReviewers": minReviewers
-                },
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json",
-                    'Authorization': 'bearer '+getToken('auth')
-                }
-            }).then(function (data) {
-                callback(data);
-            }, function errorCallback(response) {
-                console.log('error occured: ', response);
-            });
-        };
+            self.createReviewGroups = function (minStudents, minReviewers, callback) {
+                $http({
+                    method: 'POST',
+                    url: "reviewer/create",
+                    data: {
+                        "minStudents": minStudents,
+                        "minReviewers": minReviewers
+                    },
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    callback(data);
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                });
+            };
 
-        self.queryReviewGroups = function(callback){
-            $http({
-                method: 'GET',
-                url: "reviewer/getReviewGroups",
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': "application/json",
-                    'Authorization': 'bearer '+getToken('auth')
-                }
-            }).then(function (data) {
-                callback(data.data.users, data.data.keys);
-            }, function errorCallback(response) {
-                console.log('error occured: ', response);
-                callback('','err');
-            });
-        };
-    }]);
-})();
+            self.queryReviewGroups = function (callback) {
+                $http({
+                    method: 'GET',
+                    url: "reviewer/getReviewGroups",
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    self.reviewGroups = data.data.users;
+                    self.reviewGroupKeys = data.data.keys;
+                    callback(self.reviewGroups, self.reviewGroupKeys);
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                    callback('', 'err');
+                });
+            };
+        }]);

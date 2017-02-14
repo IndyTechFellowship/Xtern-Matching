@@ -1,5 +1,6 @@
+'use strict';
 angular.module('Xtern')
-    .controller('CompanyDashboardCtrl', ['$scope', 'TechPointDashboardService', function ($scope, TechPointDashboardService) {
+    .controller('CompanyDashboardCtrl', ['$scope', function ($scope) {
         //BEGIN CONFIG DATA
         $scope.STARTCHARTSANDSTATS = {
             University: {
@@ -44,21 +45,21 @@ angular.module('Xtern')
                 label: "Grade",
                 dataLabel: 'gradeLabel',
                 simpleFilter: true,
-                nestedHeaders: true,
+                nestedHeaders: true
             },
             GradYear: {
                 isToggle: false,
                 label: "Graduation Year",
                 dataLabel: 'gradYear',
                 simpleFilter: true,
-                nestedHeaders: true,
+                nestedHeaders: true
             },
             University: {
                 isToggle: false,
                 label: "University",
                 dataLabel: 'university',
                 simpleFilter: true,
-                nestedHeaders: true,
+                nestedHeaders: true
             },
             Technologies: {
                 isToggle: true,
@@ -79,7 +80,7 @@ angular.module('Xtern')
                 label: "Major",
                 dataLabel: 'major',
                 simpleFilter: true,
-                nestedHeaders: true,
+                nestedHeaders: true
             },
             WorkStatus: {
                 isToggle: false,

@@ -1,32 +1,37 @@
 module.exports = function(grunt) {
 
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json')
-        // uglify: {
-        //     options: {
-        //         banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
-        //     },
-        //     dist: {
-        //         files: {
-        //             'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
-        //         }
-        //     }
-        // }
-        // jshint: {
-        //     files: ['Gruntfile.js', 'public/js/*.js'],
-        //     options: {
-        //         // options here to override JSHint defaults
-        //         globals: {
-        //             jQuery: true,
-        //             console: true,
-        //             module: true,
-        //             document: true
-        //         }
-        //     }
+        pkg: grunt.file.readJSON('package.json'),
+        uglify: {
+            options: {
+                mangle: false
+            },
+            my_target: {
+                files: {
+                    'output.min.js': ['bundle.js']
+                }
+            }
+        },
+        cssmin: {
+            options: {
+                mergeIntoShorthands: false,
+                roundingPrecision: -1
+            },
+            target: {
+                files: {
+                    'output.min.css': ['node_modules/angular-centered/angular-centered.css',
+                        'node_modules/angular-chart.js/dist/angular-chart.min.css',
+                        'node_modules/ng-sortable/dist/ng-sortable.min.css',
+                        'node_modules/toastr/build/toastr.min.css',
+                        'public/css/studentProfile.css',
+                        'public/css/universal.css']
+                }
+            }
+        }
     });
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    //grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.registerTask('default', ['jshint', 'uglify']);
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.registerTask('default', ['uglify','cssmin']);
 
 };

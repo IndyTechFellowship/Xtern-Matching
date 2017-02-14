@@ -1,8 +1,10 @@
+'use strict';
 angular.module('Xtern')
-    .controller('StudentDataPageCtrl', function($scope, $location, ProfileService, $stateParams) {
+    .controller('StudentDataPageCtrl', function($rootScope, $scope, $location, ProfileService, $stateParams) {
     $scope.studentData = null;
 
     ProfileService.getStudent($stateParams.key, function(data) {
+        console.log("data page state params", $stateParams);
         $scope.studentData = data;
         $scope.studentData.key = $stateParams.key;
         PDFJS.disableWorker = true;
@@ -10,10 +12,10 @@ angular.module('Xtern')
         PDFJS.workerSrc = "node_modules/pdfjs-dist/build/pdf.worker.js";
 
         function renderPage(page) {
-            let viewport = page.getViewport(1.1);
-            let canvas = document.createElement('canvas');
-            let ctx = canvas.getContext('2d');
-            let renderContext = {
+            var viewport = page.getViewport(1.1);
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            var renderContext = {
                 canvasContext: ctx,
                 viewport: viewport
             };
@@ -26,7 +28,7 @@ angular.module('Xtern')
             page.render(renderContext);
         }
         function renderPages(pdfDoc){
-            for(let num = 1; num <= pdfDoc.numPages; num++)
+            for(var num = 1; num <= pdfDoc.numPages; num++)
                 pdfDoc.getPage(num).then(renderPage);
         }
         PDFJS.getDocument(data.resume).then(renderPages);

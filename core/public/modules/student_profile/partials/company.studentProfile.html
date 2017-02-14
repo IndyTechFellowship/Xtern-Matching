@@ -10,10 +10,17 @@
 
                     <div>
                         <div class="ui header">
-                            Recruting:
+                            Recruiting:
                         </div>
-                        <div ng-click="addStudentToCompany(studentData.key)" class="ui icon basic button fluid blue">
-                            <i class="add user icon"></i> Recruit
+
+                        <div ng-switch on="!isStudentApplicant">
+                            <div ng-switch-when="true" ng-click="addStudent()" class="ui icon basic button fluid blue animate-switch">
+                                <i class="add user icon"></i> Recruit
+                            </div>
+
+                            <div ng-switch-when="false" ng-click="removeStudent()" class="ui icon basic button fluid red animate-switch">
+                                <i class="add user icon"></i> Remove
+                            </div>
                         </div>
                         <comment-panel></comment-panel>
                     </div>
@@ -27,14 +34,14 @@
 
 <div class="vertical-spacer"></div>
 
-<script src="node_modules/pdfjs-dist/build/pdf.js">
+<script src="node_modules/pdfjs-dist/build/pdf.js"></script>
 
 <script src="public/js/pdfobject.js"></script>
 <style>
     #the-canvas {
         height: 700px;
     }
-    
+
     .pdfobject {
         border: 1px solid #666;
     }

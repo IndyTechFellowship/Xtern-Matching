@@ -1,3 +1,4 @@
+'use strict';
 angular.module('Xtern').controller('ReviewerStudentProfileCtrl', function($scope, ProfileService, ReviewerProfileService, $stateParams) {
     $('.ui.dropdown').dropdown(); //activate Semantic UI dropdowns
 
