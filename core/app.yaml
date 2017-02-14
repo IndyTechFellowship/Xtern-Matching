@@ -20,6 +20,10 @@ handlers:
   static_dir: semantic
 - url: /node_modules
   static_dir: node_modules
+- url: /bundle.js
+  static_files: bundle.js
+  upload: bundle.js
+
 
 - url: /environments
   static_dir: environments

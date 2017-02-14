@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" href="../node_modules/angular-centered/angular-centered.css">
     <link rel="stylesheet" type="text/css" href="../node_modules/angular-chart.js/dist/angular-chart.min.css">
     <link rel="stylesheet" type="text/css" href="../node_modules/ng-sortable/dist/ng-sortable.min.css">
+    <link rel="stylesheet" type="text/css" href="public/css/studentProfile.css">
     <!--<link rel="stylesheet" type="text/css" href="node_modules/ng-sortable/dist/ng-sortable.style.min.css">-->
     <!-- Use custom semantic css -->
     <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
@@ -22,63 +23,18 @@
 <body>
 
 <div ui-view></div>
+<script src='../bundle.js'></script>
 
-<!--JQuery-->
-<script src='../node_modules/jquery/dist/jquery.min.js'></script>
-<!--Angular-->
-     <!--<link rel="stylesheet" type="text/css" href="node_modules/semantic-ui/dist/semantic.min.css">-->
-<script src='../node_modules/angular/angular.min.js'></script>
-<!--Semantic-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
 <script src="semantic/dist/semantic.min.js"></script>
-<!--Centered-->
-<script src="../node_modules/angular-centered/angular-centered.js"></script>
-<!-- UI-Router -->
-<script src="../node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
-<!-- Angular-Chart -->
-<script src="../node_modules/chart.js/Chart.js"></script>
-<script src="../node_modules/angular-chart.js/dist/angular-chart.js"></script>
-<!-- Angular Sanitize -->
-<script src="../node_modules/angular-sanitize/angular-sanitize.min.js"></script>
-<!-- Angular Sortable -->
-<!--<script src="node_modules/angular-legacy-sortablejs/angular-legacy-sortable.js"></script>-->
-<script src="../node_modules/ng-sortable/dist/ng-sortable.min.js"></script>
-<!--Local Scripts-->
-<script src='public/app.js'></script>
 
+<script src='public/js/login.js'></script>
+<script src="public/js/helpers.js"></script>
 <script src="public/js/services.js"></script>
 <script src="public/js/directives.js"></script>
 <script src="public/js/temp_globals.js"></script>
-
-<!--Login-->
-<script src='public/modules/login/login.js'></script>
-<script src="public/modules/login/techpoint.login.controller.js"></script>
-<script src="public/modules/login/company.login.controller.js"></script>
-<script src="public/modules/login/reviewer.login.controller.js"></script>
-<!--Dashboard-->
-<script src="public/modules/dashboard/dashboard.directives.js"></script>
-<script src="public/modules/dashboard/dashboard.controller.js"></script>
-<script src="public/modules/dashboard/techpoint.dashboard.controller.js"></script>
-<script src="public/modules/dashboard/company.dashboard.controller.js"></script>
-<script src="public/modules/dashboard/reviewer.dashboard.controller.js"></script>
-<!--Student Profile-->
-<script src="public/modules/student_profile/studentDataPage.controller.js"></script>
-<script src="public/modules/student_profile/studentProfile.directives.js"></script>
-<script src="public/modules/student_profile/comments/comment.controller.js"></script>
-<script src="public/modules/student_profile/tech_labels/techLabels.controller.js"></script>
-<script src="public/modules/student_profile/techpoint.studentProfile.controller.js"></script>
-<script src="public/modules/student_profile/company.studentProfile.controller.js"></script>
-<script src="public/modules/student_profile/reviewer.studentProfile.controller.js"></script>
-
-<script src="public/modules/recuting/company.recruting.js"></script>
-
-<!--Account Control-->
-<script src="public/modules/account_control/techpoint.accountControl.controller.js"></script>
-<!--TechPoint Reviewer Controls-->
-<script src="public/modules/reviewer_controls/techpoint.reviewerControls.controller.js"></script>
-<!--Main-->
-<script src="public/company/company.controller.js"></script>
-<script src="public/techpoint/techpoint.controller.js"></script>
-<script src="public/reviewer/reviewer.controller.js"></script>
+<script src="public/js/pdfobject.js"></script>
 
 </body>
 </html>

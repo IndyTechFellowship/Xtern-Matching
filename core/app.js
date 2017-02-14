@@ -1,8 +1,23 @@
 'use strict';
 (function () {
-    //var angular = require('angular');
-    //var router = require('ui.router');
-    var app = angular.module('Xtern', ["ngSanitize", "ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize","DataManager"]);//ngSanitize "ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize"
+    //Node Modules
+    var angular = require('angular');
+    require('angular-ui-router');
+    require('angular-sanitize');
+    require('angular-centered');
+    require('chart.js');
+    require('angular-chart.js');
+    require('ng-sortable');
+    require('pdfjs-dist');
+
+
+    var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize","DataManager"]);//ngSanitize "ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize"
+
+    require('./public/techpoint/techpoint.controller.js');
+    require('./public/company/company.controller.js');
+    require('./public/reviewer/reviewer.controller.js');
+    require('./public/modules/');
+
 
     app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
         // $locationProvider.html5Mode(true);
@@ -201,38 +216,5 @@
     });
 })();
 
-//---------------------Classes and Function - to be moved later --------------//
 
-var removeDataColors = function (data) {
-    data.knownTech = [];
-    for (var i in data.languages) {
-        data.knownTech.push(data.languages[i].name);
-    }
-    //data.knownTech.sort();
-};
-
-// There should be a better way to do this, but I am blanking now -- maybe filter
-// Corrects data formatting
-var rowClass = function (data, key) {
-    data.name = data.firstName + " " + data.lastName;
-    data.namelink = '<a ui-sref="profile/' + key + '">' + data.name + "</a>";
-    data.gradeLabel = data.grade;
-    data.key = key;
-    removeDataColors(data);
-
-    //console.log(data);
-    return data;
-};
-
-var removedDuplicates = function (arr) {
-    return arr.filter(function (elem, index, self) {
-        return index == self.indexOf(elem);
-    });
-};
-
-var cleanStudents = function (student) {
-    //student.interestedIn = removedDuplicates(student.interestedIn);
-    //student.languages = removedDuplicates(student.interestedIn);
-    return student;
-};
 
