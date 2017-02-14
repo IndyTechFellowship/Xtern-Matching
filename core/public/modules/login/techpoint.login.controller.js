@@ -1,6 +1,6 @@
 angular.module('Xtern')
     .controller('TechpointLogin',['$scope','$state','AuthService','TechPointDashboardService', function($scope, $state, AuthService) {
-        let formConfig = function() {
+        var formConfig = function() {
             $('#techpointLogin').form({
                 fields: {
                     email: {
@@ -46,7 +46,7 @@ angular.module('Xtern')
         $scope.login = function() {
             $('#techpointLogin').form('validate form');
         };
-        let authenticate = function(fields) {
+        var authenticate = function(fields) {
             $('#techpointLogin .ui.button').addClass("disabled");
             AuthService.login(fields.email, fields.password, function(token, org, err) {
                 if (err) {

@@ -1,5 +1,5 @@
  (function () {
-    let app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable", "DataManager", "ngSanitize"]);
+    var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable", "DataManager", "ngSanitize"]);
 
     app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
         // $locationProvider.html5Mode(true);
@@ -202,10 +202,10 @@
 
 var removeDataColors = function (data) {
     data.knownTech = [];
-    for (var i in data.languages) {
-        data.knownTech.push(data.languages[i].name);
+    for (var i in data['skills']) {
+        data.knownTech.push(data['skills'][i].name);
     }
-    //data.knownTech.sort();
+    data.knownTech.sort();
 };
 
 // There should be a better way to do this, but I am blanking now -- maybe filter
