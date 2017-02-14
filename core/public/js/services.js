@@ -412,7 +412,6 @@
                     }
                 }).then(function (data) {
                     //success
-                    console.log("added and returned", data);
                     callback(data);
                 }, function errorCallback(response) {
                     console.log('error occurred: ', response);

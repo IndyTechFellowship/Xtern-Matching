@@ -269,8 +269,6 @@ angular.module('Xtern')
                     }
                 },
                 onSuccess: function (event, fields) {
-                    //addAdmin(fields.Username);
-                    console.log("add company", fields);
                     addCompany(fields.name);
                     return true;
                 },
