@@ -23,8 +23,6 @@ type Student struct {
 	Resume       string   `json:"resume"`
 
 	Grade        float64  `json:"grade"`
-	ReviewerGrades	[]ReviewerGrade	`json:"reviewerGrades"`
-
 	Status       string   `json:"status"`
 	Active       bool     `json:"active"`
 	HomeState    string   `json:"homeState"`
@@ -65,10 +63,6 @@ func (student *StudentDecision) MarshalJSON() ([]byte, error) {
 type Skill struct {
 	Name     string `json:"name"`
 	Category string `json:"category"`
-}
-type ReviewerGrade struct {
-	Reviewer	int64 `json:"reviewer"`
-	Grade 		int `json:"grade"`
 }
 
 type ReviewerGrade struct {
