@@ -31,7 +31,6 @@ angular.module('Xtern')
             }
             $scope.summaryData = students;
             $scope.rawData = students;
-            console.log($scope.summaryData[0]);
             loadFilters();
             initCharts();
             $scope.personsCount = $scope.summaryData.length;

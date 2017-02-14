@@ -12,17 +12,17 @@ angular.module('Xtern')
             gender: {
                 isChart: true,
                 title: "Gender",
-                labels: ['Male', 'Female'],
+                labels: ['male', 'female'],
                 dataLabel: 'gender',
                 nestedData: false
             },
-            Interests: {
-                isChart: true,
-                title: "Interests",
-                dataLabel: 'interestedIn',
-                labels: [],
-                nestedData: true
-            },
+            //Interests: {
+            //    isChart: true,
+            //    title: "Interests",
+            //    dataLabel: 'interestedIn',
+            //    labels: [],
+            //    nestedData: true
+            //},
             Major: {
                 isChart: true,
                 title: "Major",
