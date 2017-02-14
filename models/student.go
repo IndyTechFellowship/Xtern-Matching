@@ -1,6 +1,11 @@
 package models
 
+
 import "encoding/json"
+import (
+	"google.golang.org/appengine/datastore"
+)
+
 
 // csv:"-" to exclude export
 type Student struct {
@@ -18,7 +23,10 @@ type Student struct {
 	PersonalSite string   `json:"personalWebiteUrl"`
 	Interests    []string `json:"interests"`
 	Resume       string   `json:"resume"`
+
 	Grade        float64  `json:"grade"`
+	ReviewerGrades	[]ReviewerGrade	`json:"reviewerGrades"`
+
 	Status       string   `json:"status"`
 	Active       bool     `json:"active"`
 	HomeState    string   `json:"homeState"`
@@ -57,6 +65,11 @@ func (student *StudentDecision) MarshalJSON() ([]byte, error) {
 type Skill struct {
 	Name     string `json:"name"`
 	Category string `json:"category"`
+}
+
+type ReviewerGrade struct {
+	Reviewer	*datastore.Key `json:"reviewer"`
+	Grade 		int `json:"grade"`
 }
 
 func (skill Skill) MarshalCSV() ([]byte, error) {

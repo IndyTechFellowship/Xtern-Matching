@@ -1,0 +1,77 @@
+<div class="ui grid">
+    <div class="computer only one wide column"></div>
+    <div class="three wide computer six wide tablet column">
+        <div class="ui message filter box">
+            <div class="ui spacer"></div>
+            <div class="ui spacer"></div>
+            <div class="ui statistic">
+                <div class="value">
+                    <i class="users icon"></i>
+                    {{personsCount}}
+                </div>
+                <div class="label">
+                    Applicants
+                </div>
+            </div>
+            <h2 class="ui header">Filters:</h2>
+            <div class="vertical-spacer"></div>
+            <div class="ui centered toggle checkbox filter toggle">
+                <input type="checkbox" ng-model="filters.graded"
+                        ng-true-value="true" ng-false-value="false" ng-change="change()">
+                <label class="ui header" style="text-align: center">Not Graded</label>
+            </div>
+        </div>
+    </div>
+    <div class="eleven wide column" >
+        <h2 class="ui header">Students </h2>
+        <table class="ui striped selectable sortable table">
+            <thead>
+                <tr>
+                    <th ng-repeat="header in tableHeaders" ng-click="sort(header)" class="sorted">
+                        {{header.title}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="student in summaryData" ng-click="rowClick(student.key)" class="clickable">
+                    <td ng-repeat="header in tableHeaders">
+                        {{student[header.displayProperty]}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="cube" ng-hide="summaryData"> 
+          <img class="side" src="/public/images/xtern-x.png" alt="Smiley face" height="150" width="150"></img>
+      </div>
+  </div>
+  <div class="computer only one wide column"></div>
+</div>
+
+<style type=text/css>
+  .cube {
+    width: 150px;
+    height: 150px;
+    transform-style: preserve-3d;
+    transform: rotateY(45deg);
+    margin: auto;
+    left: 50%;
+}
+.cube div {
+    position:absolute;
+    z-index:1;
+    top:0;
+    left:0;
+    height:150px;
+    width:150px;
+    backface-visibility:show;
+    border:1px solid #fff;
+}
+.cube {
+    animation: rotateAboutY 5s linear infinite;
+    position: fixed;
+}
+@keyframes rotateAboutY {
+    0% {transform: rotateY(0deg);}
+    100% {transform: rotateY(360deg);}
+}
+</style>
