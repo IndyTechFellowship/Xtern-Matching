@@ -1,8 +1,8 @@
 'use strict';
 (function () {
-    var angular = require('angular');
-    var router = require('ui.router');
-    var app = angular.module('Xtern', ["DataManager"]);//ngSanitize "ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize"
+    //var angular = require('angular');
+    //var router = require('ui.router');
+    var app = angular.module('Xtern', ["ngSanitize", "ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize","DataManager"]);//ngSanitize "ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize"
 
     app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
         // $locationProvider.html5Mode(true);
