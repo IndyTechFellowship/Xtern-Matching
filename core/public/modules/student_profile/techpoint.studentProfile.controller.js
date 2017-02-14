@@ -1,6 +1,6 @@
 'use strict';
 angular.module('Xtern')
-    .controller('TechPointStudentProfileCtrl', function($scope, $location, ProfileService, $stateParams) {
+    .controller('TechPointStudentProfileCtrl', function($rootScope, $scope, $location, ProfileService, $stateParams) {
         $('.ui.dropdown').dropdown();
         $scope.statusOptions = [
             'Stage 1 Approved',

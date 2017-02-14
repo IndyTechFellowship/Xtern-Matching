@@ -1,9 +1,10 @@
 'use strict';
 angular.module('Xtern')
-    .controller('StudentDataPageCtrl', function($scope, $location, ProfileService, $stateParams) {
+    .controller('StudentDataPageCtrl', function($rootScope, $scope, $location, ProfileService, $stateParams) {
     $scope.studentData = null;
 
     ProfileService.getStudent($stateParams.key, function(data) {
+        console.log("data page state params", $stateParams);
         $scope.studentData = data;
         $scope.studentData.key = $stateParams.key;
         PDFJS.disableWorker = true;

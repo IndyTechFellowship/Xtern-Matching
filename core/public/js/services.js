@@ -22,6 +22,24 @@
                 });
             };
 
+            this.getStudentDataForIds = function(keys, callback){
+                $http({
+                    method: 'GET',
+                    url: "student/" + keys,
+                    host: host,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    var students = data.data;
+                    callback(students);
+                }, function errorCallback(err) {
+                    callback(null, err);
+                });
+            };
+
             this.setStatus = function (key, status, callback) {
                 $http({
                     method: 'PUT',
@@ -160,6 +178,24 @@
                 });
             };
 
+            self.getOrganizationCurrentFromLogin = function(callback){
+                $http({
+                    method: 'GET',
+                    url: "organization/current",
+                    host: host,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    }
+                }).then(function (data) {
+                    var organization = data.data;
+                    callback(organization);
+                }, function errorCallback(err) {
+                    callback(null, err);
+                });
+            };
+
             self.getOrganizationStudents = function (callback) {
                 $http({
                     method: 'GET',
@@ -223,14 +259,14 @@
                 });
             };
 
-            self.switchStudentsInWishList = function (studentKey, pos, callback) {
+            self.switchStudentsInWishList = function (studentKey1, studentKey2, callback) {
                 $http({
                     method: 'PUT',
-                    url: "organization/moveStudent",
+                    url: "organization/switchStudents",
                     host: host,
                     data: {
-                        "studentKey": studentKey,
-                        "position": pos
+                        "studentKey1": studentKey1,
+                        "studentKey2": studentKey2
                     },
                     headers: {
                         'Content-Type': "application/json",
