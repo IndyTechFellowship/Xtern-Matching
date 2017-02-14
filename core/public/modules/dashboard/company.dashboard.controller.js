@@ -67,16 +67,6 @@ angular.module('Xtern')
                 dataLabel: 'knownTech',
                 simpleFilter: false,
                 nestedHeaders: false
-<<<<<<< HEAD
-            },
-            Interests: {
-                isToggle: true,
-                label: "Interests",
-                dataLabel: 'interestedIn',
-                simpleFilter: false,
-                nestedHeaders: false
-=======
->>>>>>> master
             },
             //Interests: {
             //    isToggle: true,
@@ -103,12 +93,8 @@ angular.module('Xtern')
                 isToggle: false,
                 label: "Name",
                 dataLabel: 'name',
-<<<<<<< HEAD
-                nestedHeaders: true
-=======
                 simpleFilter:true,
                 nestedHeaders:false
->>>>>>> master
             }
         };
         $scope.TABLEHEADERS = [

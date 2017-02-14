@@ -1,6 +1,6 @@
 'use strict';
-    let app = angular.module('DataManager',[]);
-	let host = location.host;
+    var app = angular.module('DataManager',[]);
+	var host = "http://localhost:8080";
     app
         .service('ProfileService', ['$http', function ($http){
             this.getStudent = function(key, callback){
@@ -14,7 +14,7 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    let student = data.data;
+                    var student = data.data;
                     student.key = key;
                     callback(student);
                 }, function errorCallback(err) {
@@ -73,8 +73,8 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    let comments = data.data.comments;
-                    for(let i = 0;i < comments.length;i++) {
+                    var comments = data.data.comments;
+                    for(var i = 0;i < comments.length;i++) {
                         comments[i].key = data.data.keys[i];
                     }
                     callback(comments);
@@ -97,7 +97,7 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    let comment = data.data.comment;
+                    var comment = data.data.comment;
                     comment.key = data.data.key;
                     callback(comment);
                 }, function errorCallback(err) {
@@ -118,7 +118,7 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    let comment = data.data.comment;
+                    var comment = data.data.comment;
                     comment.key = data.data.key;
                     callback(comment);
                 }, function errorCallback(err) {
@@ -141,7 +141,7 @@
         };
     }])
         .service('CompanyService', ['$http', function ($http){
-            let self = this;
+            var self = this;
             self.getOrganizationData = function(key, callback){
                 $http({
                     method: 'GET',
@@ -153,7 +153,7 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    let organization = data.data;
+                    var organization = data.data;
                     callback(organization);
                 }, function errorCallback(err) {
                     callback(null, err);
@@ -246,7 +246,7 @@
             };
         }])
         .service('TechPointDashboardService',['$http', function ($http) {
-            let self = this;
+            var self = this;
             self.queryUserSummaryData = function(callback){
                 $http({
                     method: 'GET',
@@ -325,7 +325,7 @@
             };
         }])
         .service('AccountControlService',['$http', function ($http){
-            let self = this;
+            var self = this;
             self.getOrganizations = function(callback) {
                 var route = "organization";
                 $http({
@@ -436,7 +436,7 @@
             };
     }])
         .service('AuthService',['$http', function ($http) {
-            let self = this;
+            var self = this;
             self.login = function(email,password,callback) {
                 $http({
                     method: 'POST',

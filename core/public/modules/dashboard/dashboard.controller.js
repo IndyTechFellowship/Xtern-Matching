@@ -14,11 +14,6 @@ angular.module('Xtern')
 
 
         var dataLoad = function (data, keys) {
-<<<<<<< HEAD
-            var students = [];
-            for (var i = 0; i < data.length; i++) {
-                students[i] = rowClass(data[i], keys[i]);
-=======
             // $scope.summaryData = $.map(data, function (person) {
             //     return rowClass(person)
             // });
@@ -28,7 +23,6 @@ angular.module('Xtern')
             var students = [];
             for(var i = 0; i < data.length; i++) {
                 students[i] = rowClass(data[i],keys[i]);
->>>>>>> master
             }
             $scope.summaryData = students;
             $scope.rawData = students;
