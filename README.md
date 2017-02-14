@@ -85,6 +85,9 @@ goapp deploy
 9. Navigate to /Xtern-Matching/core/ and run "goapp get" and "npm install"
 10. Run npm start and navigate to localhost:8080 to view the app or localhost:8000 to view the Google Datastore manager.
 
+##### Manual Browserify Use (If not run with npm start)
+1. Install Browserify globally with (npm install -g browserify)
+2. Navigate to the /Xtern-Matching/core/ directory and run "browserify app.js > bundle.js"
 
 #### npm install errors
 In the unlikely case Semantic UI has installation errors:
