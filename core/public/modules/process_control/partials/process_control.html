@@ -14,7 +14,7 @@
                         </div>
                         <div class="link step" ng-class="{'active': showInstructorStats}" ng-click="stepClick('p2I')">
                             <i class="bar chart icon"></i>
-                            <div class="content">
+                        <div class="content">
                                 <div class="title">Phase II - a</div>
                                 <div class="description">Review Overview</div>
                             </div>
@@ -39,9 +39,9 @@
                 <div id="actionPanel">                    
                     <div class="ui segment" ng-if="showDecisionboard">
                         <h3 class="ui  header">Actions:</h3>
-                        <div class="ui fluid grey basic button"> Apply Changes</div>
+                        <div class="ui fluid grey basic button">Apply Changes</div>
                         <div class="vertical-quater-spacer"></div>
-                        <div class="ui fluid grey basic button">Assign Students to Reviewers</div>
+                        <div class="ui fluid grey basic button" ng-click="createReviewGroups()">Assign Reviewers</div>
                         <div class="vertical-quater-spacer"></div>
                         <div class="ui fluid grey basic button" ng-click="refreshPhaseOne(true)">Refresh Data</div>
                     </div>

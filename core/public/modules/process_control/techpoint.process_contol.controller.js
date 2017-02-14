@@ -55,6 +55,10 @@ angular.module('Xtern')
             }
         }
 
+        $scope.createReviewGroups = function() {
+            TechPointReviewerControlService.createReviewGroups(20, 3, function(data) {});
+        };
+
         $scope.stepClick = function (dest) {
             if (dest === 'p1') {
                 $scope.showDecisionboard = true;

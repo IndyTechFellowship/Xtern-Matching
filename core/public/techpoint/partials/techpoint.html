@@ -11,8 +11,7 @@
             <a ng-if="loggedIn" ui-sref="techpoint.dashboard" ui-sref-active="active" class="item">Dashboard</a>
             <a ng-if="loggedIn" ui-sref="techpoint.accounts" ui-sref-active="active" class="item">Accounts</a>
             <a ng-if="loggedIn" ui-sref="techpoint.process" ui-sref-active="active" class="item">Process Control</a>
-            <a ng-if="loggedIn" ui-sref="techpoint.reviewerControls" ui-sref-active="active" class="item">Reviewers</a>
-
+            
             <div class="right menu">
                 <a ng-if="loggedIn" ui-sref="techpoint.login" ng-click="logout()" class="item">Sign Out</a>
                 <a ng-if="!loggedIn" class="item">Sign In</a>
