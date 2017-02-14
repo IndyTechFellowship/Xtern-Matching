@@ -69,7 +69,7 @@ func WarmUp(w http.ResponseWriter, r *http.Request) {
 					user.Name = userMap["name"]
 					user.Email = userMap["email"]
 					user.Password = userMap["password"]
-					if _, err = services.Register(ctx, orgs[userMap["org"]], user); err != nil {
+					if _, _,err = services.Register(ctx, orgs[userMap["org"]], user); err != nil {
 						return err
 					}
 				}

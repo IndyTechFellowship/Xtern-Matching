@@ -38,7 +38,7 @@ func GetStudent(w http.ResponseWriter, r *http.Request) {
 
 	studentKey, err := datastore.DecodeKey(mux.Vars(r)["studentKey"])
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
