@@ -71,28 +71,6 @@ npm start #launches the site on http://localhost:8080/
 goapp deploy
 ```
 
-##Load Data
-#### Disable Authentication
-* Rename router.go => router.go.primary.bak
-* Rename router.go.noauth.bak => router.go
-
-#### Load and Execute Scripts in the Postman Collection
-* Open Postman
-* Click the import button
-* Select scripts/Import_Scripts.postman_collection.json
-* Expand Import Scripts
-    - Run Each Import Script
-
-#### _PUT EVERYTHING BACK_
- After you have completed the data load
-* Rename router.go => router.go.noauth.bak
-* Rename router.go.primary.bak => router.go
-
-## Google Application Credentials
-Allows you to locally test pdfs.
- * Grab cloudstore.json from slack/dev_stuff
- * Set a new enviorment Variable GOOGLE_APPLICATION_CREDENTIALS to cloudstore.json path _(include the file)_
-
 ## Set Up
 ### Setup (Using Standalone Go App Engine SDK)
 
