@@ -41,7 +41,7 @@ var isLoggedInTechPoint = function ($q) {
         errorObject = { code: 'ALREADY_AUTHENTICATED_REVIEWER' };
         return $q.reject(errorObject);
     }
-    else if(role == "Salesforce"){
+    else if(role == "Company"){
         errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);
     }
@@ -67,7 +67,7 @@ var isLoggedInReviewer = function ($q) {
     }
     else if(role == "Company"){
         errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
-        return $q.reject(errorObject);        
+        return $q.reject(errorObject);
     }
     else if(role == "Reviewers"){
         return null;
@@ -97,7 +97,7 @@ var isLoggedInCompany = function ($q) {
         errorObject = { code: 'ALREADY_AUTHENTICATED_REVIEWER' };
         return $q.reject(errorObject);
     }
-    else if(role == "Salesforce"){
+    else if(role == "Company"){
         return null;
     }
     else{

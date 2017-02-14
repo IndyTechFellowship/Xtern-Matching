@@ -7,7 +7,7 @@ import (
 	"Xtern-Matching/handlers/services"
 	"Xtern-Matching/models"
 	"log"
-	"github.com/dgrijalva/jwt-go"
+	// "github.com/dgrijalva/jwt-go"
 	"google.golang.org/appengine/datastore"
 	"github.com/gorilla/mux"
 )
@@ -28,27 +28,28 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := jwt.Parse(string(tokenString), func(token *jwt.Token) (interface{}, error) {
-		return []byte("My Secret"), nil
-	});
+	// token, err := jwt.Parse(string(tokenString), func(token *jwt.Token) (interface{}, error) {
+	// 	return []byte("My Secret"), nil
+	// });
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	orgKey, err := datastore.DecodeKey(token.Claims.(jwt.MapClaims)["org"].(string))
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-	org, err := services.GetOrganization(ctx,orgKey)
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
+	// orgKey, err := datastore.DecodeKey(token.Claims.(jwt.MapClaims)["org"].(string))
+	// if err != nil {
+	// 	http.Error(w, err.Error(), 500)
+	// 	return
+	// }
+	// org, err := services.GetOrganization(ctx,orgKey)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), 500)
+	// 	return
+	// }
 
 	dat = make(map[string]interface{})
 	dat["token"] = string(tokenString)
-	dat["organizationName"] = org.Name
+	// dat["organizationName"] = org.Name
+	dat["organizationName"] = "Company"
 
 
 	w.Header().Set("Content-Type", "application/json")
