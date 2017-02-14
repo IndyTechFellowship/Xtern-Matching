@@ -1,0 +1,31 @@
+<div>
+    <div class="ui header">
+        Comments
+    </div>
+    <div class="ui fluid card">
+        <div class="ui form">
+            <div class="field">
+                <textarea placeholder="Enter a new comment" ng-model="newCommentMessage">{{newCommentMessage}}</textarea>
+            </div>
+        </div>
+        <button class="ui bottom attached teal button" ng-click="addComment(studentKey)">Post Comment</button>
+    </div>
+    <div class="ui fluid cards" id="commentCards">
+        <student-profile-comment id="{{comment.key}}" class="blurring dimmable ui fluid card {{comment.author}}" ng-repeat="comment in comments"></student-profile-comment>
+    </div>
+</div>
+
+<div class="ui modal" id="editModal">
+    <div class="header">Edit Comment</div>
+    <div class="content">
+        <form class="ui form" id="editForm">
+            <div class="field">
+                <textarea id="editComment" name="editCommentMessage"></textarea>
+            </div>
+        </form>
+    </div>
+    <div class="actions">
+        <div class="ui cancel grey basic button">Cancel</div>
+        <div class="ui approve green basic button">Save</div>
+    </div>
+</div>

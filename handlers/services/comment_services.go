@@ -2,9 +2,9 @@ package services
 
 import (
 	"Xtern-Matching/models"
-	"net/http"
 	"google.golang.org/appengine/datastore"
 	"golang.org/x/net/context"
+	"github.com/pkg/errors"
 )
 
 func GetComments(ctx context.Context, studentKey *datastore.Key, organizationKey *datastore.Key) ([]models.Comment,[]*datastore.Key,error) {
@@ -15,7 +15,6 @@ func GetComments(ctx context.Context, studentKey *datastore.Key, organizationKey
 		return nil, nil, err
 	}
 
-	//TODO optimize
 	var keys []*datastore.Key
 	comments := make([]models.Comment, 0)
 	for index, comment := range allComments {
@@ -24,36 +23,43 @@ func GetComments(ctx context.Context, studentKey *datastore.Key, organizationKey
 			keys = append(keys, commentKeys[index])
 		}
 	}
-
 	return comments, keys, nil
 }
 
-func AddComment(ctx context.Context, studentKey *datastore.Key, message string, name string, authorKey *datastore.Key) (int, error) {
+func AddComment(ctx context.Context, studentKey *datastore.Key, message string, name string, authorKey *datastore.Key) (models.Comment,*datastore.Key,error) {
 	commentKey := datastore.NewIncompleteKey(ctx, "Comment", studentKey)
 	comment := models.Comment{Message: message, Author: authorKey, AuthorName: name}
-	if _, err := datastore.Put(ctx, commentKey, &comment); err != nil {
-		return http.StatusInternalServerError, err
+	key, err := datastore.Put(ctx, commentKey, &comment);
+	if err != nil {
+		return models.Comment{},nil,err
 	}
-	return http.StatusAccepted, nil
+	return comment,key,nil
 }
 
-func EditComment(ctx context.Context, commentKey *datastore.Key, message string) (int, error) {
-
+func EditComment(ctx context.Context, commentKey *datastore.Key, message string) (models.Comment,error) {
 	var comment models.Comment
 	err := datastore.Get(ctx, commentKey, &comment)
 	if err != nil {
-		return http.StatusInternalServerError, err
+		return models.Comment{}, err
 	}
 	comment.Message = message
 	if _, err := datastore.Put(ctx, commentKey, &comment); err != nil {
-		return http.StatusInternalServerError, err
+		return models.Comment{}, err
 	}
-	return http.StatusAccepted, nil
+	return comment, nil
 }
 
-func DeleteComment(ctx context.Context, commantKey *datastore.Key) (int, error) {
-	if err := datastore.Delete(ctx, commantKey); err != nil {
-		return http.StatusInternalServerError, err
+func DeleteComment(ctx context.Context, commentKey *datastore.Key, author *datastore.Key) error {
+	var comment models.Comment
+	if err := datastore.Get(ctx, commentKey, &comment); err != nil {
+		return err
 	}
-	return http.StatusAccepted, nil
+	if !comment.Author.Equal(author) {
+		return errors.New("Can't delete comment that isn't yours")
+	}
+
+	if err := datastore.Delete(ctx, commentKey); err != nil {
+		return err
+	}
+	return nil
 }

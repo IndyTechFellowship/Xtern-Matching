@@ -1,6 +1,13 @@
 'use strict';
 angular.module('Xtern')
-    .directive('studentProfileComment', function () {
+    .directive('commentPanel', function() {
+        return {
+            restrict: 'E',
+            templateUrl: 'public/modules/student_profile/comments/commentPanel.html',
+            controller: 'CommentCtrl'
+        };
+    })
+    .directive('studentProfileComment', function() {
         return {
             restrict: 'E',
             templateUrl: 'public/modules/student_profile/comments/comment.html',

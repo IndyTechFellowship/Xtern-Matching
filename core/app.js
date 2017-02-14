@@ -22,7 +22,6 @@
     require('./public/reviewer/reviewer.controller.js');
     require('./public/modules/');
 
-
     app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
         // $locationProvider.html5Mode(true);
         $urlRouterProvider.when('/techpoint', '/techpoint/login');
@@ -219,6 +218,4 @@
         });
     });
 })();
-
-
 
