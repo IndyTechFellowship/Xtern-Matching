@@ -57,7 +57,7 @@ func Register(ctx context.Context, organizationKey *datastore.Key, user models.U
 		user.Password = string(pass)
 
 		key := datastore.NewIncompleteKey(ctx, "User", organizationKey)
-		if _, err := datastore.Put(ctx, key, &user); err != nil {
+		if key, err = datastore.Put(ctx, key, &user); err != nil {
 			log.Println("Error inserting user into Database")
 			return http.StatusInternalServerError, nil, err
 		}
@@ -120,7 +120,6 @@ func EditUser(ctx context.Context, userKey *datastore.Key, name string, email st
 }
 
 func DeleteUser(ctx context.Context, userKey *datastore.Key) error {
-	//userKey := datastore.NewKey(ctx, "User", "", id, nil)
 	err := datastore.Delete(ctx, userKey)
 	return err
 }
