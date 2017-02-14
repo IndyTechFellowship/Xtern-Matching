@@ -13,41 +13,7 @@ import (
 	"google.golang.org/appengine/aetest"
 )
 
-func createStudent(ctx context.Context) (models.Student, error) {
-	var student models.Student
-	student.FirstName = "Darla"
-	student.LastName = "leach"
-	student.Email = "darlaleach@stockpost.com"
-	student.University = "Rose-Hulman Institute of Technology"
-	student.Major = "Computer Engineering"
-	student.GradYear = "2017"
-	student.WorkStatus = "US Citizen"
-	student.HomeState = "West Virginia"
-	student.Gender = "female"
-	student.Skills = []models.Skill{{Name: "SQL", Category: "Database"}, {Name: "HTML", Category: "Frontend"}}
-	student.Github = "https://github.com/xniccum"
-	student.Linkin = ""
-	student.PersonalSite = ""
-	student.Interests = []string{"Product Management", "Software Engineer- Middle-tier Dev."}
-	student.Grade = 5
-	student.Status = "Stage 1 Approved"
-	student.Resume = "public/data_mocks/sample.pdf"
-	student.Active = true
-
-	key := datastore.NewIncompleteKey(ctx, "Student", nil)
-	key, err := datastore.Put(ctx, key, &student)
-	if err != nil {
-		return models.Student{}, err
-	}
-	// time.Sleep(time.Millisecond * 500)
-
-	return student, nil
-}
-
-///*
-//	Creates a fresh sample student to use in testing
-//*/
-func GetStudent1() models.Student {
+func createStudent(ctx context.Context) (models.Student, *datastore.Key,error) {
 	var student models.Student
 	student.FirstName = "Darla"
 	student.LastName = "leach"
@@ -67,8 +33,16 @@ func GetStudent1() models.Student {
 	student.Status = "Stage 1 Approved"
 	student.Resume = "public/data_mocks/sample.pdf"
 	student.Active = true
-	return student
+
+	key, err := services.NewStudent(ctx, student)
+	if err != nil {
+		return models.Student{}, nil, err
+	}
+	// time.Sleep(time.Millisecond * 500)
+
+	return student, key, nil
 }
+
 //
 ///*
 //	Tests the ability to create a Student
@@ -80,10 +54,8 @@ func TestPost(t *testing.T) {
 	}
 	defer done()
 
-	student := GetStudent1()
-
+	_, _, err = createStudent(ctx)
 	// Basic input
-	_, err = services.NewStudent(ctx, student)
 	if !assert.Nil(t, err, "Error creating student") {
 		t.Fatal(err)
 	}
@@ -110,12 +82,7 @@ func TestGet(t *testing.T) {
 	defer done()
 
 	// Add student to get
-	student := GetStudent1()
-
-	_, err = services.NewStudent(ctx, student)
-	if !assert.Nil(t, err, "Error creating student") {
-		t.Fatal(err)
-	}
+	student, _, err := createStudent(ctx)
 
 	student.FirstName = "Lee"
 	student.LastName = "Robinson"
@@ -160,11 +127,11 @@ func TestStatusUpdate(t *testing.T)  {
 		t.Fatal(err)
 	}
 	defer done()
-	student := GetStudent1()
-	key, err := services.NewStudent(ctx, student)
+	student, key, err := createStudent(ctx)
 	if !assert.Nil(t, err, "Error creating student") {
 		t.Fatal(err)
 	}
+	time.Sleep(time.Millisecond * 500)
 	err = services.SetStatus(ctx, key, "Undecided")
 	if !assert.Nil(t, err, "Error updating status") {
 		t.Fatal(err)
@@ -185,11 +152,11 @@ func TestGradeUpdate(t *testing.T)  {
 		t.Fatal(err)
 	}
 	defer done()
-	student := GetStudent1()
-	key, err := services.NewStudent(ctx, student)
+	student, key, err := createStudent(ctx)
 	if !assert.Nil(t, err, "Error creating student") {
 		t.Fatal(err)
 	}
+	time.Sleep(time.Millisecond * 500)
 	err = services.SetGrade(ctx, key, 9.0)
 	if !assert.Nil(t, err, "Error updating grade") {
 		t.Fatal(err)

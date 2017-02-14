@@ -20,7 +20,7 @@ func TestStudentExport(t *testing.T) {
 	}
 	defer done()
 	for i := 0; i < 50; i++ {
-		_, err = createStudent(ctx)
+		_, _, err = createStudent(ctx)
 		if err != nil {
 			t.Fatal(err)
 		}

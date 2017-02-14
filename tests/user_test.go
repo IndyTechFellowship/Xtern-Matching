@@ -8,6 +8,8 @@ import (
 	"google.golang.org/appengine/aetest"
 	"net/http"
 	"time"
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/datastore"
 )
 
 func GetUser1() models.User {
@@ -26,6 +28,26 @@ func GetUser2() models.User {
 	return user2
 }
 
+/*
+	Returns responseStatus, userKey, orgKey, error
+ */
+func createUserAndOrg(ctx context.Context, user models.User) (int, *datastore.Key, *datastore.Key, error) {
+	return createUserAndNamedOrg(ctx, user,"Dara Biosciences")
+}
+
+func createUserAndNamedOrg(ctx context.Context, user models.User, orgName string) (int, *datastore.Key, *datastore.Key, error) {
+	orgKey, err := services.NewOrganization(ctx, "Dara Biosciences")
+	if err != nil {
+		return 500, nil, nil, err
+	}
+	time.Sleep(time.Millisecond * 500)
+	responseStatus, userKey, err := services.Register(ctx, orgKey, user)
+	if err != nil {
+		return 0, nil, nil, err
+	}
+	return responseStatus, userKey, orgKey, nil
+}
+
 func TestRegister(t *testing.T) {
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
@@ -35,13 +57,11 @@ func TestRegister(t *testing.T) {
 	user1 := GetUser1()
 	user2 := GetUser2()
 
-	orgKey, err := services.NewOrganization(ctx, "Dara Biosciences")
-	time.Sleep(time.Millisecond * 500)
-	if !assert.Nil(t, err, "Error creating Organization") {
+
+	responseStatus, _, orgKey, err := createUserAndOrg(ctx, user1)
+	if !assert.Nil(t, err, "Error creating Student") {
 		t.Fatal(err)
 	}
-
-	responseStatus, _, err := services.Register(ctx, orgKey, user1)
 	if !assert.Equal(t, responseStatus, http.StatusCreated, "Failed to register user1") {
 		t.Fatal()
 	}
