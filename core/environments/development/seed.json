@@ -1,16 +1,13 @@
 {
   "organizations": [
       {
-        "name": "Techpoint",
-        "kind": "Techpoint"
+        "name": "Techpoint"
       },
       {
-        "name": "Salesforce",
-        "kind": "Company"
+        "name": "Salesforce"
       },
       {
-        "name": "Reviewers",
-        "kind": "Reviewers"
+        "name": "Reviewers"
       }
     ],
   "users": [

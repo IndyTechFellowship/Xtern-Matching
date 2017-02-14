@@ -3,10 +3,10 @@ angular.module('Xtern')
     .controller('TechPointAccountCtrl', ['$scope', '$rootScope', '$state', 'AccountControlService', function ($scope, $rootScope, $state, AccountControlService) {
 
         $scope.keys = {
-            techpoint:'',
-            reviewer:'',
-            companies:[],
-            companyKeys:{}
+            techpoint: '',
+            reviewer: '',
+            companies: [],
+            companyKeys: {}
         };
         $scope.techPointUsers = [];
         $scope.reviewerUsers = [];
@@ -33,8 +33,8 @@ angular.module('Xtern')
             };
 
             $scope.tableHeaders = [
-                { title: 'Name', sortPropertyName: 'name', displayPropertyName: 'name', asc: true },
-                { title: 'Email', sortPropertyName: 'email', displayPropertyName: 'email', asc: true }
+                {title: 'Name', sortPropertyName: 'name', displayPropertyName: 'name', asc: true},
+                {title: 'Email', sortPropertyName: 'email', displayPropertyName: 'email', asc: true}
             ];
         };
 
@@ -76,10 +76,12 @@ angular.module('Xtern')
         var refreshAccounts = function (organizationKey, array) {
             AccountControlService.getUsers(organizationKey, function (users) {
                 array.length = 0; //We want to keep array refrences but replace all of the elements
-                users.forEach(function (user) {
-                    array.push(user);
-                });
-                $scope.selectedGroup.selectedUsers = array;
+                if(users) {
+                    users.forEach(function (user) {
+                        array.push(user);
+                    });
+                    $scope.selectedGroup.selectedUsers = array;
+                }
             });
         };
 
@@ -97,7 +99,7 @@ angular.module('Xtern')
             }
             else if (group == 'Company') {
                 $scope.selectedGroup.selectedUsers = $scope.companyUsers;
-                if($scope.selectedGroup.activeCompany){
+                if ($scope.selectedGroup.activeCompany) {
                     refreshAccounts($scope.selectedGroup.activeCompany, $scope.companyUsers);
                 }
             } else {
@@ -109,14 +111,13 @@ angular.module('Xtern')
         var submitUser = function (fields) {
             fields.name = fields.firstName + " " + fields.lastName;
             if (!fields.key) {
-                if(fields.role == "Techpoint" || fields.role == "TechPoint"){
+                if (fields.role == "Techpoint" || fields.role == "TechPoint") {
                     fields.organization = $scope.keys.techpoint;
-                }else if(fields.role == "Reviewer" || fields.role == "Reviewer"){
+                } else if (fields.role == "Reviewer" || fields.role == "Reviewer") {
                     fields.organization = $scope.keys.reviewer;
                 }
-               
-                AccountControlService.addUser(fields, function (data) {
 
+                AccountControlService.addUser(fields, function (data) {
                     $scope.selectedGroup.refresh();
                 });
             } else {
@@ -125,6 +126,23 @@ angular.module('Xtern')
                 });
             }
             $('#accountsModal').modal('hide');
+        };
+
+        var addCompany = function (name) {
+            AccountControlService.addCompany(name, function (data) {
+                AccountControlService.getOrganizations(function (organizations) {
+                    $scope.companyList = organizations;
+                    $scope.keys.companies.length =0;
+                  //  $scope.keys.companyKeys = [];
+                    organizations.forEach(function (org) {
+                        if(!(org.name == "Reviewers" || org.name == "Reviewer") && !(org.name == "TechPoint" || org.name == "Techpoint")) {
+                            $scope.keys.companies.push(org);
+                            $scope.keys.companyKeys[org.name] = org.key;
+                        }
+                    });
+                    $scope.keys.companies.sort();
+                });
+            });
         };
 
         $scope.launchAddEditUserModal = function (user) {
@@ -137,8 +155,12 @@ angular.module('Xtern')
             var prop = header.sortPropertyName;
             var asc = header.asc;
             header.asc = !header.asc;
-            var ascSort = function (a, b) { return a[prop] < b[prop] ? -1 : a[prop] > b[prop] ? 1 : 0; };
-            var descSort = function (a, b) { return ascSort(b, a); };
+            var ascSort = function (a, b) {
+                return a[prop] < b[prop] ? -1 : a[prop] > b[prop] ? 1 : 0;
+            };
+            var descSort = function (a, b) {
+                return ascSort(b, a);
+            };
             var sortFunc = asc ? ascSort : descSort;
             $scope.techPointUsers.sort(sortFunc);
         };
@@ -222,8 +244,8 @@ angular.module('Xtern')
                 });
 
             $.fn.form.settings.rules.companyDoesNotExist = function (value, arg1) {
-                for(var org in $scope.keys.companies){
-                    if($scope.keys.companies[org].name == value){
+                for (var org in $scope.keys.companies) {
+                    if ($scope.keys.companies[org].name == value) {
                         return false;
                     }
                 }
@@ -235,20 +257,21 @@ angular.module('Xtern')
                     name: {
                         identifier: 'name',
                         rules: [
-                            { type: 'empty', prompt: 'Company Name cannot be blank' },
-                            { type: 'companyDoesNotExist[0]', prompt: '{value} is already a company' }
+                            {type: 'empty', prompt: 'Company Name cannot be blank'},
+                            {type: 'companyDoesNotExist[0]', prompt: '{value} is already a company'}
                         ]
                     },
                     confirm: {
                         identifier: 'confirm',
                         rules: [
-                            { type: 'match[name]', prompt: 'Company Names don\'t match' }
+                            {type: 'match[name]', prompt: 'Company Names don\'t match'}
                         ]
                     }
                 },
                 onSuccess: function (event, fields) {
                     //addAdmin(fields.Username);
                     console.log("add company", fields);
+                    addCompany(fields.name);
                     return true;
                 },
                 onFailure: function (formErrors, fields) {
@@ -285,13 +308,13 @@ angular.module('Xtern')
         var setup = function () {
             AccountControlService.getOrganizations(function (organizations) {
                 $scope.companyList = organizations;
-                organizations.forEach(function(org){
-                    if(org.name == "Reviewers" ||org.name == "Reviewer"){
+                organizations.forEach(function (org) {
+                    if (org.name == "Reviewers" || org.name == "Reviewer") {
                         $scope.keys.reviewer = org.key;
-                    }else if(org.name == "TechPoint" || org.name == "Techpoint"){
+                    } else if (org.name == "TechPoint" || org.name == "Techpoint") {
                         $scope.keys.techpoint = org.key;
                     }
-                    else{
+                    else {
                         $scope.keys.companies.push(org);
                         $scope.keys.companyKeys[org.name] = org.key;
                     }

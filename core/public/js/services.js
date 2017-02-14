@@ -321,7 +321,7 @@
                     }
                 }).then(function (data) {
                 }, function errorCallback(response) {
-                    console.log('error occured: ', response);
+                    console.log('error occurred: ', response);
                 });
             };
         }])
@@ -360,8 +360,10 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    for(var i = 0; i < data.data.users.length; i++) {
-                        data.data.users[i].key = data.data.keys[i];
+                    if(data.data.users) {
+                        for (var i = 0; i < data.data.users.length; i++) {
+                            data.data.users[i].key = data.data.keys[i];
+                        }
                     }
                     callback(data.data.users);
                 }, function errorCallback(err) {
@@ -391,6 +393,29 @@
                     callback(data);
                 }, function errorCallback(response) {
                     console.log('error occured: ', response);
+                    callback('', 'err')
+                });
+            };
+            self.addCompany = function(company, callback){
+                var route = "organization";
+                $http({
+                    method: 'POST',
+                    url: route,
+                    host: host,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer ' + getToken('auth')
+                    },
+                    data: {
+                        name: company
+                    }
+                }).then(function (data) {
+                    //success
+                    console.log("added and returned", data);
+                    callback(data);
+                }, function errorCallback(response) {
+                    console.log('error occurred: ', response);
                     callback('', 'err')
                 });
             };
