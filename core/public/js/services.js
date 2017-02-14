@@ -537,7 +537,6 @@ app
         self.phase1data = null;
         
         self.getPhaseOne = function (callback, refresh) {
-            console.log('hosturl', host + "student/light");
             if (!refresh && self.phase1data) {
                 callback(self.phase1data);
                 return;
@@ -552,7 +551,6 @@ app
                     'Authorization': 'bearer ' + getToken('auth')
                 }
             }).then(function (data) {
-                console.log("p1 load success");
                 self.phase1data = data.data;
                 //TEMP FOR DISPLAY, REMOVE BEFORE DELIVERY
                 var ethnicityWeightedOptions = ['White', 'White', 'White', 'Hispanic or Latino', 'Hispanic or Latino', 'Black or African American', 'Native American or American Indian', 'Asian or Pacific Islander'];

@@ -1,6 +1,6 @@
 angular.module('Xtern')
     // .controller('TechPointProcessControl', ['$scope', '$rootScope', '$state', 'AccountControlService', 'rzModule' , function ($scope, $rootScope, $state, AccountControlService, rzModule) {
-    .controller('TechPointProcessControl', ['$scope', '$rootScope', '$state', 'AccountControlService','DecisionBoardService', function ($scope, $rootScope, $state, AccountControlService,DecisionBoardService) {
+    .controller('TechPointProcessControl', ['$scope', '$rootScope', '$state', 'AccountControlService','DecisionBoardService', 'TechPointReviewerControlService',function ($scope, $rootScope, $state, AccountControlService,DecisionBoardService,TechPointReviewerControlService) {
         var self = this;
         $scope.showDecisionboard = true;
         $scope.showInstructorStats = false;
@@ -95,7 +95,6 @@ angular.module('Xtern')
             var histData = renderHistogramData(metadata, 'grade');
             $scope.phase1.histogram.data = [histData.values];
             $scope.phase1.histogram.labels = histData.keys;
-            console.log($scope.phase1.histogram);
         }
 
         var splitInToTwo = function (inList) {
