@@ -1,6 +1,9 @@
 package models
 
-// csv:"-" to exclude export
+import (
+	"google.golang.org/appengine/datastore"
+)
+
 type Student struct {
 	FirstName    string   `json:"firstName"`
 	LastName     string   `json:"lastName"`
@@ -17,16 +20,20 @@ type Student struct {
 	Interests    []string `json:"interests"`
 	Resume       string   `json:"resume"`
 	Grade        float64  `json:"grade"`
+	ReviewerGrades	[]ReviewerGrade	`json:"reviewerGrades"`
 	Status       string   `json:"status"`
 	Active       bool     `json:"active"`
 	HomeState    string   `json:"homeState"`
-	//Details map[string]interface{}	`json:"details"`
-	//EmailIntrest string 	`json:"interestedInEmail"`
 }
 
 type Skill struct {
 	Name     string `json:"name"`
 	Category string `json:"category"`
+}
+
+type ReviewerGrade struct {
+	Reviewer	*datastore.Key `json:"reviewer"`
+	Grade 		int `json:"grade"`
 }
 
 func (skill Skill) MarshalCSV() ([]byte, error) {

@@ -9,6 +9,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"google.golang.org/appengine/datastore"
 	"github.com/gorilla/mux"
+	"log"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -79,6 +80,30 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 	response := Response{Keys: keys, Users: users}
 	json.NewEncoder(w).Encode(response)
+}
+
+func GetUsersByOrgName(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	if orgName, ok := mux.Vars(r)["orgName"]; ok {
+		users, keys, err := services.GetUsersByOrgName(ctx, orgName)
+		if err != nil {
+			log.Println("ERROR: " + err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		type Response struct {
+			Keys []*datastore.Key		`json:"keys"`
+			Users []models.User		`json:"users"`
+		}
+		response := Response{Keys: keys, Users: users}
+
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	} else {
+		http.Error(w, "ERROR: could not find orgName", http.StatusInternalServerError)
+	}
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {

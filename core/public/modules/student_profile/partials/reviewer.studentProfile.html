@@ -1,0 +1,56 @@
+<!--<div ng-controller="StudentProfileCtrl">-->
+    <!--<h1>{{ 1+1 }}</h1>-->
+<div>
+    <div class="ui container" ng-cloak>
+        <div class="ui centered internally celled grid">
+            <div class="row">
+            <div class="eleven wide column">
+                <student-data-page></student-data-page>
+            </div>
+                <div class="five wide column">
+                    <div id="statusAndGrade">
+                        <div class="ui header">Grade</div>
+                        <div class="ui fluid selection dropdown">
+                            <input name="grade" type="hidden" value="0">
+                            <div class="text">{{reviewerGrade}}</div><i class="dropdown icon"></i>
+                            <div class="menu transition hidden">
+                                <div data-value="{{option}}" class="item" ng-repeat="option in reviewerGradeOptions" ng-click="selectReviewerGrade(option)">
+                                    {{option}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+<!--                         <div class="ui header">
+                            Comments
+                        </div>
+                        <div class="ui fluid card">
+                            <div class="ui form">
+                                <div class="field">
+                                    <textarea placeholder="Enter a new comment" ng-model="comment.text"></textarea>
+                                </div>
+                            </div>
+                            <button class="ui bottom attached teal button" ng-click="addComment()">Post Comment</button>
+                        </div>
+
+                        <div class="ui fluid cards" id="commentCards">
+                            <student-profile-comment class="blurring dimmable ui fluid card" ng-repeat="comment in studentData.comments track by $index"></student-profile-comment>
+                        </div>
+                    </div> -->
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="vertical-spacer"></div>
+
+<script src="node_modules/pdfjs-dist/build/pdf.js"></script>
+
+<script src="public/js/pdfobject.js"></script>
+<style>
+    #the-canvas { height: 700px; }
+    .pdfobject { border: 1px solid #666; }
+</style>
+<link rel="stylesheet" type="text/css" href="public/css/studentProfile.css">

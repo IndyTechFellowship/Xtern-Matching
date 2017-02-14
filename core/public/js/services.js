@@ -153,7 +153,6 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    //console.log(data.data);
                     let organization = data.data;
                     callback(organization);
                 }, function errorCallback(err) {
@@ -172,16 +171,12 @@
                         'Authorization': 'bearer ' + getToken('auth')
                     }
                 }).then(function (data) {
-                    //self.organization = data.data;
-                    //self.organizationKey = key;
                     var students = data.data.students;
                     for(var i = 0; i < students.length; i++) {
                         students[i].key = data.data.keys[i]
                     }
-                    //console.log(students);
                     callback(students);
                 }, function errorCallback(response) {
-                    //console.log('Company Services: error occured: ' + response);
                     callback('', 'err');
                 });
             };
@@ -253,7 +248,6 @@
     }])
         .service('TechPointDashboardService',['$http', function ($http) {
             let self = this;
-
             self.queryUserSummaryData = function(callback){
                 $http({
                     method: 'GET',
@@ -268,11 +262,74 @@
                     callback(data.data.students, data.data.keys);
                 }, function errorCallback(response) {
                     console.log('error occured: ', response);
-                    console.log('Here: '+getToken('auth'));
                     callback('','err');
                 });
             };
     }])
+        .service('ReviewerDashboardService',['$http', function ($http) {
+            var self = this;
+            self.studentSummaryData = null;
+            self.studentKeys = null;
+
+            self.queryReviewGroup = function(callback){
+                $http({
+                    method: 'POST',
+                    url: host + "reviewer/getReviewGroupForReviewer",
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer '+getToken('auth')
+                    }
+                }).then(function (data) {
+                    self.studentSummaryData = data.data.students;
+                    self.studentKeys = data.data.users.students;
+                    self.studentGrades = data.data.studentGrades;
+                    callback(self.studentSummaryData, self.studentKeys, self.studentGrades);
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                    callback('','err');
+                });
+            };
+        }])
+        .service('ReviewerProfileService',['$http', function ($http) {
+            var self = this;
+            self.getReviewerGradeForStudent = function(studentKey, callback){
+                $http({
+                    method: 'GET',
+                    url: host + "reviewer/getReviewerGradeForStudent/" + studentKey,
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer '+getToken('auth')
+                    }
+                }).then(function (data) {
+                    self.reviewerGrade = data.data.grade;
+                    callback(data.data.grade);
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                    callback('','err');
+                });
+            };
+
+            self.postReviewerGradeForStudent = function(studentKey, reviewerGrade){
+                $http({
+                    method: 'POST',
+                    url: host + "reviewer/postReviewerGradeForStudent",
+                    data: {
+                        "studentKey": studentKey,
+                        "reviewerGrade": reviewerGrade
+                    },
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': 'bearer '+getToken('auth')
+                    }
+                }).then(function (data) {
+                }, function errorCallback(response) {
+                    console.log('error occured: ', response);
+                });
+            };
+        }])
         .service('AccountControlService',['$http', function ($http){
             let self = this;
             self.getOrganizations = function(callback) {
@@ -297,7 +354,6 @@
                 });
             };
             self.getUsers = function(orgKey,callback) {
-                console.log('Key: ', orgKey);
                 var route = "user/org/"+orgKey;
                 $http({
                     method: 'GET',
@@ -318,7 +374,6 @@
                 });
             };
             self.addUser = function(user, callback){
-                console.log('Here: ', user);
                 var route = "user";
                 $http({
                     method: 'POST',
@@ -341,7 +396,6 @@
                     callback(data);
                 }, function errorCallback(response) {
                     console.log('error occured: ', response);
-                    // console.log('Here: ' + getToken('auth'));
                     callback('', 'err')
                 });
             };
@@ -409,7 +463,7 @@
                    sessionStorage.setItem("userKey", data.data.userKey);
                    callback(data.data['token'],data.data.organizationName);
                 }, function errorCallback(response) {
-                    console.log('error occured: ' + response);
+                    console.log('error occured: ', response);
                     callback('','','err');
                 });
             };
@@ -418,6 +472,64 @@
                 logout();
                 callback();
             };
-
     }])
+        .service('ResumeService',['$http', function ($http) {
+        var self = this;
+        
+		self.uploadResume = function(id){
+			var fd = new FormData();
+			fd.append('file', document.getElementById("file").files[0]);
+			$http.post(host + "student/resume/" + id, fd,{
+                headers: {
+					'Content-Type': undefined,
+					'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                }
+            })
+            .success(function () {
+            }).error(function(response) {
+                console.log('error occured: ', response);
+            });
+        };
+    }])
+    .service('TechPointReviewerControlService',['$http', function ($http) {
+        var self = this;
+
+        self.createReviewGroups = function(minStudents, minReviewers, callback){
+            $http({
+                method: 'POST',
+                url: "reviewer/create",
+                data: {
+                    "minStudents": minStudents,
+                    "minReviewers": minReviewers
+                },
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer '+getToken('auth')
+                }
+            }).then(function (data) {
+                callback(data);
+            }, function errorCallback(response) {
+                console.log('error occured: ', response);
+            });
+        };
+
+        self.queryReviewGroups = function(callback){
+            $http({
+                method: 'GET',
+                url: "reviewer/getReviewGroups",
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer '+getToken('auth')
+                }
+            }).then(function (data) {
+                callback(data.data.users, data.data.keys);
+            }, function errorCallback(response) {
+                console.log('error occured: ', response);
+                callback('','err');
+            });
+        };
+    }]);
 })();

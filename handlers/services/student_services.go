@@ -13,6 +13,9 @@ import (
 	"google.golang.org/appengine/urlfetch"
 )
 
+/*
+Gets all students in the database.
+*/
 func GetStudents(ctx context.Context, parent *datastore.Key) ([]models.Student, []*datastore.Key, error) {
 	q := datastore.NewQuery("Student")
 	if parent != nil {
@@ -88,12 +91,14 @@ func ExportStudents(ctx context.Context) ([]byte, error) {
 func NewStudent(ctx context.Context, student models.Student) (int, error) {
 	key := datastore.NewIncompleteKey(ctx, "Student", nil)
 	student.Active = true
+	student.ReviewerGrades = make([]models.ReviewerGrade, 0, 1)
 
 	//TODO make this done in a single put
 	key, err := datastore.Put(ctx, key, &student)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
+
 	file, err := os.Open("public/sample.pdf")
 	if err != nil {
 		return http.StatusInternalServerError, err
@@ -106,6 +111,7 @@ func NewStudent(ctx context.Context, student models.Student) (int, error) {
 		return http.StatusInternalServerError, err
 	} */
 	student.Resume = "http://localhost:8080/public/sample.pdf"//resumeURL
+
 	_, err = datastore.Put(ctx, key, &student)
 	if err != nil {
 		return http.StatusInternalServerError, err
