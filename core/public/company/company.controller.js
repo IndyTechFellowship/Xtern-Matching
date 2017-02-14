@@ -81,8 +81,9 @@ angular.module('Xtern')
 
     $scope.dragControlListeners = {
         orderChanged: function(obj) {
+            console.log("new index", obj.dest.index);
             console.log(obj.source.index+' '+obj.dest.index);
-            CompanyService.switchStudentsInWishList($scope.recruitmentList[obj.source.index].key, obj.dest.index, function(data) {
+            CompanyService.switchStudentsInWishList($scope.recruitmentList[obj.source.index].key, $scope.recruitmentList[obj.dest.index].key, function(data) {
                 console.log("order changed: ", data);
             });
         }

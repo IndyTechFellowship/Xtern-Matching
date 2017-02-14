@@ -259,14 +259,14 @@
                 });
             };
 
-            self.switchStudentsInWishList = function (studentKey, pos, callback) {
+            self.switchStudentsInWishList = function (studentKey1, studentKey2, callback) {
                 $http({
                     method: 'PUT',
-                    url: "organization/moveStudent",
+                    url: "organization/switchStudents",
                     host: host,
                     data: {
-                        "studentKey": studentKey,
-                        "position": pos
+                        "studentKey1": studentKey1,
+                        "studentKey2": studentKey2
                     },
                     headers: {
                         'Content-Type': "application/json",

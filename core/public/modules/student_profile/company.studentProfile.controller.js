@@ -6,17 +6,6 @@ angular.module('Xtern')
     $scope.companyData.students = new Array();
     $scope.studentKey = $stateParams.key;
 
-    console.log("data Profile State params", $stateParams.key);
-
-
-    $scope.addStudent = function () {
-        CompanyService.addStudentToWishList($stateParams.key, function(data) {
-                // $scope.recruitmentList.push($scope.studentData);
-                $scope.isStudentApplicant = true;
-                toastr.success('Added Applicant', 'Student added to your Recruitment List');
-            });
-    };
-
     CompanyService.getOrganizationCurrentFromLogin(function(company) {
         $scope.companyData = company;
         // console.log("company data in recruiting controller:", $scope);
@@ -48,9 +37,17 @@ angular.module('Xtern')
         $scope.isStudentApplicant = isStudentApplicant($scope.studentKey);
     });
 
-    $scope.removeStudent = function (_id) {
-        $scope.isStudentApplicant=false;
-        CompanyService.removeStudentFromWishList(_id, function(data) {
+    $scope.addStudent = function () {
+        CompanyService.addStudentToWishList($stateParams.key, function(data) {
+                // $scope.recruitmentList.push($scope.studentData);
+                $scope.isStudentApplicant = true;
+                toastr.success('Added Applicant', 'Student added to your Recruitment List');
+            });
+    };
+
+    $scope.removeStudent = function () {
+        CompanyService.removeStudentFromWishList($stateParams.key, function(data) {
+            $scope.isStudentApplicant=false;
             toastr.error('Removed Applicant', 'Student removed to your Recruitment List');
         });
     };

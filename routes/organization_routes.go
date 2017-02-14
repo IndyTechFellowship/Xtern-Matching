@@ -13,6 +13,7 @@ func GetOrganizationRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/organization/students", handlers.GetOrganizationStudents).Methods("GET").Name("GetOrganizationStudents")
 	router.HandleFunc("/organization/addStudent", handlers.AddStudentToOrganization).Methods("POST").Name("AddStudentToOrganization")
 	router.HandleFunc("/organization/removeStudent", handlers.RemoveStudentFromOrganization).Methods("POST").Name("RemoveStudentFromOrganization")
-	router.HandleFunc("/organization/moveStudent", handlers.MoveStudentInOrganization).Methods("PUT").Name("MoveStudentInOrganization")
+	// router.HandleFunc("/organization/moveStudent", handlers.MoveStudentInOrganization).Methods("PUT").Name("MoveStudentInOrganization")
+	router.HandleFunc("/organization/switchStudents", handlers.SwitchStudentsInOrganization).Methods("PUT").Name("SwitchStudentsInOrganization")
 	return router
 }

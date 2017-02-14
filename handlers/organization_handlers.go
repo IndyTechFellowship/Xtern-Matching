@@ -153,7 +153,41 @@ func RemoveStudentFromOrganization(w http.ResponseWriter,r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func MoveStudentInOrganization(w http.ResponseWriter,r *http.Request) {
+// func MoveStudentInOrganization(w http.ResponseWriter,r *http.Request) {
+// 	ctx := appengine.NewContext(r)
+
+// 	var dat map[string]interface{}
+// 	decoder := json.NewDecoder(r.Body)
+// 	if err := decoder.Decode(&dat); err != nil {
+// 		http.Error(w, err.Error(), 500)
+// 		return
+// 	}
+// 	studentKey, err := datastore.DecodeKey(dat["studentKey"].(string))
+// 	if err != nil {
+// 		http.Error(w, err.Error(), 500)
+// 		return
+// 	}
+
+// 	user := context.Get(r, "user")
+// 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+// 	orgKey, err := datastore.DecodeKey(mapClaims["org"].(string))
+// 	if err != nil {
+// 		log.Println(err.Error())
+// 		http.Error(w, err.Error(), 500)
+// 		return
+// 	}
+// 	position :=  int(dat["position"].(float64));
+
+// 	_, err = services.MoveStudentInOrganization(ctx, orgKey, studentKey, position)
+// 	if err != nil {
+// 		log.Print(err)
+// 		http.Error(w, err.Error(), 500)
+// 		return
+// 	}
+// 	w.WriteHeader(http.StatusOK)
+// }
+
+func SwitchStudentsInOrganization(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
 	var dat map[string]interface{}
@@ -162,7 +196,12 @@ func MoveStudentInOrganization(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	studentKey, err := datastore.DecodeKey(dat["studentKey"].(string))
+	studentKey1, err := datastore.DecodeKey(dat["studentKey1"].(string))
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	studentKey2, err := datastore.DecodeKey(dat["studentKey2"].(string))
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -176,16 +215,14 @@ func MoveStudentInOrganization(w http.ResponseWriter,r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	position :=  int(dat["position"].(float64));
 
-	_, err = services.MoveStudentInOrganization(ctx, orgKey, studentKey, position)
+	_, err = services.SwitchStudentsInOrganization(ctx, orgKey, studentKey1, studentKey2)
 	if err != nil {
 		log.Print(err)
 		http.Error(w, err.Error(), 500)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-
 }
 
 func GetCurrentOrganization(w http.ResponseWriter,r *http.Request) {
