@@ -29,7 +29,7 @@ angular.module('Xtern')
             });
         };
         $scope.editComment = function (comment) {
-            let editModal = $('#editModal');
+            var editModal = $('#editModal');
             $("#editComment").text(comment.message);
             $('#editForm').form({
                 fields: {
@@ -63,7 +63,7 @@ angular.module('Xtern')
                     return true;
                 },
                 onApprove: function () {
-                    let editForm = $("#editForm");
+                    var editForm = $("#editForm");
                     editForm.form('validate form');
                     return editForm.form('is valid');
                 }

@@ -75,8 +75,8 @@
             </tr>
             </tbody>
         </table>
-        <div class="cube">
-          <img class="side" src="/public/images/xtern-x.png" alt="Smiley face" height="150" width="150"></img>
+        <div class="cube" ng-hide="!!rawData">
+          <img class="side" src="/public/images/xtern-x.png" alt="Smiley face" height="150" width="150"/>
       </div>
   </div>
     <div class="computer only one wide column"></div>
@@ -98,7 +98,7 @@
         left:0;
         height:150px;
         width:150px;
-        backface-visibility:show;
+        /*backface-visibility:show;*/
         border:1px solid #fff;
       }
       .side:nth-child(1) {

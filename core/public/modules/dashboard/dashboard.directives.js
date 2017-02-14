@@ -1,3 +1,4 @@
+'use strict';
 angular.module('Xtern')
     .directive('simpleFilter', function () {
         return {

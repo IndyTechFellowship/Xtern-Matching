@@ -1,3 +1,4 @@
+'use strict';
 angular.module('Xtern')
     .directive('onLastRepeat', function (callback) {
         return function (scope, element, attrs) {

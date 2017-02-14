@@ -7,9 +7,9 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
-func NewOrganization(ctx context.Context,name string, kind string) (*datastore.Key, error) {
+func NewOrganization(ctx context.Context,name string) (*datastore.Key, error) {
 	key := datastore.NewIncompleteKey(ctx, "Organization", nil)
-	org := models.NewOrganization(name, kind)
+	org := models.NewOrganization(name)
 	key, err := datastore.Put(ctx, key, &org)
 	if err != nil {
 		return nil, err

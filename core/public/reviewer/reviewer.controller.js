@@ -1,6 +1,7 @@
+'use strict';
 angular.module('Xtern')
-    .controller('ReviewerMain', ['$scope', '$rootScope', '$state', 'AuthService','CompanyService', 'ProfileService', function ($scope, $rootScope, $state, AuthService, CompanyService, ProfileService) {
-        var self = this;
+    .controller('ReviewerMain', ['$scope', '$rootScope', '$state', 'AuthService', function ($scope, $rootScope, $state, AuthService) {
+
         $scope.loggedIn = !!getToken("organization");
 
         $rootScope.$on('$stateChangeStart',

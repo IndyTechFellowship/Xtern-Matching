@@ -1,5 +1,6 @@
+'use strict';
 angular.module('Xtern')
-    .controller('CompanyDashboardCtrl', ['$scope', 'TechPointDashboardService', function ($scope, TechPointDashboardService) {
+    .controller('CompanyDashboardCtrl', ['$scope', function ($scope) {
         //BEGIN CONFIG DATA
         $scope.STARTCHARTSANDSTATS = {
             University: {
@@ -12,17 +13,17 @@ angular.module('Xtern')
             gender: {
                 isChart: true,
                 title: "Gender",
-                labels: ['Male', 'Female'],
+                labels: ['male', 'female'],
                 dataLabel: 'gender',
                 nestedData: false
             },
-            Interests: {
-                isChart: true,
-                title: "Interests",
-                dataLabel: 'interestedIn',
-                labels: [],
-                nestedData: true
-            },
+            //Interests: {
+            //    isChart: true,
+            //    title: "Interests",
+            //    dataLabel: 'interestedIn',
+            //    labels: [],
+            //    nestedData: true
+            //},
             Major: {
                 isChart: true,
                 title: "Major",
@@ -44,55 +45,56 @@ angular.module('Xtern')
                 label: "Grade",
                 dataLabel: 'gradeLabel',
                 simpleFilter: true,
-                nestedHeaders: true,
+                nestedHeaders: true
             },
             GradYear: {
                 isToggle: false,
                 label: "Graduation Year",
                 dataLabel: 'gradYear',
                 simpleFilter: true,
-                nestedHeaders: true,
+                nestedHeaders: true
             },
             University: {
                 isToggle: false,
                 label: "University",
                 dataLabel: 'university',
                 simpleFilter: true,
-                nestedHeaders: true,
+                nestedHeaders: true
             },
             Technologies: {
                 isToggle: true,
                 label: "Technologies",
                 dataLabel: 'knownTech',
                 simpleFilter: false,
-                nestedHeaders: false,
+                nestedHeaders: false
             },
-            Interests: {
-                isToggle: true,
-                label: "Interests",
-                dataLabel: 'interestedIn',
-                simpleFilter: false,
-                nestedHeaders: false,
-            },
+            //Interests: {
+            //    isToggle: true,
+            //    label: "Interests",
+            //    dataLabel: 'interestedIn',
+            //    simpleFilter: false,
+            //    nestedHeaders: false,
+            //},
             Major: {
                 isToggle: false,
                 label: "Major",
                 dataLabel: 'major',
                 simpleFilter: true,
-                nestedHeaders: true,
+                nestedHeaders: true
             },
             WorkStatus: {
                 isToggle: false,
                 label: "Work Status",
                 dataLabel: 'workStatus',
                 simpleFilter: true,
-                nestedHeaders: true,
+                nestedHeaders: true
             },
             Name: {
                 isToggle: false,
                 label: "Name",
                 dataLabel: 'name',
-                nestedHeaders: true,
+                simpleFilter:true,
+                nestedHeaders:false
             }
         };
         $scope.TABLEHEADERS = [
