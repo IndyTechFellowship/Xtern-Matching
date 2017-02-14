@@ -7,6 +7,7 @@ import (
 
 func GetUserRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/user/org/{orgKey}", handlers.GetUsers).Methods("GET").Name("GetUsers")
+	router.HandleFunc("/user/orgName/{orgName}", handlers.GetUsersByOrgName).Methods("GET").Name("GetUsersByOrgName")
 	router.HandleFunc("/user/{userKey}", handlers.GetUser).Methods("GET").Name("GetUser")
 	router.HandleFunc("/user", handlers.AddUser).Methods("POST").Name("AddUser")
 	router.HandleFunc("/user/{userKey}", handlers.EditUser).Methods("PUT").Name("EditUser")

@@ -3,7 +3,7 @@ angular.module('Xtern')
         var self = this;
 
         $scope.techPointUsers = [];
-        $scope.instructorUsers = [];
+        $scope.reviewerUsers = [];
         $scope.companyUsers = [];
         $scope.UserFormData = {};
 
@@ -33,7 +33,7 @@ angular.module('Xtern')
 
             //Set up CompanyAbbr
             $scope.companyListAbbr = $scope.companyList.filter(function (item) {
-                return !(item.name == 'Techpoint' || item.name == 'Instructor' || item.name == 'Instructors');
+                return !(item.name == 'Techpoint' || item.name == 'Reviewer' || item.name == 'Reviewers');
             });
         };
 
@@ -93,11 +93,11 @@ angular.module('Xtern')
                         refreshAccounts(company.key, $scope.techPointUsers);
                     }
                 });
-            } else if (group == 'Instructor') {
-                $scope.selectedGroup.selectedUsers = $scope.instructorUsers;
+            } else if (group == 'Reviewer') {
+                $scope.selectedGroup.selectedUsers = $scope.reviewerUsers;
                 $scope.companyList.forEach(function (company) {
-                    if (company.name == 'Instructor' || company.name== 'Instructors') {
-                        refreshAccounts(company.key, $scope.instructorUsers);
+                    if (company.name == 'Reviewer' || company.name== 'Reviewers') {
+                        refreshAccounts(company.key, $scope.reviewerUsers);
                     }
                 });
             }

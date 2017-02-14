@@ -1,7 +1,7 @@
 <div class="ui container">
 	<div class="ui secondary pointing menu">
 		<a class="item" ng-class="{active: selectedGroup.active == 'TechPoint'}" ng-click="selectedGroup.changeGroup('TechPoint')">TechPoint</a>
-		<a class="item" ng-class="{active: selectedGroup.active == 'Instructor'}" ng-click="selectedGroup.changeGroup('Instructor')">Instructor</a>
+		<a class="item" ng-class="{active: selectedGroup.active == 'Reviewer'}" ng-click="selectedGroup.changeGroup('Reviewer')">Reviewer</a>
 		<a class="item" ng-class="{active: selectedGroup.active == 'Company'}" ng-click="selectedGroup.changeGroup('Company')">Company</a>
 	</div>
 	<div ng-show="selectedGroup.active == 'Company'">
@@ -76,7 +76,7 @@
 						<div class="default text">Select a Role</div>
 						<div class="menu">
 							<div class="item" data-value="TechPoint">TechPoint</div>
-							<div class="item" data-value="Instructor" > Instructor</div>
+							<div class="item" data-value="Reviewer" > Reviewer</div>
 							<div class="item"  data-value="Company"  >Company</div>
 						</div>
 					</div>
