@@ -1,6 +1,6 @@
 angular.module('Xtern')
     .controller('TechpointLogin',['$scope','$state','AuthService','TechPointDashboardService', function($scope, $state, AuthService) {
-        var formConfig = function() {
+        let formConfig = function() {
             $('#techpointLogin').form({
                 fields: {
                     email: {
@@ -46,7 +46,7 @@ angular.module('Xtern')
         $scope.login = function() {
             $('#techpointLogin').form('validate form');
         };
-        var authenticate = function(fields) {
+        let authenticate = function(fields) {
             $('#techpointLogin .ui.button').addClass("disabled");
             AuthService.login(fields.email, fields.password, function(token, org, err) {
                 if (err) {
@@ -55,23 +55,9 @@ angular.module('Xtern')
                     ).show();
                     $('#techpointLogin .ui.button').removeClass("disabled");
                 } else {
-                    console.log('Login Success '+org);
                     setToken(false,'isCompany');
                     $scope.isCompany = false;
                     $state.go('techpoint.dashboard');
-                    // AuthService.renderTokens(function(token, err) {
-                    //     if (err) {
-                    //         console.log('Render Token unsuccessful', err);
-                    //         $('#techpointLogin .ui.error.message').html(
-                    //             '<ui class="list"><li>A server error occured</li></ui>'
-                    //         ).show();
-                    //     } else {
-                    //         // console.log('Login Success');
-                    //         $scope.isCompany = false;
-                    //         $state.go('techpoint.dashboard');
-                    //     }
-                    // });
-
                 }
             });
         };

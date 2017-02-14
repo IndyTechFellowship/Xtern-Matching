@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"Xtern-Matching/handlers/services"
 	"Xtern-Matching/models"
-	"log"
 	"google.golang.org/appengine/datastore"
 	"github.com/gorilla/mux"
+	"log"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -35,6 +35,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	dat = make(map[string]interface{})
 	dat["token"] = string(tokenString)
 	dat["organizationName"] = "Company"
+	dat["userKey"] = token.Claims.(jwt.MapClaims)["key"].(string)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(dat)
@@ -48,7 +49,6 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		var err error
 		orgKey, err = datastore.DecodeKey(val)
 		if err != nil {
-			log.Println(err.Error())
 			http.Error(w, err.Error(), 500)
 			return
 		}
@@ -57,7 +57,6 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 	users, keys, err := services.GetUsers(ctx, orgKey)
 	if err != nil {
-		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -66,9 +65,6 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		Users []models.User		`json:"users"`
 	}
 	response := Response{Keys: keys, Users: users}
-
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -101,14 +97,12 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	userKey, err := datastore.DecodeKey(mux.Vars(r)["userKey"])
 	if err != nil {
-		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
 	user, err := services.GetUser(ctx, userKey)
 	if err != nil {
-		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -134,8 +128,6 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 
 	orgKey, err := datastore.DecodeKey(dat["orgKey"].(string))
 	if err != nil {
-		log.Println("ERROR1");
-		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -143,7 +135,6 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 
 	responseStatus, err := services.Register(ctx, orgKey, user)
 	if err != nil {
-		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -156,7 +147,6 @@ func EditUser(w http.ResponseWriter, r *http.Request){
 	dat := make(map[string]interface{})
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&dat); err != nil {
-		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -166,14 +156,12 @@ func EditUser(w http.ResponseWriter, r *http.Request){
 
 	userKey, err := datastore.DecodeKey(mux.Vars(r)["userKey"])
 	if err != nil {
-		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
 	err = services.EditUser(ctx, userKey, name, email, password)
 	if err != nil {
-		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -185,13 +173,11 @@ func DeleteUser(w http.ResponseWriter, r *http.Request){
 
 	userKey, err := datastore.DecodeKey(mux.Vars(r)["userKey"])
 	if err != nil {
-		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
 	err = services.DeleteUser(ctx, userKey)
 	if err != nil {
-		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

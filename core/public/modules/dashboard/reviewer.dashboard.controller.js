@@ -29,7 +29,10 @@ angular.module('Xtern').controller('ReviewerDashboardCtrl', function($scope, $st
         $state.go(PATH + '.profile', {key: key});
     };
 
+    console.log("queryReviewGroup");
     ReviewerDashboardService.queryReviewGroup(function (data, keys, grades) {
+        console.log("queryReviewGroupCallback");
+
         var students = [];
         for(var i = 0; i < data.length; i++) {
             students[i] = rowClass(data[i],keys[i]);

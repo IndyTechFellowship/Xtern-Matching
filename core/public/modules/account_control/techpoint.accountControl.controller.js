@@ -1,7 +1,5 @@
 angular.module('Xtern')
     .controller('TechPointAccountCtrl', ['$scope', '$rootScope', '$state', 'AccountControlService', function ($scope, $rootScope, $state, AccountControlService) {
-        var self = this;
-
         $scope.techPointUsers = [];
         $scope.reviewerUsers = [];
         $scope.companyUsers = [];
@@ -64,7 +62,7 @@ angular.module('Xtern')
             $('#accountsModal').modal('show');
             resetUserForm(user);
             $('#accountModalform .error.message').empty();
-        }
+        };
 
         var refreshAccounts = function (group, company, array) {
             AccountControlService.getUsers(group, company, function (data) {
@@ -83,7 +81,6 @@ angular.module('Xtern')
                 $scope.selectedGroup.selectedUsers = array;
             });
         };
-
 
         var swapActiveArray = function (group) {
             if (group == 'TechPoint') {
@@ -258,7 +255,7 @@ angular.module('Xtern')
 
         $scope.showCompanyDropdown = function () {
             $('#companyDropdown').show();
-        }
+        };
 
         var setSelectOptions = function () {
             $('.role.dropdown').dropdown({
