@@ -9,6 +9,7 @@ import (
 )
 
 func TestCommentPost(t *testing.T) {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
@@ -31,6 +32,7 @@ func TestCommentPost(t *testing.T) {
 }
 
 func TestCommentGet(t *testing.T) {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
@@ -85,6 +87,7 @@ func TestCommentGet(t *testing.T) {
 }
 
 func TestCommentEdit(t *testing.T)  {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
@@ -121,6 +124,7 @@ func TestCommentEdit(t *testing.T)  {
 }
 
 func TestCommentDelete(t *testing.T)  {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)

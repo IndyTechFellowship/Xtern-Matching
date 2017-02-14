@@ -49,6 +49,7 @@ func createUserAndNamedOrg(ctx context.Context, user models.User, orgName string
 }
 
 func TestRegister(t *testing.T) {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
@@ -77,6 +78,7 @@ func TestRegister(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
@@ -123,6 +125,7 @@ func TestLogin(t *testing.T) {
 }
 
 func TestUserEmailPassUpdate(t *testing.T) {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
@@ -169,6 +172,7 @@ func TestUserEmailPassUpdate(t *testing.T) {
 	tests GetUser and GetUsers
 */
 func TestUserQueries(t *testing.T) {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
@@ -211,6 +215,7 @@ func TestUserQueries(t *testing.T) {
 }
 
 func TestGetUserByOrgNae(t *testing.T)  {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
@@ -237,6 +242,7 @@ func TestGetUserByOrgNae(t *testing.T)  {
 }
 
 func TestDeleteUser(t *testing.T) {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)

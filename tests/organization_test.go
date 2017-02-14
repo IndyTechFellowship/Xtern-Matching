@@ -9,6 +9,7 @@ import (
 )
 
 func TestOrganizationPost(t *testing.T) {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
@@ -23,6 +24,7 @@ func TestOrganizationPost(t *testing.T) {
 }
 
 func TestOrganizationGet(t *testing.T) {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)

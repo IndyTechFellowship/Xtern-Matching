@@ -14,6 +14,7 @@ import (
 	Will convert to assert framework once backend refactoring is pushed.
 */
 func TestStudentExport(t *testing.T) {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if err != nil {
 		t.Fatal(err)

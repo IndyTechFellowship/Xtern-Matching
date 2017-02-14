@@ -48,6 +48,7 @@ func createStudent(ctx context.Context) (models.Student, *datastore.Key,error) {
 //	Tests the ability to create a Student
 //*/
 func TestPost(t *testing.T) {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
@@ -75,6 +76,7 @@ func TestPost(t *testing.T) {
 //	Additionally ensures an invalid id can't be retrieved.
 //*/
 func TestGet(t *testing.T) {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
@@ -122,6 +124,7 @@ func TestGet(t *testing.T) {
 }
 
 func TestStatusUpdate(t *testing.T)  {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
@@ -147,6 +150,7 @@ func TestStatusUpdate(t *testing.T)  {
 }
 
 func TestGradeUpdate(t *testing.T)  {
+	t.Parallel()
 	ctx, done, err := aetest.NewContext()
 	if !assert.Nil(t, err, "Error instantiating context") {
 		t.Fatal(err)
