@@ -1,3 +1,4 @@
+'use strict';
 angular.module('Xtern')
     .controller('TechPointDashboardCtrl', ['$scope', 'TechPointDashboardService', function($scope, TechPointDashboardService){
     //BEGIN CONFIG DATA
@@ -157,4 +158,4 @@ angular.module('Xtern')
     $scope.PATH ='techpoint';
     $scope.isCompany = false;
 
-}]);
+    }]);

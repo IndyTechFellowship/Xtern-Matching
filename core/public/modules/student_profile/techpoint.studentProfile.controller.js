@@ -1,7 +1,7 @@
+'use strict';
 angular.module('Xtern')
     .controller('TechPointStudentProfileCtrl', function($scope, $location, ProfileService, $stateParams) {
         $('.ui.dropdown').dropdown();
-
         $scope.statusOptions = [
             'Stage 1 Approved',
             'Stage 2 Approved',
@@ -31,7 +31,7 @@ angular.module('Xtern')
                 context: '#example1'
             });
             $('.ui.dropdown').dropdown();
-            for(let i=0; i < 10; i += 0.5) {
+            for(var i=0; i < 10; i += 0.5) {
                 $scope.r1GradeOptions.push(i);
             }
         });
