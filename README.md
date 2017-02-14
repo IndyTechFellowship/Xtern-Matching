@@ -89,6 +89,10 @@ goapp deploy
 1. Install Browserify globally with (npm install -g browserify)
 2. Navigate to the /Xtern-Matching/core/ directory and run "browserify app.js > bundle.js"
 
+##### Manual Grunt running (for minified CSS file generation)
+1. Install Grunt globally with (npm install -g grunt)
+2. Navigate to the /Xtern-Matching/core/ directory and run "grunt"
+
 #### npm install errors
 In the unlikely case Semantic UI has installation errors:
 ```bash
