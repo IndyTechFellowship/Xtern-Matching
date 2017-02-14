@@ -24,12 +24,9 @@ var isLoggedInTechPoint = function ($q) {
     var errorObject ={};
     var role = getToken("organization");
     if (!role) {
-        errorObject = { code: 'NOT_AUTHENTICATED_REVIEWER' };
+        errorObject = { code: 'NOT_AUTHENTICATED_TECHPOINT' };
         $q.reject(errorObject);
         return $q.reject(errorObject);
-    }
-    else if(role =="admin"){
-        return null;
     }
     else if (role == "Techpoint") {
         return null;
@@ -38,7 +35,7 @@ var isLoggedInTechPoint = function ($q) {
         errorObject = { code: 'ALREADY_AUTHENTICATED_REVIEWER' };
         return $q.reject(errorObject);
     }
-    else if(role == "Salesforce"){
+    else if(role == "Company"){
         errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
         return $q.reject(errorObject);
     }
@@ -55,22 +52,19 @@ var isLoggedInReviewer = function ($q) {
         errorObject = { code: 'NOT_AUTHENTICATED_REVIEWER' };
         return $q.reject(errorObject);
     }
-    else if(role =="admin"){
-        return null;
-    }
-    else if (role == "TechPoint") {
+    else if (role == "Techpoint") {
         errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
         return $q.reject(errorObject);      
     }
     else if(role == "Company"){
         errorObject = { code: 'ALREADY_AUTHENTICATED_COMPANY' };
-        return $q.reject(errorObject);        
+        return $q.reject(errorObject);
     }
     else if(role == "Reviewers"){
         return null;
     }
     else{
-        errorObject = { code: 'NOT_AUTHENTICATED_INSTRUCTOR' };
+        errorObject = { code: 'NOT_AUTHENTICATED_REVIEWER' };
         return $q.reject(errorObject);
     }
 };
@@ -83,9 +77,6 @@ var isLoggedInCompany = function ($q) {
         return $q.reject(errorObject);
 
     }
-    else if(role =="admin"){
-        return null;
-    }
     else if (role == "Techpoint") {
         errorObject = { code: 'ALREADY_AUTHENTICATED_TECHPOINT' };
         return $q.reject(errorObject);
@@ -94,7 +85,7 @@ var isLoggedInCompany = function ($q) {
         errorObject = { code: 'ALREADY_AUTHENTICATED_REVIEWER' };
         return $q.reject(errorObject);
     }
-    else if(role == "Salesforce"){
+    else if(role == "Company"){
         return null;
     }
     else{
