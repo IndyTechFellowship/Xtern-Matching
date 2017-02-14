@@ -73,6 +73,22 @@ func GetStudentDecisionList(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(students)
 }
 
+func GetReviewedStudents(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+	defer ctx.Done()
+
+	students, err := services.GetReviewedStudents(ctx, nil)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	//TODO: Add keys if necessary to response
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(students)
+}
+
 func GetStudentsAtLeastWithStatus(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 	defer ctx.Done()

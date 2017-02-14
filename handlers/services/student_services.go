@@ -17,20 +17,24 @@ import (
 	"google.golang.org/appengine/urlfetch"
 )
 
+
+func StudentToStudentDecision(students []models.Student, keys []*datastore.Key) []models.StudentDecision {
+	var studentDecisions []models.StudentDecision = make([]models.StudentDecision, len(students))
+	for i:=0; i < len(students); i++ {
+		student := students[i]
+		studentDecisions[i] = models.StudentDecision{keys[i].IntID(), student.FirstName, student.LastName,
+		student.GradYear, student.Grade, student.Gender, student.WorkStatus, student.Ethnicity, student.ReviewerGrades}
+	}
+	return studentDecisions
+}
+
 func GetStudentDecisionList(ctx context.Context, parent *datastore.Key) ([]models.StudentDecision, error) {
-	q := datastore.NewQuery("Student").Project("FirstName", "LastName", "GradYear", "Grade", "Gender", "WorkStatus", "Ethnicity")
-	if parent != nil {
-		q = datastore.NewQuery("Student").Ancestor(parent)
-	}
-	var students []models.StudentDecision
-	keys, err := q.GetAll(ctx, &students)
-	for i := 0; i < len(keys); i++ {
-		students[i].Id = keys[i].IntID()
-	}
+
+	students, keys, err := GetStudents(ctx, parent)
 	if err != nil {
 		return nil, err
 	}
-	return students, nil
+	return StudentToStudentDecision(students, keys), nil
 }
 
 
@@ -47,16 +51,16 @@ func GetStudentsAtLeastWithStatus(ctx context.Context, status string) ([]models.
 				/*
 					Not efficient query wise, but the best option for now
 				 */
-				newQuery := query.Filter("Status =", statuses[i]).
-					Project("FirstName", "LastName", "GradYear", "Grade", "Gender", "WorkStatus", "Ethnicity")
-				var newStudents []models.StudentDecision
-				_, err := newQuery.GetAll(ctx, &newStudents)
+				newQuery := query.Filter("Status =", statuses[i])
+				var newStudents []models.Student
+				keys, err := newQuery.GetAll(ctx, &newStudents)
 				if err != nil {
 					return nil, err
 				}
+				newDecisions := StudentToStudentDecision(newStudents, keys)
 				if newStudents != nil {
-					for j := 0; j < len(newStudents); j++ {
-						students = append(students, newStudents[j])
+					for j := 0; j < len(newDecisions); j++ {
+						students = append(students, newDecisions[j])
 					}
 				}
 			}
@@ -97,6 +101,20 @@ func MoveStudentsToStatus(ctx context.Context, keys []*datastore.Key,status stri
 		}
 	}
 	return nil
+}
+
+func GetReviewedStudents(ctx context.Context, parent *datastore.Key) ([]models.StudentDecision, error) {
+	students, err := GetStudentDecisionList(ctx, parent)
+	if err != nil {
+		return nil, err
+	}
+	var filteredStudents []models.StudentDecision
+	for i := 0; i < len(students); i++ {
+		if len(students[i].ReviewerGrades) > 0 {
+			filteredStudents = append(filteredStudents, students[i])
+		}
+	}
+	return filteredStudents, nil
 }
 
 func GetStudents(ctx context.Context, parent *datastore.Key) ([]models.Student, []*datastore.Key, error) {
