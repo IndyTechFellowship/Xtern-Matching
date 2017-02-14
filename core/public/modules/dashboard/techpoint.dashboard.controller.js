@@ -79,34 +79,35 @@ angular.module('Xtern')
             label: "Technologies",
             dataLabel: 'knownTech',
             simpleFilter:false,
-            nestedHeaders:false,
+            nestedHeaders:false
         },
-        Interests: {
-            isToggle: true,
-            label: "Interests",
-            dataLabel: 'interestedIn',
-            simpleFilter:false,
-            nestedHeaders:false,
-        },
+        //Interests: {
+        //    isToggle: true,
+        //    label: "Interests",
+        //    dataLabel: 'interestedIn',
+        //    simpleFilter:false,
+        //    nestedHeaders:true
+        //},
         Major: {
             isToggle: false,
             label: "Major",
             dataLabel: 'major',
             simpleFilter:true,
-            nestedHeaders:true,
+            nestedHeaders:true
         },
         WorkStatus: {
             isToggle: false,
             label: "Work Status",
             dataLabel: 'workStatus',
             simpleFilter:true,
-            nestedHeaders:true,
+            nestedHeaders:true
         },
         Name: {
             isToggle: false,
             label: "Name",
             dataLabel: 'name',
-            nestedHeaders:true,
+            simpleFilter:true,
+            nestedHeaders:false
         }
     };
     $scope.TABLEHEADERS = [

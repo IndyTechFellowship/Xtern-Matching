@@ -9,7 +9,7 @@ function getToken(tokenName) {
 }
 
 function logout() {
-    let tokens = ['auth', 'role', 'organization', 'company', 'jwtToken'];
+    var tokens = ['auth', 'role', 'organization', 'company', 'jwtToken'];
     tokens.forEach(function(token){
         removeToken(token);
     });
@@ -98,7 +98,7 @@ var isLoggedIn = function ($q, code) {
     var role = getToken("organization");
     var errorObject ={};
     if (!role) {
-        return;
+        return null;
     }
     else if(role =="admin"){
         errorObject = {code: code};

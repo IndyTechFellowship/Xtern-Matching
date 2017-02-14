@@ -25,12 +25,13 @@ angular.module('Xtern')
             // $scope.rawData = $.map(data, function (person) {
             //     return rowClass(person)
             // });
-            let students = [];
+            var students = [];
             for(var i = 0; i < data.length; i++) {
                 students[i] = rowClass(data[i],keys[i]);
             }
             $scope.summaryData = students;
             $scope.rawData = students;
+            console.log($scope.summaryData[0]);
             loadFilters();
             initCharts();
             $scope.personsCount = $scope.summaryData.length;
@@ -200,7 +201,7 @@ angular.module('Xtern')
         //Filter Helper Functions
         var generateHeaders = function (field, data, array) {
             array.length = 0;
-            for (var rowIndex in data) {
+            for (var rowIndex = 0; rowIndex < data.length; rowIndex++) {
                 if (array.indexOf(data[rowIndex][field]) === -1) {
                     array.push(data[rowIndex][field]);
                 }
@@ -304,6 +305,7 @@ angular.module('Xtern')
 
         TechPointDashboardService.queryUserSummaryData(function (data, keys) {
             $scope.DATA = data;
+            $('.ui.dropdown').dropdown();//activates semantic drowpdowns
             //$scope.KEYS = keys;
             run(data,keys);
         });
