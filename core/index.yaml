@@ -12,6 +12,16 @@ indexes:
 
 - kind: Student
   properties:
+  - name: Ethnicity
+  - name: FirstName
+  - name: Gender
+  - name: GradYear
+  - name: Grade
+  - name: LastName
+  - name: WorkStatus
+
+- kind: Student
+  properties:
   - name: Status
   - name: FirstName
   - name: Gender
