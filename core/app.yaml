@@ -21,6 +21,9 @@ handlers:
 - url: /output.min.js
   static_files: output.min.js
   upload: output.min.js
+- url: /bundle.js
+  static_files: bundle.js
+  upload: bundle.js
 - url: /output.min.css
   static_files: output.min.css
   upload: output.min.css

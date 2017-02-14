@@ -22,6 +22,7 @@ module.exports = function(grunt) {
                     'output.min.css': ['node_modules/angular-centered/angular-centered.css',
                         'node_modules/angular-chart.js/dist/angular-chart.min.css',
                         'node_modules/ng-sortable/dist/ng-sortable.min.css',
+                        'node_modules/toastr/build/toastr.min.css',
                         'public/css/studentProfile.css',
                         'public/css/universal.css']
                 }

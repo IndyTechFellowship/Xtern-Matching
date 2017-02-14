@@ -1,6 +1,7 @@
 'use strict';
 angular.module('Xtern')
 .controller('CompanyStudentProfileCtrl', function($scope, $rootScope, $location, ProfileService, CompanyService, $stateParams) {
+    // var toastr = require('toastr/build/toastr.min.js');
     $scope.comment = {};
     $scope.isStudentApplicant = false;
     $scope.companyData = {};
@@ -42,14 +43,14 @@ angular.module('Xtern')
         CompanyService.addStudentToWishList($stateParams.key, function(data) {
                 // $scope.recruitmentList.push($scope.studentData);
                 $scope.isStudentApplicant = true;
-                toastr.success('Added Applicant', 'Student added to your Recruitment List');
+                // toastr.success('Added Applicant', 'Student added to your Recruitment List');
             });
     };
 
     $scope.removeStudent = function () {
         CompanyService.removeStudentFromWishList($stateParams.key, function(data) {
             $scope.isStudentApplicant=false;
-            toastr.error('Removed Applicant', 'Student removed to your Recruitment List');
+            // toastr.error('Removed Applicant', 'Student removed to your Recruitment List');
         });
     };
 

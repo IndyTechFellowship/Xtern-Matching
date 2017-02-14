@@ -8,14 +8,15 @@
     require('chart.js');
     require('angular-chart.js');
     require('ng-sortable');
-    require('angular-animate');
+    // require('angular-animate/angular-animate.min.js');
+    // var toastr = require('toastr/build/toastr.min.js');
     require('pdfjs-dist/build/pdf.worker.js');
     require('pdfjs-dist/build/pdf.js');
     require('pdfjs-dist/build/pdf.combined.js');
     require('pdfjs-dist/build/pdf.worker.entry.js');
 
 
-    var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize", "ngAnimate","DataManager"]);
+    var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize", "DataManager"]);
 
     require('./public/techpoint/techpoint.controller.js');
     require('./public/company/company.controller.js');
@@ -164,7 +165,7 @@
                     security: ['$q', function ($q) {
                         return isLoggedInReviewer($q);
                     }]
-                }
+            }
             })
             .state('reviewer.dashboard', {
                 url: "/dashboard",
@@ -177,7 +178,7 @@
                 }
             });
             
-            toastr.options.timeOut = 750;
+            // toastr.options.timeOut = 750;
     });
     app.run(function ($state, $rootScope) {
         $rootScope.$on('$stateChangeError', function (evt, toState, toParams, fromState, fromParams, error) {

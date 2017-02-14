@@ -22,7 +22,7 @@
                 <th>School</th>
                 <th style="text-align:center;">Year</th>
                 <!-- <th>Notes</th> -->
-                <th></th>
+                <th>  </th>
             </tr>
         </thead>
         <tbody data-as-sortable="dragControlListeners" data-ng-model="recruitmentList">
@@ -31,7 +31,6 @@
                 <td>{{row.firstName+" "+row.lastName}}</td>
                 <td>{{row.university}}</td>
                 <td style="text-align:center;">{{row.gradYear}}</td>
-                <td>{{row.summary}}</td>
                 <td>
                     <button class="ui icon small button" ng-click="viewRecruit(row.key)">
                         <i class="external icon"></i>
