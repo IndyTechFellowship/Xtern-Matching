@@ -67,6 +67,12 @@ angular.module('Xtern')
             $('#accountModalform .error.message').empty();
         };
 
+        $scope.launchAddCompanyModal = function (user) {
+            $('#addCompanyForm').form('reset');
+            $('#addCompanyForm .error.message').empty();
+            $('#addCompanyModal').modal('show');
+        };
+
         var refreshAccounts = function (organizationKey, array) {
             AccountControlService.getUsers(organizationKey, function (users) {
                 array.length = 0; //We want to keep array refrences but replace all of the elements
@@ -214,6 +220,42 @@ angular.module('Xtern')
                     },
                     keyboardShortcuts: false
                 });
+
+            $.fn.form.settings.rules.companyDoesNotExist = function (value, arg1) {
+                for(var org in $scope.keys.companies){
+                    if($scope.keys.companies[org].name == value){
+                        return false;
+                    }
+                }
+                return true;
+            };
+
+            $('#addCompanyForm').form({
+                fields: {
+                    name: {
+                        identifier: 'name',
+                        rules: [
+                            { type: 'empty', prompt: 'Company Name cannot be blank' },
+                            { type: 'companyDoesNotExist[0]', prompt: '{value} is already a company' }
+                        ]
+                    },
+                    confirm: {
+                        identifier: 'confirm',
+                        rules: [
+                            { type: 'match[name]', prompt: 'Company Names don\'t match' }
+                        ]
+                    }
+                },
+                onSuccess: function (event, fields) {
+                    //addAdmin(fields.Username);
+                    console.log("add company", fields);
+                    return true;
+                },
+                onFailure: function (formErrors, fields) {
+                    return false;
+                },
+                keyboardShortcuts: false
+            });
         };
         var accountControlModalConfig = function () {
 
@@ -225,6 +267,17 @@ angular.module('Xtern')
                 onApprove: function () {
                     $('#accountModalform').form('validate form');
                     return $('#accountModalform').form('is valid');
+                }
+            });
+
+            $('#addCompanyModal').modal({
+                closable: false,
+                onDeny: function () {
+                    return true;
+                },
+                onApprove: function () {
+                    $('#addCompanyForm').form('validate form');
+                    return $('#addCompanyForm').form('is valid');
                 }
             });
         };

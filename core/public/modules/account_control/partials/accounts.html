@@ -39,7 +39,8 @@
 		</tbody>
 	</table>
 
-	<button class="ui positive right floated button" ng-click="launchAddEditUserModal()">Add User</button>
+	<button class="ui basic blue right floated button" ng-click="launchAddEditUserModal()">Add User</button>
+    <button ng-show="selectedGroup.active == 'Company'" class="ui grey basic right floated button" ng-click="launchAddCompanyModal()">Add Company</button>
 </div>
 
 <!--Add Edit Form-->
@@ -95,8 +96,29 @@
 	</div>
 	<div class="actions">
 		<div class="ui cancel grey basic button">Cancel</div>
-		<div class="ui approve green basic button">Save</div>
+		<div class="ui approve blue basic button">Save</div>
 	</div>
+</div>
+
+<div class="ui small modal" id="addCompanyModal">
+    <div class="header">Add Admin</div>
+    <div class="content">
+        <div class="ui form" id="addCompanyForm">
+            <div class="ui field">
+                <label>Company Name</label>
+                <input type="text" name="name">
+            </div>
+            <div class="ui field">
+                <label>Confirm Company Name</label>
+                <input type="text" name="confirm">
+            </div>
+            <div class="ui error message"></div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui cancel grey basic button">Cancel</div>
+        <div class="ui approve blue basic button">Add</div>
+    </div>
 </div>
 
 <div class="vertical-spacer"></div>
