@@ -50,7 +50,7 @@ func WarmUp(w http.ResponseWriter, r *http.Request) {
 		orgs := map[string]*datastore.Key{}
 		err := datastore.RunInTransaction(ctx, func(ctx context.Context) error {
 			for _, org := range seeds.Organizations {
-				key, err := services.NewOrganization(ctx, org["name"], org["kind"])
+				key, err := services.NewOrganization(ctx, org["name"])
 				if err != nil {
 					return err
 				}

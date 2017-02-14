@@ -7,13 +7,12 @@ import (
 
 type Organization struct {
 	Name string 		  `json:"name"`
-	Kind string		  `json:"kind"`
 	Students []*datastore.Key `json:"students"`
 }
 
-func NewOrganization(name string, kind string) Organization {
+func NewOrganization(name string) Organization {
 	students := make([]*datastore.Key,0)
-	return Organization{Name: name, Kind: kind, Students: students}
+	return Organization{Name: name, Students: students}
 }
 
 func (org *Organization) AddStudent(studentKey *datastore.Key) bool {

@@ -41,9 +41,8 @@ func AddOrganization(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 	name := dat["name"].(string)
-	kind := dat["kind"].(string)
 
-	_, err := services.NewOrganization(ctx, name, kind)
+	_, err := services.NewOrganization(ctx, name)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
