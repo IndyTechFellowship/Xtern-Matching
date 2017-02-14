@@ -1,5 +1,13 @@
+'use strict';
 angular.module('Xtern')
     .controller('TechPointAccountCtrl', ['$scope', '$rootScope', '$state', 'AccountControlService', function ($scope, $rootScope, $state, AccountControlService) {
+
+        $scope.keys = {
+            techpoint:'',
+            reviewer:'',
+            companies:[],
+            companyKeys:{}
+        };
         $scope.techPointUsers = [];
         $scope.reviewerUsers = [];
         $scope.companyUsers = [];
@@ -9,7 +17,7 @@ angular.module('Xtern')
         var declarePageVars = function () {
             $scope.selectedGroup = {
                 active: 'TechPoint',
-                activeCompany: $scope.companyList[0].key,
+                activeCompany: $scope.keys.companies[0].key,
                 changeGroup: function (group) {
                     $scope.selectedGroup.active = group;
                     swapActiveArray(group);
@@ -28,11 +36,6 @@ angular.module('Xtern')
                 { title: 'Name', sortPropertyName: 'name', displayPropertyName: 'name', asc: true },
                 { title: 'Email', sortPropertyName: 'email', displayPropertyName: 'email', asc: true }
             ];
-
-            //Set up CompanyAbbr
-            $scope.companyListAbbr = $scope.companyList.filter(function (item) {
-                return !(item.name == 'Techpoint' || item.name == 'Reviewer' || item.name == 'Reviewers');
-            });
         };
 
         var resetUserForm = function (user) {
@@ -64,14 +67,6 @@ angular.module('Xtern')
             $('#accountModalform .error.message').empty();
         };
 
-        var refreshAccounts = function (group, company, array) {
-            AccountControlService.getUsers(group, company, function (data) {
-                array.length = 0; //We want to keep array refrences but replace all of the elements 
-                data.forEach(function (user) {
-                    array.push(user);
-                });
-            });
-        }
         var refreshAccounts = function (organizationKey, array) {
             AccountControlService.getUsers(organizationKey, function (users) {
                 array.length = 0; //We want to keep array refrences but replace all of the elements
@@ -83,20 +78,16 @@ angular.module('Xtern')
         };
 
         var swapActiveArray = function (group) {
+            $scope.selectedGroup.selectedUsers = [];
+            //$scope.selectedUsers.length = 0;
             if (group == 'TechPoint') {
                 $scope.selectedGroup.selectedUsers = $scope.techPointUsers;
-                $scope.companyList.forEach(function (company) {
-                    if (company.name == 'Techpoint') {
-                        refreshAccounts(company.key, $scope.techPointUsers);
-                    }
-                });
+                refreshAccounts($scope.keys.techpoint, $scope.techPointUsers);
+
             } else if (group == 'Reviewer') {
                 $scope.selectedGroup.selectedUsers = $scope.reviewerUsers;
-                $scope.companyList.forEach(function (company) {
-                    if (company.name == 'Reviewer' || company.name== 'Reviewers') {
-                        refreshAccounts(company.key, $scope.reviewerUsers);
-                    }
-                });
+                refreshAccounts($scope.keys.reviewer, $scope.reviewerUsers);
+
             }
             else if (group == 'Company') {
                 $scope.selectedGroup.selectedUsers = $scope.companyUsers;
@@ -110,15 +101,14 @@ angular.module('Xtern')
         };
 
         var submitUser = function (fields) {
-            //                 console.log('passed and submitting');
-            //     $scope.UserFormData.name = $scope.UserFormData.firstName + " " + $scope.UserFormData.lastName;
-            //     if ($scope.UserFormData.newUser) {
-            //         AccountControlService.addUser($scope.UserFormData, function () {
             fields.name = fields.firstName + " " + fields.lastName;
             if (!fields.key) {
-                if (fields.role != 'Company') {
-                    fields.organization = fields.role;
-                };
+                if(fields.role == "Techpoint" || fields.role == "TechPoint"){
+                    fields.organization = $scope.keys.techpoint;
+                }else if(fields.role == "Reviewer" || fields.role == "Reviewer"){
+                    fields.organization = $scope.keys.reviewer;
+                }
+               
                 AccountControlService.addUser(fields, function (data) {
 
                     $scope.selectedGroup.refresh();
@@ -214,13 +204,13 @@ angular.module('Xtern')
                                     prompt: 'Please select a group'
                                 }
                             ]
-                        },
+                        }
                     },
                     onSuccess: function (event, fields) {
                         submitUser(fields);
                     },
                     onFailure: function (formErrors, fields) {
-                        return;
+                        return false;
                     },
                     keyboardShortcuts: false
                 });
@@ -242,6 +232,18 @@ angular.module('Xtern')
         var setup = function () {
             AccountControlService.getOrganizations(function (organizations) {
                 $scope.companyList = organizations;
+                organizations.forEach(function(org){
+                    if(org.name == "Reviewers" ||org.name == "Reviewer"){
+                        $scope.keys.reviewer = org.key;
+                    }else if(org.name == "TechPoint" || org.name == "Techpoint"){
+                        $scope.keys.techpoint = org.key;
+                    }
+                    else{
+                        $scope.keys.companies.push(org);
+                        $scope.keys.companyKeys[org.name] = org.key;
+                    }
+                });
+                $scope.keys.companies.sort();
                 declarePageVars();
                 accountControlFormConfig();
                 accountControlModalConfig();

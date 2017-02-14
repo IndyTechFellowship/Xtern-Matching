@@ -6,7 +6,7 @@
 	</div>
 	<div ng-show="selectedGroup.active == 'Company'">
 		<select class="ui fluid search dropdown" ng-model="selectedGroup.activeCompany" ng-change="selectedGroup.changeCompany()">
-            <option ng-repeat="item in companyListAbbr" value="{{item.key}}" on-last-repeat-drop-down>
+            <option ng-repeat="item in keys.companies" value="{{item.key}}" on-last-repeat-drop-down>
                 {{item.name}}
             </option>
         </select>
@@ -64,7 +64,7 @@
 			</div>
 			<div class="required field">
 				<label>Password</label>
-				<input type="text" name="password" placeholder="Password" >
+				<input type="password" name="password" placeholder="Password" >
 			</div>
 			<div class="required field hidden" hidden><input type="text" name="key" ></div>
 			<div class="two fields group-role" >
@@ -84,7 +84,7 @@
 				<div class="field" id="companyDropdown">
 					<label>Company</label>
 					<select id="" class="ui fluid search dropdown" name="organization">
-                    <option ng-repeat="item in companyListAbbr" value="{{item.key}}" on-last-repeat-drop-down>
+                    <option ng-repeat="item in keys.companies" value="{{item.key}}" on-last-repeat-drop-down>
                         {{item.name}}
                     </option>
                 </select>
@@ -98,3 +98,7 @@
 		<div class="ui approve green basic button">Save</div>
 	</div>
 </div>
+
+<div class="vertical-spacer"></div>
+<div class="vertical-spacer"></div>
+<div class="vertical-spacer"></div>
