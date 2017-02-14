@@ -99,4 +99,12 @@ cd semantic-ui/
 gulp build
 ```
 
+## Project Structure
+The frontend is written mostly in JavaScript using Angular 1 and styled using Semantic UI. Semantic UI is largely used in its default form, but the library is built with custom Xtern colors.
 
+The backend is written in Go using Google Cloud Datastore. 
+
+The general data flow when the front end makes a request looks something like this:
+{Angular Controller} <-> {Angular Service} <-> {Go Router} <-> {Go Handlers} <-> {Go Services}
+
+Backend tests can be run using "npm test".
