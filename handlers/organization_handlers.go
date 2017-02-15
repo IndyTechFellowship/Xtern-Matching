@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"Xtern-Matching/handlers/services"
 	"github.com/dgrijalva/jwt-go"
-	"log"
 	"github.com/gorilla/context"
 	"google.golang.org/appengine/datastore"
 	"Xtern-Matching/models"
@@ -17,7 +16,6 @@ func GetOrganizations(w http.ResponseWriter,r *http.Request) {
 
 	organizations, keys, err := services.GetOrganizations(ctx)
 	if err != nil {
-		//log.Print(err)
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -61,27 +59,32 @@ func GetOrganizationStudents(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 
-
 	org, err := services.GetOrganization(ctx,orgKey)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	students := make([]models.Student,0)
-	for _, key := range org.Students {
-		student, err := services.GetStudent(ctx, key)
+	students := make([]models.Student,len(org.StudentRanks))
+	keys :=make([]*datastore.Key,len(org.StudentRanks))
+	for _, studentRank := range org.StudentRanks {
+		student, err := services.GetStudent(ctx, studentRank.Student)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		students = append(students, student)
+		// students = append(students, student)
+		// keys  = append(keys, studentRank.Student)
+		students[studentRank.Rank] = student
+		keys[studentRank.Rank] = studentRank.Student
 	}
+	
+
 	type Response struct {
 		Keys []*datastore.Key		`json:"keys"`
 		Students []models.Student	`json:"students"`
 	}
-	response := Response{Keys: org.Students, Students: students}
+	response := Response{Keys: keys, Students: students}
 
 
 	w.Header().Add("Access-Control-Allow-Origin", "*")
@@ -152,40 +155,6 @@ func RemoveStudentFromOrganization(w http.ResponseWriter,r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-// func MoveStudentInOrganization(w http.ResponseWriter,r *http.Request) {
-// 	ctx := appengine.NewContext(r)
-
-// 	var dat map[string]interface{}
-// 	decoder := json.NewDecoder(r.Body)
-// 	if err := decoder.Decode(&dat); err != nil {
-// 		http.Error(w, err.Error(), 500)
-// 		return
-// 	}
-// 	studentKey, err := datastore.DecodeKey(dat["studentKey"].(string))
-// 	if err != nil {
-// 		http.Error(w, err.Error(), 500)
-// 		return
-// 	}
-
-// 	user := context.Get(r, "user")
-// 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-// 	orgKey, err := datastore.DecodeKey(mapClaims["org"].(string))
-// 	if err != nil {
-// 		log.Println(err.Error())
-// 		http.Error(w, err.Error(), 500)
-// 		return
-// 	}
-// 	position :=  int(dat["position"].(float64));
-
-// 	_, err = services.MoveStudentInOrganization(ctx, orgKey, studentKey, position)
-// 	if err != nil {
-// 		log.Print(err)
-// 		http.Error(w, err.Error(), 500)
-// 		return
-// 	}
-// 	w.WriteHeader(http.StatusOK)
-// }
-
 func SwitchStudentsInOrganization(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
@@ -210,14 +179,11 @@ func SwitchStudentsInOrganization(w http.ResponseWriter,r *http.Request) {
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
 	orgKey, err := datastore.DecodeKey(mapClaims["org"].(string))
 	if err != nil {
-		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
-
 	_, err = services.SwitchStudentsInOrganization(ctx, orgKey, studentKey1, studentKey2)
 	if err != nil {
-		log.Print(err)
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -231,7 +197,6 @@ func GetCurrentOrganization(w http.ResponseWriter,r *http.Request) {
 	mapClaims := user.(*jwt.Token).Claims.(jwt.MapClaims)
 	orgKey, err := datastore.DecodeKey(mapClaims["org"].(string))
 	if err != nil {
-		log.Println(err.Error())
 		http.Error(w, err.Error(), 500)
 		return
 	}
