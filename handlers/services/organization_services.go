@@ -87,12 +87,21 @@ func SwitchStudentsInOrganization(ctx context.Context, orgKey *datastore.Key, st
 		return http.StatusInternalServerError, err
 	}
 
-	// company.Id = companyId
-	if contains(company.Students, student1Id) && contains(company.Students, student2Id) {
-		company.Students = switchElements(company.Students, student1Id, student2Id);
-	} else {
+
+	isError := true
+	for _, studentRank := range company.StudentRanks {
+		if studentRank.Student == student1Id {
+			isError = false
+		}
+	}
+	if isError {
 		return http.StatusInternalServerError, nil
 	}
+
+	// company.Id = companyId
+	company.StudentRanks = switchElements(company.StudentRanks, student1Id, student2Id);
+
+
 
 	if _, err := datastore.Put(ctx, orgKey, &company); err != nil {
 		return http.StatusInternalServerError, err
@@ -109,15 +118,15 @@ func SwitchStudentsInOrganization(ctx context.Context, orgKey *datastore.Key, st
 //	return org, nil
 //}
 
-func switchElements(array []*datastore.Key, a *datastore.Key, b *datastore.Key) []*datastore.Key {
-    for i := 0; i < len(array); i++ {
-        if array[i] == a {
-            array[i] = b
-        } else if array[i] == b {
-        	array[i] = a
-        }
-    }
-    return array
+func switchElements(ranks []models.StudentRank, a *datastore.Key, b *datastore.Key) []models.StudentRank {
+    for _, studentRank := range ranks {
+		if studentRank.Student.Equal(a) {
+			studentRank.Student = b
+		} else if studentRank.Student.Equal(b) {
+			studentRank.Student = a
+		}
+	}
+	return ranks;
 }
 
 func contains(array []*datastore.Key, element *datastore.Key) bool {

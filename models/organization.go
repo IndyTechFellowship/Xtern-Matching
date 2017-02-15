@@ -7,27 +7,35 @@ import (
 
 type Organization struct {
 	Name string 		  `json:"name"`
-	Students []*datastore.Key `json:"students"`
+	StudentRanks []StudentRank `json:"students"`
+}
+
+type StudentRank struct {
+	Student	*datastore.Key `json:"student"`
+	Rank 		int `json:"rank"`
 }
 
 func NewOrganization(name string) Organization {
-	students := make([]*datastore.Key,0)
-	return Organization{Name: name, Students: students}
+	studentRanks := make([]StudentRank,0)
+	return Organization{Name: name, StudentRanks: studentRanks}
 }
 
 func (org *Organization) AddStudent(studentKey *datastore.Key) bool {
-	for _, key := range org.Students {
-		if key.Equal(studentKey) {
+	for _, studentRank := range org.StudentRanks {
+		if studentRank.Student.Equal(studentKey) {
 			return false
 		}
 	}
-	org.Students = append(org.Students,studentKey)
+	var newStudentRank StudentRank
+		newStudentRank.Student = studentKey
+		newStudentRank.Rank = len(org.StudentRanks)
+	org.StudentRanks = append(org.StudentRanks,newStudentRank)
 	return true
 }
 
 func (org *Organization) ContainStudent(studentKey *datastore.Key) int {
-	for i, key := range org.Students {
-		if key.Equal(studentKey) {
+	for i, studentRank := range org.StudentRanks {
+		if studentRank.Student.Equal(studentKey) {
 			return i
 		}
 	}
@@ -35,32 +43,32 @@ func (org *Organization) ContainStudent(studentKey *datastore.Key) int {
 }
 
 func (org *Organization) RemoveStudent(studentKey *datastore.Key) {
-	for i, key := range org.Students {
-		if key.Equal(studentKey) {
-			org.Students = append(org.Students[:i], org.Students[i+1:]...)
+	for i, studentRank := range org.StudentRanks {
+		if studentRank.Student.Equal(studentKey) {
+			org.StudentRanks = append(org.StudentRanks[:i], org.StudentRanks[i+1:]...)
 			return
 		}
 	}
 }
 
 func (org *Organization) MoveStudent(studentKey *datastore.Key, pos int) {
-	students := make([]*datastore.Key,len(org.Students))
+	studentRanks := make([]StudentRank,len(org.StudentRanks))
 	i := 0
 	j := 0
-	for i < len(org.Students) && j < len(students) {
+	for i < len(org.StudentRanks) && j < len(studentRanks) {
 		if pos == j {
 			log.Printf("Posisiton=%v", i)
-			students[j] = studentKey
+			studentRanks[j].Student = studentKey
 			j++
-		} else if org.Students[i].Equal(studentKey) {
+		} else if org.StudentRanks[i].Student.Equal(studentKey) {
 			log.Printf("Remove=%v", i)
 			i++
 		} else {
-			students[j] = org.Students[i]
+			studentRanks[j] = org.StudentRanks[i]
 			i++
 			j++
 		}
 	}
-	org.Students = students
+	org.StudentRanks = studentRanks
 }
 

@@ -69,19 +69,23 @@ func GetOrganizationStudents(w http.ResponseWriter,r *http.Request) {
 	}
 
 	students := make([]models.Student,0)
-	for _, key := range org.Students {
-		student, err := services.GetStudent(ctx, key)
+	keys :=make([]*datastore.Key,0)
+	for _, studentRank := range org.StudentRanks {
+		student, err := services.GetStudent(ctx, studentRank.Student)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
 		students = append(students, student)
+		keys  = append(keys, studentRank.Student)
 	}
+	
+
 	type Response struct {
 		Keys []*datastore.Key		`json:"keys"`
 		Students []models.Student	`json:"students"`
 	}
-	response := Response{Keys: org.Students, Students: students}
+	response := Response{Keys: keys, Students: students}
 
 
 	w.Header().Add("Access-Control-Allow-Origin", "*")
