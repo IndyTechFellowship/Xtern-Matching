@@ -66,42 +66,13 @@ func RemoveStudentFromOrganization(ctx context.Context, orgKey *datastore.Key, s
 	return nil
 }
 
-// func MoveStudentInOrganization(ctx context.Context, orgKey int64, studentKey *datastore.Key, pos int) (int64,error)  {
-// 	orgKey := datastore.NewKey(ctx, "Company", "", companyId, nil)
-// 	var org models.Organization
-// 	if err := datastore.Get(ctx, orgKey, &org); err != nil {
-// 		return http.StatusInternalServerError, err
-// 	}
-
-// 	org.MoveStudent(studentKey, pos)
-
-// 	if _, err := datastore.Put(ctx, orgKey, &org); err != nil {
-// 		return http.StatusInternalServerError, err
-// 	}
-// 	return orgKey.IntID(), nil
-// }
-
 func SwitchStudentsInOrganization(ctx context.Context, orgKey *datastore.Key, student1Id *datastore.Key, student2Id *datastore.Key) (int64,error)  {
 	var company models.Organization
 	if err := datastore.Get(ctx, orgKey, &company); err != nil {
 		return http.StatusInternalServerError, err
 	}
 
-
-	isError := true
-	for _, studentRank := range company.StudentRanks {
-		if studentRank.Student == student1Id {
-			isError = false
-		}
-	}
-	if isError {
-		return http.StatusInternalServerError, nil
-	}
-
-	// company.Id = companyId
 	company.StudentRanks = switchElements(company.StudentRanks, student1Id, student2Id);
-
-
 
 	if _, err := datastore.Put(ctx, orgKey, &company); err != nil {
 		return http.StatusInternalServerError, err
@@ -109,21 +80,12 @@ func SwitchStudentsInOrganization(ctx context.Context, orgKey *datastore.Key, st
 	return orgKey.IntID(), nil
 }
 
-//func GetOrganization(ctx context.Context, orgKey datastore.Key) (models.Organization,error) {
-//	//orgKey := datastore.NewKey(ctx, "Organization", "", _id, nil)
-//	var org models.Organization
-//	if err := datastore.Get(ctx, orgKey, &org); err != nil {
-//		return models.Organization{}, err
-//	}
-//	return org, nil
-//}
-
 func switchElements(ranks []models.StudentRank, a *datastore.Key, b *datastore.Key) []models.StudentRank {
-    for _, studentRank := range ranks {
+    for i, studentRank := range ranks {
 		if studentRank.Student.Equal(a) {
-			studentRank.Student = b
+			ranks[i].Student = b
 		} else if studentRank.Student.Equal(b) {
-			studentRank.Student = a
+			ranks[i].Student = a
 		}
 	}
 	return ranks;
