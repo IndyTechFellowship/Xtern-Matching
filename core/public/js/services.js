@@ -590,6 +590,25 @@ app
             });
         };
 
+        self.getReviewerOverview = function(callback){
+            $http({
+                method: 'GET',
+                url: "reviewer/getCurrentProgress",
+                host: host,
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                }
+            }).then(function (data) {
+                console.log(data.data, "review overview");
+                callback(data.data);
+            }, function errorCallback(response) {
+                console.log('error occurred: ', response);
+                callback('', 'err');
+            });
+        };
+
         self.getPhaseTwo = function (callback, refresh) {
             if(!refresh && self.phase2data){
                 callback(self.phase2data);

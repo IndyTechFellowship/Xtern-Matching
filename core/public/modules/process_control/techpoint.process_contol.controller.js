@@ -19,22 +19,7 @@ angular.module('Xtern')
         $scope.viewRecruit = function (key) {
             $state.go('techpoint.profile', { key: key });
         };
-        //$scope.selectedGroup = {
-        //    active: 'TechPoint',
-        //    activeCompany: $scope.keys.companies[0].key,
-        //    changeGroup: function (group) {
-        //        $scope.selectedGroup.active = group;
-        //        swapActiveArray(group);
-        //    },
-        //    changeCompany: function () {
-        //        // refreshCompany($scope.selectedGroup.activeCompany);
-        //        swapActiveArray('Company');
-        //    },
-        //    selectedUsers: $scope.techPointUsers,
-        //    refresh: function () {
-        //        swapActiveArray($scope.selectedGroup.active);
-        //    }
-        //};
+
         $scope.activeStep = 'p1';
 
 
@@ -166,6 +151,7 @@ angular.module('Xtern')
             list: [],
             displayList: [],
             instructors: {},
+            remaining: 0,
             slider: {
                 value: 7.5,
                 options: {
@@ -316,6 +302,13 @@ angular.module('Xtern')
                     phase2FilterLoad();
                 }
             },hardReload);
+
+            DecisionBoardService.getReviewerOverview(function(data){
+               //{noReviews: 170, someReviews: 30, allReviews: 0}allReviews: 0noReviews: 170someReviews: 30__proto__: Object
+                $scope.phase2.reviewer_histogram.data = [data.allReviews, data.someReviews, data.noReviews];
+                $scope.phase2.remaining = data.someReviews + data.noReviews;
+
+            });
         };
 
         var setup = function () {
