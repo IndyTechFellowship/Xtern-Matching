@@ -26,7 +26,7 @@
                                 <div class="description">Decision Board</div>
                             </div>
                         </div>
-                        <div class="link step">
+                        <div class="link step" ng-class="{'active': current == 'p3'}" ng-click="stepClick('p3')">
                             <i class="building outline icon"></i>
                             <div class="content">
                                 <div class="title">Phase III</div>
@@ -50,6 +50,14 @@
                         <div class="ui fluid grey basic button">Apply Changes</div>
                         <div class="vertical-quater-spacer"></div>
                         <div class="ui fluid grey basic button" ng-click="refreshPhaseTwo(true)">Refresh Data</div>
+                    </div>
+                    <div class="ui segment" ng-if="current == 'p3'">
+                        <h3 class="ui  header">Actions:</h3>
+                        <select class="ui fluid search dropdown" ng-model="company.active" ng-change="company.changeCompany()">
+                            <option ng-repeat="item in company.list" value="{{item.key}}" on-last-repeat-drop-down>
+                                {{item.name}}
+                            </option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -112,6 +120,21 @@
                         display-list="phase2.displayList"
                         length="phase2.list.length"
                 ></decision-board>
+            </div>
+            <div ng-if="current == 'p3'" class="company wrapper">
+                <h1 class="ui centered header"> Phase III Company Preferences</h1>
+                <table class="ui fluid table">
+                    <!--<thead>-->
+                        <!--<tr>-->
+                            <!--Name-->
+                        <!--</tr>-->
+                    <!--</thead>-->
+                    <tbody>
+                        <tr ng-repeat="student in company.studentList"  ng-click="viewRecruit(student.key)">
+                            <td>{{student.name}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

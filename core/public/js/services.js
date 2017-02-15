@@ -217,6 +217,26 @@ app
             });
         };
 
+        self.getOrganizationStudentsWithKey = function (key, callback) {
+            $http({
+                method: 'POST',
+                url: "organization/studentsById",
+                host: host,
+                data: {
+                    "orgKey": key
+                },
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                }
+            }).then(function (data) {
+                callback(data.data);
+            }, function errorCallback(response) {
+                callback('', response);
+            });
+        };
+
         self.addStudentToWishList = function (studentKey, callback) {
             $http({
                 method: 'POST',

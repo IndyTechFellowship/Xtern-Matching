@@ -1,10 +1,40 @@
 angular.module('Xtern')
     // .controller('TechPointProcessControl', ['$scope', '$rootScope', '$state', 'AccountControlService', 'rzModule' , function ($scope, $rootScope, $state, AccountControlService, rzModule) {
-    .controller('TechPointProcessControl', ['$scope', '$rootScope', '$state', 'AccountControlService','DecisionBoardService', 'TechPointReviewerControlService',function ($scope, $rootScope, $state, AccountControlService,DecisionBoardService,TechPointReviewerControlService) {
+    .controller('TechPointProcessControl', ['$scope', '$rootScope', '$state', 'AccountControlService','DecisionBoardService', 'TechPointReviewerControlService', 'CompanyService',function ($scope, $rootScope, $state, AccountControlService,DecisionBoardService,TechPointReviewerControlService, CompanyService) {
         var self = this;
         $scope.current = "p1";
-        $scope.companyList = [];
+        $scope.company = {
+            active: "",
+            list:[],
+            studentList:[],
+            changeCompany:function(){
+                $scope.company.studentList=[];
+                //console.log($scope.company.active)
+                CompanyService.getOrganizationStudentsWithKey($scope.company.active, function(arr){
+                    $scope.company.studentList = arr;
+                });
+            }
+        };
 
+        $scope.viewRecruit = function (key) {
+            $state.go('techpoint.profile', { key: key });
+        };
+        //$scope.selectedGroup = {
+        //    active: 'TechPoint',
+        //    activeCompany: $scope.keys.companies[0].key,
+        //    changeGroup: function (group) {
+        //        $scope.selectedGroup.active = group;
+        //        swapActiveArray(group);
+        //    },
+        //    changeCompany: function () {
+        //        // refreshCompany($scope.selectedGroup.activeCompany);
+        //        swapActiveArray('Company');
+        //    },
+        //    selectedUsers: $scope.techPointUsers,
+        //    refresh: function () {
+        //        swapActiveArray($scope.selectedGroup.active);
+        //    }
+        //};
         $scope.activeStep = 'p1';
 
 
@@ -241,12 +271,12 @@ angular.module('Xtern')
                 } else {
                     _map[itemVal] = 1;
                 }
-            };
+            }
             var output = { keys: [], values: [] };
             for (key in _map) {
                 output.keys.push(key);
                 output.values.push(_map[key]);
-            };
+            }
             return output;
         };
 
@@ -276,12 +306,10 @@ angular.module('Xtern')
                 student.grade = tempGrade/reviewCount;
             });
             $scope.phase2.fullList = list;
-            console.log($scope.phase2.instructors, $scope.phase2.fullList);
         };
 
         $scope.refreshPhaseTwo = function(hardReload){
             DecisionBoardService.getPhaseTwo(function(list){
-                console.log("student list", list);
                 if(list){
                     phase2datascrub(list);
                     phase2HistLoad($scope.phase2.fullList);
@@ -292,7 +320,9 @@ angular.module('Xtern')
 
         var setup = function () {
             AccountControlService.getOrganizations(function (organizations) {
-                $scope.companyList = organizations;
+                $scope.company.list = organizations.filter(function(org){
+                    return org.name != 'Reviewers' && org.name !== 'Techpoint';
+                });
             });
             $scope.refreshPhaseOne(false);
             $scope.refreshPhaseTwo(false);
