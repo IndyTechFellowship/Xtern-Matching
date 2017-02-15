@@ -5,21 +5,21 @@
                 <div class="ui ">
                     <!--Left Rail Content-->
                     <div class="ui fluid vertical steps">
-                        <div class="link step" ng-class="{'active': showDecisionboard}" ng-click="stepClick('p1')">
+                        <div class="link step" ng-class="{'active': current == 'p1'}" ng-click="stepClick('p1')">
                             <i class="user icon"></i>
                             <div class="content">
                                 <div class="title">Phase I</div>
                                 <div class="description">Decision Board</div>
                             </div>
                         </div>
-                        <div class="link step" ng-class="{'active': showInstructorStats}" ng-click="stepClick('p2I')">
+                        <div class="link step" ng-class="{'active': current == 'p2a'}" ng-click="stepClick('p2a')">
                             <i class="bar chart icon"></i>
                         <div class="content">
                                 <div class="title">Phase II - a</div>
                                 <div class="description">Review Overview</div>
                             </div>
                         </div>
-                        <div class="link step">
+                        <div class="link step" ng-class="{'active': current == 'p2b'}" ng-click="stepClick('p2b')">
                             <i class="university icon"></i>
                             <div class="content">
                                 <div class="title">Phase II - b</div>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="vertical-quater-spacer"></div>
                 <div id="actionPanel">                    
-                    <div class="ui segment" ng-if="showDecisionboard">
+                    <div class="ui segment" ng-if="current == 'p1'">
                         <h3 class="ui  header">Actions:</h3>
                         <div class="ui fluid grey basic button">Apply Changes</div>
                         <div class="vertical-quater-spacer"></div>
@@ -45,60 +45,27 @@
                         <div class="vertical-quater-spacer"></div>
                         <div class="ui fluid grey basic button" ng-click="refreshPhaseOne(true)">Refresh Data</div>
                     </div>
+                    <div class="ui segment" ng-if="current == 'p2b'">
+                        <h3 class="ui  header">Actions:</h3>
+                        <div class="ui fluid grey basic button">Apply Changes</div>
+                        <div class="vertical-quater-spacer"></div>
+                        <div class="ui fluid grey basic button" ng-click="refreshPhaseTwo(true)">Refresh Data</div>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="processBoard">
-            <div ng-if="showDecisionboard" class="decision board wrapper">
-                <h1 class="ui centered header">Phase I Decision Board</h1>
-                <div class="ui relaxed internally celled grid">
-                    <div class="row">
-                        <div class="eight wide column">
-                            <div class="ui horizontal statistic">
-                                <div class="value">
-                                    {{phase1.list.length}}
-                                </div>
-                                <div class="label">
-                                    Students in Range
-                                </div>
-                            </div>
-                        </div>
-                        <div class="eight wide column">
-                            <h2 class="ui centered header">Students</h2>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="eight wide column">
-                            <rzslider rz-slider-model="phase1.slider.value" rz-slider-options="phase1.slider.options">
-                            </rzslider>
-                            <div class="ui grid">
-                                <div class="row">
-                                    <div class="eight wide column" ng-repeat="chart in phase1.charts">
-                                        <h4 class="ui header">{{chart.name}} Breakdown</h4>
-                                        <canvas class="chart chart-doughnut" chart-data="chart.data" chart-labels="chart.labels" chart-legend="false">
-                                        </canvas>
-                                    </div>
-                                </div>
-                            </div>
-                            <h4 class="ui header">{{phase1.histogram.name}}</h4>
-                            <canvas class="chart chart-bar" chart-data="phase1.histogram.data" chart-labels="phase1.histogram.labels" chart-legend="false">
-                            </canvas>
-
-                        </div>
-                        <div class="eight wide column" id="processTableContainer">
-                            <table class="ui fixed table">
-                                <tbody>
-                                    <tr ng-repeat="studentPair in phase1.displayList">
-                                        <td>{{studentPair.right.name}}</td>
-                                        <td>{{studentPair.left.name}}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+            <div ng-if="current == 'p1'" class="decision board wrapper">
+                <decision-board
+                            title="'Phase I Decision Board'"
+                            slider="phase1.slider"
+                            charts="phase1.charts"
+                            histogram="phase1.histogram"
+                            display-list="phase1.displayList"
+                            length="phase1.list.length"
+                ></decision-board>
             </div>
-            <div ng-if="showInstructorStats" class="instructor stats wrapper">
+            <div ng-if="current == 'p2a'" class="instructor stats wrapper">
                 <h1 class="ui centered header"> Phase II Reviewer Statistics</h1>
                 <div class="ui relaxed centered grid">
                     <div class="row">
@@ -114,28 +81,38 @@
                             </div>
                         </div>
                         <div class="seven wide column">
-                            <canvas class="chart chart-bar" chart-data="phase2Instrutor.studentHist.data" chart-labels="phase2Instrutor.studentHist.labels"
+                            <canvas class="chart chart-bar" chart-data="phase2.student_histogram.data" chart-labels="phase2.student_histogram.labels"
                                 chart-legend="false">
                             </canvas>
-                            <h4 class="ui centered header">{{phase2Instrutor.studentHist.name}}</h4>
+                            <h4 class="ui centered header">{{phase2.student_histogram.name}}</h4>
                         </div>
                     </div>
                     <div class="row">
                         <div class="seven wide column">
-                            <canvas class="chart chart-doughnut" chart-data="phase2Instrutor.progressPie.data" chart-labels="phase2Instrutor.progressPie.labels"
+                            <canvas class="chart chart-doughnut" chart-data="phase2.progressPie.data" chart-labels="phase2.progressPie.labels"
                                 chart-legend="false">
                             </canvas>
                         </div>
                         <div class="seven wide column">
-                            <canvas class="chart chart-bar" chart-data="phase2Instrutor.reviewerHist.data" chart-labels="phase2Instrutor.reviewerHist.labels"
+                            <canvas class="chart chart-bar" chart-data="phase2.reviewer_histogram.data" chart-labels="phase2.reviewer_histogram.labels"
                                 chart-legend="false">
                             </canvas>
-                            <h4 class="ui centered header">{{phase2Instrutor.reviewerHist.name}}</h4>
+                            <h4 class="ui centered header">{{phase2.reviewer_histogram.name}}</h4>
                         </div>
                     </div>
                 </div>
                 <div class="vertical-spacer"></div>
-            </div>           
+            </div>
+            <div ng-if="current == 'p2b'" class="decision board wrapper">
+                <decision-board
+                        title="'Phase II Decision Board'"
+                        slider="phase2.slider"
+                        charts="phase2.charts"
+                        histogram="phase2.student_histogram"
+                        display-list="phase2.displayList"
+                        length="phase2.list.length"
+                ></decision-board>
+            </div>
         </div>
     </div>
 </div>

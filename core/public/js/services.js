@@ -535,6 +535,7 @@ app
     .service('DecisionBoardService', ['$http', function ($http) {
         var self = this;
         self.phase1data = null;
+        self.phase2data = null;
         
         self.getPhaseOne = function (callback, refresh) {
             if (!refresh && self.phase1data) {
@@ -558,19 +559,47 @@ app
                     if (e.grade == 0) {
                         e.grade = Math.round((Math.random() * 5 + Math.random() * 5) * 100) / 100;
                     }
-                    ;
                     if (!e.ethnicity) {
                         e.ethnicity = ethnicityWeightedOptions[Math.floor(Math.random() * ethnicityWeightedOptions.length)];
                     }
-                    ;
                 });
                 callback(self.phase1data);
             }, function errorCallback(response) {
-                console.log('error occured: ', response);
-                console.log('Here: ' + getToken('auth'));
+                console.log('error occurred: ', response);
                 callback('', 'err');
             });
         };
+
+        self.getPhaseTwo = function (callback, refresh) {
+            if(!refresh && self.phase2data){
+                callback(self.phase2data);
+                return;
+            }
+            $http({
+                method: 'GET',
+                url: "student/reviewer",
+                host: host,
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': "application/json",
+                    'Authorization': 'bearer ' + getToken('auth')
+                }
+            }).then(function (data) {
+                self.phase2data = data.data;
+                //TEMP FOR DISPLAY, REMOVE BEFORE DELIVERY
+                var ethnicityWeightedOptions = ['White', 'White', 'White', 'Hispanic or Latino', 'Hispanic or Latino', 'Black or African American', 'Native American or American Indian', 'Asian or Pacific Islander'];
+                self.phase2data.forEach(function (e) {
+                      if (!e.ethnicity) {
+                        e.ethnicity = ethnicityWeightedOptions[Math.floor(Math.random() * ethnicityWeightedOptions.length)];
+                    }
+                });
+                callback(self.phase2data);
+            }, function errorCallback(response) {
+                console.log('error occurred: ', response);
+                callback('', 'err');
+            });
+
+        }
     }])
     .service('ResumeService', ['$http', function ($http) {
         var self = this;

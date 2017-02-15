@@ -2,8 +2,7 @@ angular.module('Xtern')
     // .controller('TechPointProcessControl', ['$scope', '$rootScope', '$state', 'AccountControlService', 'rzModule' , function ($scope, $rootScope, $state, AccountControlService, rzModule) {
     .controller('TechPointProcessControl', ['$scope', '$rootScope', '$state', 'AccountControlService','DecisionBoardService', 'TechPointReviewerControlService',function ($scope, $rootScope, $state, AccountControlService,DecisionBoardService,TechPointReviewerControlService) {
         var self = this;
-        $scope.showDecisionboard = true;
-        $scope.showInstructorStats = false;
+        $scope.current = "p1";
         $scope.companyList = [];
 
         $scope.activeStep = 'p1';
@@ -49,24 +48,18 @@ angular.module('Xtern')
                 }
             },
             histogram: {
-                labels: ['5', '6'],
-                data: [[1, 2]],
-                name: 'Histogram of Scores'
+                labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+                data: [[2, 6, 11, 15, 18, 16, 12, 10, 8, 1]],
+                name: 'Distribution of Student Scores'
             }
-        }
+        };
 
         $scope.createReviewGroups = function() {
             TechPointReviewerControlService.createReviewGroups(20, 3, function(data) {});
         };
 
         $scope.stepClick = function (dest) {
-            if (dest === 'p1') {
-                $scope.showDecisionboard = true;
-                $scope.showInstructorStats = false;
-            } else if (dest === 'p2I') {
-                $scope.showDecisionboard = false;
-                $scope.showInstructorStats = true;
-            }
+            $scope.current=dest;
         };
 
         var phase1FilterLoad = function () {
@@ -88,14 +81,43 @@ angular.module('Xtern')
             var chartData4 = renderChartData($scope.phase1.list, 'ethnicity');
             $scope.phase1.charts.ethnicity.data = chartData4.values;
             $scope.phase1.charts.ethnicity.labels = chartData4.keys;
+        };
 
+        var phase2FilterLoad = function () {
+            $scope.phase2.list = $scope.phase2.fullList.filter(function (val) {
+                return val["grade"] >= $scope.phase2.slider.value;
+            });
+            // console.log(list);
+            // $scope.phase1.list = $scope.phase1.fullList;
+            $scope.phase2.displayList = splitInToTwo($scope.phase2.list);
+            var chartData = renderChartData($scope.phase2.list, 'gender');
+            $scope.phase2.charts.gender.data = chartData.values;
+            $scope.phase2.charts.gender.labels = chartData.keys;
+            var chartData2 = renderChartData($scope.phase2.list, 'gradYear');
+            $scope.phase2.charts.class.data = chartData2.values;
+            $scope.phase2.charts.class.labels = chartData2.keys;
+            var chartData3 = renderChartData($scope.phase2.list, 'workStatus');
+            $scope.phase2.charts.workStatus.data = chartData3.values;
+            $scope.phase2.charts.workStatus.labels = chartData3.keys;
+            var chartData4 = renderChartData($scope.phase2.list, 'ethnicity');
+            $scope.phase2.charts.ethnicity.data = chartData4.values;
+            $scope.phase2.charts.ethnicity.labels = chartData4.keys;
         };
 
         var phase1HistLoad = function (metadata) {
             var histData = renderHistogramData(metadata, 'grade');
             $scope.phase1.histogram.data = [histData.values];
             $scope.phase1.histogram.labels = histData.keys;
-        }
+        };
+
+        var phase2HistLoad = function (metadata) {
+            var studentHistData = renderHistogramData(metadata, 'grade');
+            $scope.phase2.student_histogram.data = [studentHistData.values];
+            $scope.phase2.student_histogram.labels = studentHistData.keys;
+            var reviewerHist = renderReviewerHistData($scope.phase2.instructors);
+            $scope.phase2.reviewer_histogram.data = [reviewerHist.values];
+            $scope.phase2.reviewer_histogram.labels = reviewerHist.keys;
+        };
 
         var splitInToTwo = function (inList) {
             var tempArr = [];
@@ -110,19 +132,54 @@ angular.module('Xtern')
 
         //Instructor Stats
         $scope.phase2 = {
-
-        };
-
-        $scope.phase2Instrutor = {
-            studentHist: {
+            fullList: [],
+            list: [],
+            displayList: [],
+            instructors: {},
+            slider: {
+                value: 7.5,
+                options: {
+                    id: 'first',
+                    floor: 0,
+                    ceil: 10,
+                    step: 0.5,
+                    precision: 1,
+                    onChange: function (sliderId, modelValue, highValue, pointerType) {
+                        phase2FilterLoad()
+                    }
+                }
+            },
+            charts: {
+                gender: {
+                    labels: ['Male'],
+                    data: [70],
+                    name: 'Gender'
+                },
+                class: {
+                    labels: ['2016'],
+                    data: [1],
+                    name: 'Class Year'
+                },
+                workStatus: {
+                    labels: ['2016'],
+                    data: [1],
+                    name: 'Work Status'
+                },
+                ethnicity: {
+                    labels: ['2016'],
+                    data: [1],
+                    name: 'Ethnicity'
+                }
+            },
+            student_histogram: {
                 labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
                 data: [[1, 6, 11, 12, 18, 14, 12, 12, 10, 1]],
-                name: "Distribution of Student Scores"
+                name: 'Distribution of Student Scores (AVG)'
             },
-            reviewerHist: {
+            reviewer_histogram: {
                 labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-                data: [[2, 6, 11, 15, 18, 16, 12, 10, 8, 1]],
-                name: "Distribution of Reviewer Scores (AVG)"
+                data: [[1, 6, 11, 12, 18, 14, 12, 12, 10, 1]],
+                name: 'Distribution of Reviewer Scores (AVG)'
             },
             progressPie: {
                 labels: ['Completed', 'In Progress', 'Remaining'],
@@ -130,7 +187,6 @@ angular.module('Xtern')
                 name: ""
             }
         };
-
 
         // Chart Util Funcitons
         var renderHistogramData = function (data, field) {
@@ -143,12 +199,35 @@ angular.module('Xtern')
                 } else {
                     _map[itemVal] = 1;
                 }
-            };
+            }
             var output = { keys: [], values: [] };
             for (key in _map) {
                 output.keys.push(key);
                 output.values.push(_map[key]);
-            };
+            }
+            return output;
+        };
+
+        var renderReviewerHistData = function (data) {
+            var _map = [];
+            //create map
+            for (var i in data) {
+                var score = 0;
+                for(var j in data[i]){
+                    score+= data[i][j];
+                }
+                var itemVal = Math.ceil(score/data[i].length);
+                if (_map[itemVal]) {
+                    _map[itemVal]++;
+                } else {
+                    _map[itemVal] = 1;
+                }
+            }
+            var output = { keys: [], values: [] };
+            for (key in _map) {
+                output.keys.push(key);
+                output.values.push(_map[key]);
+            }
             return output;
         };
 
@@ -173,19 +252,50 @@ angular.module('Xtern')
 
         $scope.refreshPhaseOne = function(hardReload){
             DecisionBoardService.getPhaseOne(function(list){
-                console.log("student list", list);
                 $scope.phase1.fullList = list;
                 phase1HistLoad(list);
                 phase1FilterLoad();
             },hardReload);
-        }
+        };
+
+        var phase2datascrub = function(list){
+            list.forEach(function(student){
+                var tempGrade = 0;
+                var reviewCount = 0;
+                for(var i in student.reviewerGrades){
+                    var review = student.reviewerGrades[i];
+                    tempGrade += parseInt(review.grade);
+                    reviewCount ++;
+                    if($scope.phase2.instructors[review.reviewer]){
+                        $scope.phase2.instructors[review.reviewer].push(review.grade);
+                    }
+                    else{
+                        $scope.phase2.instructors[review.reviewer] = [review.grade];
+                    }
+                }
+                student.grade = tempGrade/reviewCount;
+            });
+            $scope.phase2.fullList = list;
+            console.log($scope.phase2.instructors, $scope.phase2.fullList);
+        };
+
+        $scope.refreshPhaseTwo = function(hardReload){
+            DecisionBoardService.getPhaseTwo(function(list){
+                console.log("student list", list);
+                if(list){
+                    phase2datascrub(list);
+                    phase2HistLoad($scope.phase2.fullList);
+                    phase2FilterLoad();
+                }
+            },hardReload);
+        };
 
         var setup = function () {
             AccountControlService.getOrganizations(function (organizations) {
                 $scope.companyList = organizations;
             });
             $scope.refreshPhaseOne(false);
-
+            $scope.refreshPhaseTwo(false);
             $('.ui.sticky').sticky({context: '#processBoard', pushing: true});
         };
 

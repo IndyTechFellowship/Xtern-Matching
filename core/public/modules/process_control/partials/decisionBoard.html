@@ -1,0 +1,47 @@
+<h1 class="ui centered header">{{title}}</h1>
+<div class="ui relaxed internally celled grid">
+    <div class="row">
+        <div class="eight wide column">
+            <div class="ui horizontal statistic">
+                <div class="value">
+                    {{length}}
+                </div>
+                <div class="label">
+                    Students in Range
+                </div>
+            </div>
+        </div>
+        <div class="eight wide column">
+            <h2 class="ui centered header">Students</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="eight wide column">
+            <rzslider rz-slider-model="slider.value" rz-slider-options="slider.options">
+            </rzslider>
+            <div class="ui grid">
+                <div class="row">
+                    <div class="eight wide column" ng-repeat="chart in charts">
+                        <h4 class="ui header">{{chart.name}} Breakdown</h4>
+                        <canvas class="chart chart-doughnut" chart-data="chart.data" chart-labels="chart.labels" chart-legend="false">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+            <h4 class="ui header">{{histogram.name}}</h4>
+            <canvas class="chart chart-bar" chart-data="histogram.data" chart-labels="histogram.labels" chart-legend="false">
+            </canvas>
+
+        </div>
+        <div class="eight wide column" id="processTableContainer">
+            <table class="ui fixed table">
+                <tbody>
+                <tr ng-repeat="studentPair in displayList">
+                    <td>{{studentPair.right.name}}</td>
+                    <td>{{studentPair.left.name}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
