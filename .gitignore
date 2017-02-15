@@ -46,5 +46,8 @@ core/node_modules
 /core/environments/development/cloudstore-dev.json
 
 # manual testing outputs
+/bundle.js
 tests/manual/*
 !tests/manual/.gitkeep
+
+core/index.yaml

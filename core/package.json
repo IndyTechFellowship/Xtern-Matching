@@ -6,8 +6,10 @@
   "scripts": {
     "prestart": "",
     "start": "goapp serve",
-    "pretest": "goapp get github.com/stretchr/testify/assert",
-    "test": "goapp test Xtern-Matching/tests",
+    "build": "grunt",
+    "watch": "watchify app.js -o bundle.js",
+    "pretest" : "goapp get github.com/stretchr/testify/assert",
+    "test": "goapp test -v Xtern-Matching/tests",
     "test-front": "karma start karma.conf.js"
   },
   "repository": {
@@ -32,17 +34,18 @@
     "angular-legacy-sortablejs": "^0.4.1",
     "angular-sanitize": "^1.5.8",
     "angular-ui-router": "^0.2.18",
-    "browserify": "^14.0.0",
+    "angularjs-slider": "^6.0.0",
     "core-js": "^2.3.0",
     "gulp": "^3.9.1",
     "http": "0.0.0",
     "ng-sortable": "^1.3.6",
     "pdfjs-dist": "^1.5.500",
-    "toastr": "^2.1.2",
-    "watchify": "^3.9.0"
+    "toastr": "^2.1.2"
+    
   },
   "devDependencies": {
     "angular-mocks": "^1.5.0",
+    "browserify": "^14.0.0",
     "grunt": "^1.0.1",
     "grunt-contrib-cssmin": "^1.0.2",
     "grunt-contrib-uglify": "^2.1.0",
@@ -55,7 +58,8 @@
     "karma-ng-html2js-preprocessor": "^0.2.1",
     "karma-phantomjs-launcher": "^1.0.0",
     "node-sass": "^3.4.2",
-    "phantomjs-prebuilt": "^2.1.6"
+    "phantomjs-prebuilt": "^2.1.6",
+    "watchify": "^3.9.0"
   },
   "engines": {
     "node": ">=5.0.0"

@@ -1,5 +1,6 @@
 package models
 
+import "encoding/json"
 import (
 	"google.golang.org/appengine/datastore"
 )
@@ -19,11 +20,41 @@ type Student struct {
 	PersonalSite string   `json:"personalWebiteUrl"`
 	Interests    []string `json:"interests"`
 	Resume       string   `json:"resume"`
+
 	Grade        float64  `json:"grade"`
 	ReviewerGrades	[]ReviewerGrade	`json:"reviewerGrades"`
 	Status       string   `json:"status"`
 	Active       bool     `json:"active"`
 	HomeState    string   `json:"homeState"`
+	Ethnicity    string   `json:"ethnicity"`
+}
+
+/*
+	Same model as Student,
+	So only desired fields are encoded by JSON Marshal
+ */
+type StudentDecisionQuery struct {
+	Id int64              `json:"key" datastore:"-"`
+	FirstName    string   `json:"-"`
+	LastName     string   `json:"-"`
+	GradYear     string   `json:"gradYear"`
+	Grade        float64  `json:"grade"`
+	Gender       string   `json:"gender"`
+	WorkStatus   string   `json:"workStatus"`
+	Ethnicity    string   `json:"ethnicity"`
+	ReviewerGrades	[]ReviewerGrade	`json:"reviewerGrades"`
+}
+
+type StudentDecision StudentDecisionQuery
+
+func (student *StudentDecision) MarshalJSON() ([]byte, error) {
+	type Alias StudentDecision
+	return json.Marshal(&struct {
+		*Alias
+		Name string	`json:"name"`
+	}{(*Alias)(student),
+		student.FirstName + " " + student.LastName,
+	})
 }
 
 type Skill struct {
@@ -38,4 +69,8 @@ type ReviewerGrade struct {
 
 func (skill Skill) MarshalCSV() ([]byte, error) {
 	return []byte(skill.Name + ": " + skill.Category), nil
+}
+
+func (grade ReviewerGrade) MarshalCSV() ([]byte, error) {
+	return []byte(string(grade.Grade)), nil
 }

@@ -89,6 +89,45 @@ func GetOrganizationStudents(w http.ResponseWriter,r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func GetOrganizationStudentsById(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	var dat map[string]interface{}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	orgKey, err := datastore.DecodeKey(dat["orgKey"].(string))
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+
+	org, err := services.GetOrganization(ctx,orgKey)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	students := make([]map[string]interface{},0)
+	for _, key := range org.Students {
+		student, err := services.GetStudent(ctx, key)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		temp := make(map[string]interface{})
+		temp["key"] = key
+		temp["name"] = student.FirstName + " " + student.LastName
+		students = append(students, temp)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(students)
+}
+
 func AddStudentToOrganization(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 

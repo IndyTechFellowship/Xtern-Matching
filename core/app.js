@@ -8,6 +8,7 @@
     require('chart.js');
     require('angular-chart.js');
     require('ng-sortable');
+    require('angularjs-slider/dist/rzslider.min.js');
     // require('angular-animate/angular-animate.min.js');
     // var toastr = require('toastr/build/toastr.min.js');
     require('pdfjs-dist/build/pdf.worker.js');
@@ -16,7 +17,7 @@
     require('pdfjs-dist/build/pdf.worker.entry.js');
 
 
-    var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize", "DataManager"]);
+    var app = angular.module('Xtern', ["ui.router", "angular-centered", "chart.js", "as.sortable","ngSanitize", "rzModule", "DataManager"]);
 
     require('./public/techpoint/techpoint.controller.js');
     require('./public/company/company.controller.js');
@@ -60,23 +61,24 @@
                     }]
                 }
             })
+            .state('techpoint.process', {
+                url: "/process_control",
+                templateUrl: "public/modules/process_control/partials/process_control.html",
+                controller: 'TechPointProcessControl',
+                // abstract: true,
+                // redirectTo:'techpoint.process.phase1',
+                resolve: {
+                    security: ['$q', function ($q) {
+                        return isLoggedInTechPoint($q);
+                    }]
+                }
+            })           
             .state('techpoint.profile', {
                 url: "/profile/:key",
                 templateUrl: "public/modules/student_profile/partials/techpoint.studentProfile.html",
                 controller: 'TechPointStudentProfileCtrl',
                 resolve: {
                     security: ['$q', function ($q) {
-                        return isLoggedInTechPoint($q);
-                    }]
-                }
-            })
-            .state('techpoint.reviewerControls', {
-                url: "/reviewerControls",
-                templateUrl: "public/modules/reviewer_controls/partials/reviewerControls.html",
-                controller: 'TechPointReviewerCtrl',
-                resolve: {
-                    security: ['$q', function ($q) {
-                        return isLoggedInTechPoint($q);
                     }]
                 }
             })

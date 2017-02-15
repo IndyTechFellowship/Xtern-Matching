@@ -23,6 +23,7 @@ module.exports = function(grunt) {
                         'node_modules/angular-chart.js/dist/angular-chart.min.css',
                         'node_modules/ng-sortable/dist/ng-sortable.min.css',
                         'node_modules/toastr/build/toastr.min.css',
+                        'node_modules/angularjs-slider/dist/rzslider.css',
                         'public/css/studentProfile.css',
                         'public/css/universal.css']
                 }
@@ -33,5 +34,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.registerTask('default', ['uglify','cssmin']);
+    grunt.registerTask('css', ['cssmin']);
 
 };

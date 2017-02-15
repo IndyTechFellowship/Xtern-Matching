@@ -15,6 +15,7 @@ import (
 
 func GetStudents(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
+	defer ctx.Done()
 	students, keys, err := services.GetStudents(ctx, nil)
 	if err != nil {
 		log.Println(err.Error())
@@ -35,6 +36,7 @@ func GetStudents(w http.ResponseWriter, r *http.Request) {
 
 func GetStudent(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
+	defer ctx.Done()
 
 	studentKey, err := datastore.DecodeKey(mux.Vars(r)["studentKey"])
 	if err != nil {
@@ -53,7 +55,86 @@ func GetStudent(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(student)
 }
 
-func AddStudent(w http.ResponseWriter,r *http.Request) {
+func GetStudentDecisionList(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+	defer ctx.Done()
+
+	students, err := services.GetStudentDecisionList(ctx, nil)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	//TODO: Add keys if necessary to response
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(students)
+}
+
+func GetReviewedStudents(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+	defer ctx.Done()
+
+	students, err := services.GetReviewedStudents(ctx, nil)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	//TODO: Add keys if necessary to response
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(students)
+}
+
+func GetStudentsAtLeastWithStatus(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+	defer ctx.Done()
+
+	var dat map[string]interface{}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	status := dat["status"].(string)
+
+	students, err := services.GetStudentsAtLeastWithStatus(ctx, status)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	//TODO: Add keys if necessary to response
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(students)
+}
+
+func UpdateStudentsToStatus(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+	defer ctx.Done()
+
+	var dat map[string]interface{}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&dat); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	status := dat["level"].(string)
+	keys := dat["ids"].([]*datastore.Key)
+	err := services.MoveStudentsToStatus(ctx, keys, status)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	//TODO: Add keys if necessary to response
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+}
+
+func AddStudent(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
 	var student models.Student
@@ -141,7 +222,7 @@ func ExportStudents(w http.ResponseWriter, r *http.Request) {
 	w.Write(students)
 }
 
-func ExportResumes(w http.ResponseWriter,r *http.Request)  {
+func ExportResumes(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 	defer ctx.Done()
 
