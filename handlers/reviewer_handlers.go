@@ -168,6 +168,42 @@ func GetReviewGroups(w http.ResponseWriter,r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func GetCurrentProgress(w http.ResponseWriter,r *http.Request) {
+	ctx := appengine.NewContext(r)
+	var noReviews, someReviews, allReviews int = 0,0,0
+
+	reviewGroups, _, err := services.GetReviewGroups(ctx, nil)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	for i:=0; i<len(reviewGroups); i++ {
+		for j:=0; j<len(reviewGroups[i].Students); j++ {
+			student, _ := services.GetStudent(ctx, reviewGroups[i].Students[j])
+			if len(student.ReviewerGrades)==0 {
+				noReviews++
+			} else if len(student.ReviewerGrades) == len(reviewGroups[i].Reviewers) {
+				allReviews++
+			} else {
+				someReviews++
+			}
+		}
+	}
+
+	type Response struct {
+		NoReviews int		`json:"noReviews"`
+		SomeReviews int		`json:"someReviews"`
+		AllReviews int		`json:"allReviews"`
+	}
+	response := Response{NoReviews: noReviews, SomeReviews: someReviews, AllReviews: allReviews}
+
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
 func GetReviewGroupForReviewer(w http.ResponseWriter,r *http.Request) {
 	ctx := appengine.NewContext(r)
 
