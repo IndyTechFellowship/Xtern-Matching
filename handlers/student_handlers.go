@@ -138,6 +138,7 @@ func ExportStudents(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Disposition", "attachment; filename=students.csv")
 	w.Write(students)
 }
 
