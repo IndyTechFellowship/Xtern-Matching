@@ -59,23 +59,24 @@ func GetOrganizationStudents(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 
-
 	org, err := services.GetOrganization(ctx,orgKey)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	students := make([]models.Student,0)
-	keys :=make([]*datastore.Key,0)
+	students := make([]models.Student,len(org.StudentRanks))
+	keys :=make([]*datastore.Key,len(org.StudentRanks))
 	for _, studentRank := range org.StudentRanks {
 		student, err := services.GetStudent(ctx, studentRank.Student)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		students = append(students, student)
-		keys  = append(keys, studentRank.Student)
+		// students = append(students, student)
+		// keys  = append(keys, studentRank.Student)
+		students[studentRank.Rank] = student
+		keys[studentRank.Rank] = studentRank.Student
 	}
 	
 
