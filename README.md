@@ -1,10 +1,10 @@
-#Xtern Matching
+# Xtern Matching
 #### _Senior Project - Crowley, Doolan, Niccum, Nygren_
 
 <img src="./core/public/images/xtern-logo.png" width="100%">
 >Xtern – the ultimate tech summer internship experience with Indianapolis technology companies. Powered by the technology non-profit internship experience – packages an experience around summer internship, TechPoint, Xtern provides free downtown housing, networking opportunities and an all-access pass to the arts, culture and social scene in Indianapolis. Programming has been deliberately designed with the intention of attracting top college talent to our growing tech community and creating a sense of place around Indianapolis with the goal of increasing retention rates upon graduation.
 
-##The Project
+## The Project
 The Xtern initiative is dependent on being able to recruit, vet, and place over a hundred summer interns every year from a plethora of universities around the nation. In the past, the vetting and placement portion of the process was done through Google forms and Google spreadsheets.
 __Xtern Matching__ seeks to simplify this process by:
 * Aggregating all of the responses from the forms in a central location
@@ -13,7 +13,7 @@ __Xtern Matching__ seeks to simplify this process by:
   * University Professors involved in the vetting process
   * Potential Host Companies
 
-##The Process
+## The Process
 Techpoint vets the Xtern applicants using a 3 stage process.
 
 1. Techpoint goes through all of the applicants and rates them on a letter scale. As, B+s, and some Cs, advance.
@@ -26,15 +26,15 @@ Techpoint vets the Xtern applicants using a 3 stage process.
 3. Finalist Day - Students interview with 3 different companies
  * Students and Companies fill out preference surveys and students are placed
 
-##The Current Application 
-###Logins and Separation of Permissions
+## The Current Application 
+### Logins and Separation of Permissions
 The Current Application allows you to login in as a Company or as a Techpoint Employee through two different log in screens. All screens accessed after these portals are customized for the permission level.
 
  ![alt text](./screen_shots/company_login.PNG "Company Login")
 
  ![alt text](./screen_shots/techpoint_login.PNG "Techpoint Login")
 
-###The Dashboard 
+### The Dashboard 
 Most of the logic for the application is contained in the dashboard. The currently allows the user to view all of the available students in the system and filter them by a series of fields. The dashboard also displays at a glance statistics and charts based on the current filtering. 
 
  ![Base Dashboard](./screen_shots/dashboard.png "Base Dashboard")
@@ -43,16 +43,16 @@ Most of the logic for the application is contained in the dashboard. The current
 
  ![Charts Dashboard](./screen_shots/stats_and_charts_long.PNG "Charts Dashboard")
 
-####Notes and Design
+#### Notes and Design
  The different components in the dashboard (ie: filters, graphs, table, ect.) are all reusable and fully customizable based off of JSON strings. They are set up to be reused in different modules of the application.
  In addition, the dashboard page itself takes a config variable and the company view dashboard has different filters, graphs, and column headers.  
 
-###The Student Profile
+### The Student Profile
 The Student Profile Page allows the user to learn more information about the student and to view their resume. Skill and technologies are color-coded and comments on the page are restricted by permission level.
 
 ![Student Profile Page](./screen_shots/student_profile.png "Student Profile Page")
 
-###The Company Recruitment Page
+### The Company Recruitment Page
 The Company Recruitment page allows for companies to rank students and compile a short list prior to finalist day. After finalist day, this page can be used to declare interest in hiring to Techpoint.
 
 The list of students is ordered and can be reordered by selecting a student and dragging him/her into the new rank slot.
@@ -60,13 +60,13 @@ The list of students is ordered and can be reordered by selecting a student and 
 ![Company Recruitment Page](./screen_shots/company_recruitment.PNG "Company Recruitment Page")
 
 
-##Launch Application
+## Launch Application
 ```bash
 cd core
 npm start #launches the site on http://localhost:8080/
 ```
 
-##Launch Application
+## Launch Application
 ```bash
 goapp deploy
 ```
