@@ -28,13 +28,12 @@ handlers:
   static_files: output.min.css
   upload: output.min.css
 
-
-- url: /environments
-  static_dir: environments
-
 - url: /_ah/warmup
   script: _go_app
   login: admin
+
+- url: /seed
+  script: _go_app
 
 - url: /_ah/start
   script: _go_app
